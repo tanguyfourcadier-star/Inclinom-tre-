@@ -1,119 +1,122 @@
 <!doctype html>
 <html lang="fr">
+
 <head>
+
 <meta charset="utf-8">
 
 <meta name="viewport"
-      content="width=device-width,initial-scale=1,viewport-fit=cover">
+content="width=device-width,initial-scale=1,viewport-fit=cover">
 
-<meta name="theme-color" content="#080b10">
+<meta name="theme-color"
+content="#080b10">
 
 <title>Inclinomètre Moto</title>
 
 <style>
 
 :root{
-  --bg:#080b10;
-  --card:#111720;
-  --text:#f3f6fa;
-  --muted:#9ba8b7;
-  --accent:#43d17a;
-  --yellow:#ffcc33;
-  --red:#ff4d4d;
-  --line:#25303c;
+--bg:#080b10;
+--card:#111720;
+--text:#f3f6fa;
+--muted:#9ba8b7;
+--accent:#43d17a;
+--yellow:#ffcc33;
+--red:#ff4d4d;
+--line:#25303c;
 }
 
 *{
-  box-sizing:border-box;
+box-sizing:border-box;
 }
 
 html,body{
-  margin:0;
-  background:var(--bg);
-  color:var(--text);
-  font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+margin:0;
+background:var(--bg);
+color:var(--text);
+font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
 }
 
 body{
-  min-height:100vh;
-  padding:
-    env(safe-area-inset-top)
-    14px
-    env(safe-area-inset-bottom);
+min-height:100vh;
+padding:
+env(safe-area-inset-top)
+14px
+env(safe-area-inset-bottom);
 }
 
 .wrap{
-  max-width:760px;
-  margin:auto;
+max-width:760px;
+margin:auto;
 }
 
 .top{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  padding:14px 2px 8px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:14px 2px 8px;
 }
 
 h1{
-  font-size:19px;
-  margin:0;
+font-size:19px;
+margin:0;
 }
 
 .status{
-  font-size:12px;
-  color:var(--muted);
+font-size:12px;
+color:var(--muted);
 }
 
 .dot{
-  display:inline-block;
-  width:9px;
-  height:9px;
-  border-radius:50%;
-  background:#777;
-  margin-right:6px;
+display:inline-block;
+width:9px;
+height:9px;
+border-radius:50%;
+background:#777;
+margin-right:6px;
 }
 
 .on{
-  background:var(--accent);
+background:var(--accent);
 }
 
 .grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px;
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:10px;
 }
 
 .card{
-  background:var(--card);
-  border:1px solid var(--line);
-  border-radius:16px;
-  padding:14px;
+background:var(--card);
+border:1px solid var(--line);
+border-radius:16px;
+padding:14px;
 }
 
 .main{
-  grid-column:1/-1;
-  text-align:center;
-  padding:18px 12px;
+grid-column:1/-1;
+text-align:center;
+padding:18px 12px;
 }
 
 .label{
-  color:var(--muted);
-  font-size:12px;
-  text-transform:uppercase;
-  letter-spacing:.08em;
+color:var(--muted);
+font-size:12px;
+text-transform:uppercase;
+letter-spacing:.08em;
 }
 
 .angle{
-  font-size:clamp(58px,18vw,105px);
-  line-height:1;
-  font-weight:700;
-  margin:10px 0 4px;
-  font-variant-numeric:tabular-nums;
+font-size:clamp(58px,18vw,105px);
+line-height:1;
+font-weight:700;
+margin:10px 0 4px;
+font-variant-numeric:tabular-nums;
 }
 
 .unit{
-  font-size:17px;
-  color:var(--muted);
+font-size:17px;
+color:var(--muted);
 }
 
 
@@ -121,62 +124,82 @@ h1{
    CURSEUR
 ===================================================== */
 
-.leanGauge{
-  position:relative;
-  height:76px;
-  margin:12px 15px 0;
-}
-
-.gaugeTrack{
-  position:absolute;
-  left:0;
-  right:0;
-  top:35px;
-  height:8px;
-  border-radius:10px;
-  background:linear-gradient(
-    to right,
-    #ff4d4d 0%,
-    #ff4d4d 12.5%,
-    #ffcc33 12.5%,
-    #ffcc33 25%,
-    #43d17a 25%,
-    #43d17a 75%,
-    #ffcc33 75%,
-    #ffcc33 87.5%,
-    #ff4d4d 87.5%,
-    #ff4d4d 100%
-  );
+.gauge{
+position:relative;
+height:78px;
+margin:12px 15px 0;
 }
 
 
 /*
-   Repères 35° et 45°
+   Barre :
+
+   -50°     -45°    -35°        0°        +35°   +45°   +50°
+    |--------|-------|-----------|-----------|------|------|
+
+   Rouge     Jaune   Vert                  Jaune  Rouge
 */
 
-.gaugeMark{
-  position:absolute;
-  top:27px;
-  width:2px;
-  height:24px;
-  background:#fff;
-  opacity:.65;
+.track{
+position:absolute;
+left:0;
+right:0;
+top:34px;
+height:10px;
+border-radius:10px;
+
+background:linear-gradient(
+to right,
+
+var(--red) 0%,
+var(--red) 5%,
+
+var(--yellow) 5%,
+var(--yellow) 15%,
+
+var(--accent) 15%,
+var(--accent) 85%,
+
+var(--yellow) 85%,
+var(--yellow) 95%,
+
+var(--red) 95%,
+var(--red) 100%
+);
+
 }
 
-.mark35L{
-  left:25%;
+
+/*
+   Repères :
+
+   35° = 15% / 85%
+   45° = 5% / 95%
+*/
+
+.mark{
+position:absolute;
+top:26px;
+width:2px;
+height:26px;
+background:#fff;
+opacity:.55;
 }
 
-.mark35R{
-  left:75%;
-}
+.m45l{left:5%;}
+.m35l{left:15%;}
+.m35r{left:85%;}
+.m45r{left:95%;}
 
-.mark45L{
-  left:12.5%;
-}
-
-.mark45R{
-  left:87.5%;
+.center{
+position:absolute;
+left:50%;
+top:22px;
+width:3px;
+height:34px;
+background:#fff;
+opacity:.5;
+transform:translateX(-50%);
 }
 
 
@@ -184,137 +207,141 @@ h1{
    Curseur
 */
 
-.gaugeCursor{
-  position:absolute;
-  top:17px;
-  left:50%;
-  width:5px;
-  height:43px;
-  border-radius:5px;
-  background:var(--accent);
-  transform:translateX(-50%);
-  box-shadow:0 0 8px rgba(67,209,122,.8);
-  transition:
-    left .04s linear,
-    background .08s linear;
+.cursor{
+position:absolute;
+top:16px;
+left:50%;
+
+width:6px;
+height:48px;
+
+border-radius:5px;
+
+background:var(--accent);
+
+transform:translateX(-50%);
+
+transition:
+left .04s linear,
+background .06s linear;
+
+box-shadow:
+0 0 8px rgba(67,209,122,.8);
+
 }
 
-.gaugeCenter{
-  position:absolute;
-  left:50%;
-  top:25px;
-  width:3px;
-  height:28px;
-  background:#fff;
-  transform:translateX(-50%);
-  opacity:.45;
-  pointer-events:none;
-}
 
-.gaugeLabels{
-  position:absolute;
-  left:0;
-  right:0;
-  top:55px;
-  display:flex;
-  justify-content:space-between;
-  font-size:10px;
-  color:var(--muted);
+/*
+   Etiquettes
+*/
+
+.labels{
+position:absolute;
+left:0;
+right:0;
+top:57px;
+
+display:flex;
+justify-content:space-between;
+
+font-size:10px;
+color:var(--muted);
 }
 
 .maxrow{
-  display:flex;
-  justify-content:space-around;
-  margin-top:16px;
+display:flex;
+justify-content:space-around;
+margin-top:15px;
 }
 
 .maxv{
-  font-size:25px;
-  font-weight:650;
-  font-variant-numeric:tabular-nums;
+font-size:25px;
+font-weight:650;
+font-variant-numeric:tabular-nums;
 }
 
 .reading{
-  font-size:29px;
-  font-weight:650;
-  font-variant-numeric:tabular-nums;
-  margin-top:5px;
+font-size:29px;
+font-weight:650;
+font-variant-numeric:tabular-nums;
+margin-top:5px;
 }
 
 .small{
-  font-size:12px;
-  color:var(--muted);
-  margin-top:4px;
+font-size:12px;
+color:var(--muted);
+margin-top:4px;
 }
 
 .buttons{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px;
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:10px;
 }
 
 button{
-  width:100%;
-  border:0;
-  border-radius:13px;
-  padding:14px 10px;
-  font-size:16px;
-  font-weight:700;
-  background:#202a35;
-  color:var(--text);
+width:100%;
+border:0;
+border-radius:13px;
+padding:14px 10px;
+font-size:16px;
+font-weight:700;
+background:#202a35;
+color:var(--text);
 }
 
 button.primary{
-  background:var(--accent);
-  color:#07100b;
+background:var(--accent);
+color:#07100b;
 }
 
 button.warn{
-  background:#4a3c1e;
-  color:#ffe3a0;
+background:#4a3c1e;
+color:#ffe3a0;
 }
 
 button.danger{
-  background:#472329;
-  color:#ffb9b9;
+background:#472329;
+color:#ffb9b9;
 }
 
 .note{
-  font-size:12px;
-  line-height:1.45;
-  color:var(--muted);
-  padding:12px 2px 24px;
+font-size:12px;
+line-height:1.45;
+color:var(--muted);
+padding:12px 2px 24px;
 }
 
 details{
-  margin-top:10px;
+margin-top:10px;
 }
 
 .raw{
-  font-family:ui-monospace,monospace;
-  font-size:11px;
-  line-height:1.6;
-  white-space:pre-wrap;
-  color:#b9c5d2;
+font-family:ui-monospace,monospace;
+font-size:11px;
+line-height:1.6;
+white-space:pre-wrap;
+color:#b9c5d2;
 }
 
 @media(max-width:420px){
 
-  .grid{
-    gap:8px;
-  }
+.grid{
+gap:8px;
+}
 
-  .card{
-    padding:12px;
-  }
+.card{
+padding:12px;
+}
 
-  .reading{
-    font-size:25px;
-  }
+.reading{
+font-size:25px;
+}
 
 }
 
 </style>
+
 </head>
 
 
@@ -322,16 +349,23 @@ details{
 
 <div class="wrap">
 
+
 <div class="top">
 
 <h1>🏍️ Inclinomètre Moto</h1>
 
 <div class="status">
+
 <span id="dot" class="dot"></span>
-<span id="status">Arrêté</span>
+
+<span id="status">
+Arrêté
+</span>
+
 </div>
 
 </div>
+
 
 
 <div class="grid">
@@ -347,7 +381,8 @@ details{
 Inclinaison
 </div>
 
-<div id="angle" class="angle">
+<div id="angle"
+class="angle">
 +0.0°
 </div>
 
@@ -356,30 +391,31 @@ droite + / gauche −
 </div>
 
 
-<!-- CURSEUR -->
+<div class="gauge">
 
-<div class="leanGauge">
+<div class="track"></div>
 
-<div class="gaugeTrack"></div>
+<div class="mark m45l"></div>
+<div class="mark m35l"></div>
 
-<div class="gaugeMark mark45L"></div>
-<div class="gaugeMark mark35L"></div>
+<div class="center"></div>
 
-<div class="gaugeMark mark35R"></div>
-<div class="gaugeMark mark45R"></div>
+<div class="mark m35r"></div>
+<div class="mark m45r"></div>
 
-<div class="gaugeCenter"></div>
+<div id="cursor"
+class="cursor">
+</div>
 
-<div id="gaugeCursor"
-     class="gaugeCursor"></div>
+<div class="labels">
 
-<div class="gaugeLabels">
-
-<span>-45°</span>
-<span>-35°</span>
+<span>−50°</span>
+<span>−45°</span>
+<span>−35°</span>
 <span>0°</span>
 <span>+35°</span>
 <span>+45°</span>
+<span>+50°</span>
 
 </div>
 
@@ -394,7 +430,8 @@ droite + / gauche −
 Max droite
 </div>
 
-<div id="maxRight" class="maxv">
+<div id="maxRight"
+class="maxv">
 +0.0°
 </div>
 
@@ -407,7 +444,8 @@ Max droite
 Max gauche
 </div>
 
-<div id="maxLeft" class="maxv">
+<div id="maxLeft"
+class="maxv">
 +0.0°
 </div>
 
@@ -420,7 +458,7 @@ Max gauche
 
 
 <!-- ===================================================
-     ACCELERATION LONGITUDINALE
+     ACCELERATION
 ==================================================== -->
 
 <section class="card main">
@@ -429,7 +467,8 @@ Max gauche
 Accélération longitudinale
 </div>
 
-<div id="gLong" class="reading">
+<div id="gLong"
+class="reading">
 +0.00 G
 </div>
 
@@ -446,7 +485,8 @@ Accélération longitudinale
 Max accél
 </div>
 
-<div id="maxAccelEl" class="maxv">
+<div id="maxAccel"
+class="maxv">
 +0.00
 </div>
 
@@ -459,7 +499,8 @@ Max accél
 Max frein
 </div>
 
-<div id="maxBrakeEl" class="maxv">
+<div id="maxBrake"
+class="maxv">
 +0.00
 </div>
 
@@ -471,9 +512,7 @@ Max frein
 
 
 
-<!-- ===================================================
-     FREQUENCE
-==================================================== -->
+<!-- FREQUENCE -->
 
 <section class="card">
 
@@ -481,7 +520,8 @@ Max frein
 Fréquence
 </div>
 
-<div id="hz" class="reading">
+<div id="hz"
+class="reading">
 0 Hz
 </div>
 
@@ -493,9 +533,7 @@ Capteur mouvement
 
 
 
-<!-- ===================================================
-     G TOTAL
-==================================================== -->
+<!-- G TOTAL -->
 
 <section class="card">
 
@@ -503,7 +541,8 @@ Capteur mouvement
 G total
 </div>
 
-<div id="gTotal" class="reading">
+<div id="gTotal"
+class="reading">
 1.00 G
 </div>
 
@@ -515,9 +554,7 @@ Gravité + accélérations
 
 
 
-<!-- ===================================================
-     BOUTONS
-==================================================== -->
+<!-- BOUTONS -->
 
 <section class="card"
 style="grid-column:1/-1">
@@ -526,21 +563,29 @@ style="grid-column:1/-1">
 
 <button id="start"
 class="primary">
+
 DÉMARRER LES CAPTEURS
+
 </button>
 
 <button id="zero"
 class="warn">
+
 FAIRE LE ZÉRO
+
 </button>
 
 <button id="reset"
 class="danger">
+
 RESET MAX
+
 </button>
 
 <button id="screen">
+
 PLEIN ÉCRAN
+
 </button>
 
 </div>
@@ -549,9 +594,7 @@ PLEIN ÉCRAN
 
 
 
-<!-- ===================================================
-     CALIBRATION / DIAGNOSTIC
-==================================================== -->
+<!-- DIAGNOSTIC -->
 
 <section class="card"
 style="grid-column:1/-1">
@@ -577,7 +620,9 @@ Diagnostic brut
 
 <div id="raw"
 class="raw">
+
 Aucune donnée.
+
 </div>
 
 </details>
@@ -587,11 +632,16 @@ Aucune donnée.
 </div>
 
 
+
 <div class="note">
 
 ⚠️ Prototype expérimental.
-La compensation est volontairement limitée
-pour privilégier la stabilité et la réactivité.
+Cette version ne fait volontairement
+AUCUNE compensation dynamique de l'angle.
+
+L'accélération longitudinale est affichée
+séparément.
+
 Ne manipule pas le téléphone en roulant.
 
 </div>
@@ -611,84 +661,53 @@ Ne manipule pas le téléphone en roulant.
 
 
 /*
-   Signe droite / gauche.
+   SENS DE L'ANGLE
 
-   Si le résultat est inversé :
-   passer à -1.
+   Si l'angle affiché est inversé :
+   mettre -1.
 */
 
 const LEAN_SIGN = 1;
 
 
 /*
-   Signe accélération longitudinale.
+   SENS ACCELERATION
 
-   Si accélération et freinage sont inversés :
-   passer à -1.
+   Si accélération/freinage est inversé :
+   mettre -1.
 */
 
 const LONG_SIGN = 1;
 
 
 /*
-   Durée du zéro.
+   Calibration
 */
 
 const CALIBRATION_MS = 1000;
 
 
 /*
-   Affichage 10 fois/seconde.
-   Les capteurs continuent évidemment
-   à travailler beaucoup plus vite.
+   Affichage rapide
 */
 
 const RENDER_MS = 100;
 
 
 /*
-   Limite d'angle utilisée par le curseur.
+   Lissage angle.
 
-   Le curseur représente de -50° à +50°.
-*/
+   Très léger.
 
-const GAUGE_LIMIT = 50;
-
-
-/*
-   Vitesse maximale de correction.
-
-   C'est volontairement faible.
-
-   On ne veut PAS une compensation parfaite
-   instantanément.
-
-   0.12 signifie que seulement 12 %
-   de la correction théorique est appliquée
-   à chaque échantillon.
-*/
-
-const COMPENSATION_STRENGTH = 0.12;
-
-
-/*
-   Filtrage très léger de l'angle.
-
-   0.90 = beaucoup de stabilité
-   0.95 = encore plus rapide
-
-   Ici 0.90 pour garder une bonne réactivité.
+   0.90 = assez stable
+   0.95 = plus rapide mais plus bruité
 */
 
 const ANGLE_FILTER = 0.90;
 
 
 /*
-   Filtrage accélération.
-
-   Plus petit = plus rapide
-   mais plus bruité.
-
+   Lissage accélération.
 */
 
 const ACCEL_FILTER = 0.80;
@@ -700,7 +719,12 @@ const ACCEL_FILTER = 0.80;
 
 let running = false;
 
-let leanAngle = 0;
+
+/*
+   ANGLE
+*/
+
+let angle = 0;
 
 let angleOffset = 0;
 
@@ -709,7 +733,9 @@ let maxRight = 0;
 let maxLeft = 0;
 
 
-/* accélération longitudinale */
+/*
+   ACCELERATION
+*/
 
 let longAccel = 0;
 
@@ -720,7 +746,9 @@ let maxAccel = 0;
 let maxBrake = 0;
 
 
-/* valeurs brutes */
+/*
+   CAPTEURS BRUTS
+*/
 
 let raw = {
 
@@ -735,32 +763,41 @@ lz:0
 };
 
 
-/* G total */
+/*
+   G total
+*/
 
 let gTotal = 1;
 
 
-/* fréquence */
+/*
+   FREQUENCE
+*/
 
 let hz = 0;
 
 let hzCount = 0;
 
-let hzTimer = performance.now();
+let hzTimer =
+performance.now();
 
 
-/* calibration */
+/*
+   CALIBRATION
+*/
 
 let calibrating = false;
 
-let calibCount = 0;
+let calibN = 0;
 
-let calibAngleSum = 0;
+let calibAngle = 0;
 
-let calibLongSum = 0;
+let calibLong = 0;
 
 
-/* wake lock */
+/*
+   Wake Lock
+*/
 
 let wakeLock = null;
 
@@ -795,9 +832,13 @@ v >= 0 ? '+' : ''
    STATUT
 ===================================================== */
 
-function setStatus(text,on=false){
+function setStatus(
+text,
+on=false
+){
 
-$('status').textContent = text;
+$('status').textContent =
+text;
 
 $('dot').classList.toggle(
 'on',
@@ -815,15 +856,15 @@ function startCalibration(){
 
 calibrating = true;
 
-calibCount = 0;
+calibN = 0;
 
-calibAngleSum = 0;
+calibAngle = 0;
 
-calibLongSum = 0;
+calibLong = 0;
 
 
 $('calibText').textContent =
-'Calibration : moto parfaitement immobile...';
+'Calibration : ne touche pas à la moto...';
 
 
 setTimeout(
@@ -836,23 +877,20 @@ CALIBRATION_MS
 
 function finishCalibration(){
 
-if(calibCount > 0){
+if(calibN > 0){
 
 angleOffset =
-calibAngleSum /
-calibCount;
-
+calibAngle / calibN;
 
 longOffset =
-calibLongSum /
-calibCount;
+calibLong / calibN;
 
 }
 
 
 calibrating = false;
 
-leanAngle = 0;
+angle = 0;
 
 longAccel = 0;
 
@@ -864,71 +902,89 @@ $('calibText').textContent =
 
 
 /* =====================================================
-   CALCUL DU CURSEUR
+   CURSEUR
 ===================================================== */
 
-function updateGauge(angle){
+function updateCursor(value){
 
 /*
-   -50° = 0 %
-   +50° = 100 %
+   IMPORTANT :
 
-   0° = 50 %
+   L'AFFICHAGE est volontairement inversé
+   par rapport à la valeur numérique.
+
+   Valeur négative = GAUCHE
+   → curseur à GAUCHE
+
+   Valeur positive = DROITE
+   → curseur à DROITE
 */
 
-let percent =
-50 +
-(angle / GAUGE_LIMIT) * 50;
+
+let displayAngle =
+value;
 
 
-percent =
+/*
+   On limite uniquement l'affichage
+   entre -50 et +50.
+*/
+
+displayAngle =
 Math.max(
-0,
+-50,
 Math.min(
-100,
-percent
+50,
+displayAngle
 )
 );
 
 
-$('gaugeCursor').style.left =
+/*
+   Conversion :
+
+   -50° => 0 %
+   0°   => 50 %
+   +50° => 100 %
+*/
+
+const percent =
+50 +
+displayAngle;
+
+
+$('cursor').style.left =
 percent + '%';
 
 
 /*
-   Couleur du curseur.
+   Couleur :
 
-   <=35 : vert
-   35-45 : jaune
-   >45 : rouge
+   vert : |angle| < 35
+   jaune : 35 <= |angle| < 45
+   rouge : >= 45
 */
 
 const abs =
-Math.abs(angle);
+Math.abs(value);
 
-
-let color;
 
 if(abs >= 45){
 
-color =
+$('cursor').style.background =
 'var(--red)';
 
 }else if(abs >= 35){
 
-color =
+$('cursor').style.background =
 'var(--yellow)';
 
 }else{
 
-color =
+$('cursor').style.background =
 'var(--accent)';
 
 }
-
-
-$('gaugeCursor').style.background =
-color;
 
 }
 
@@ -945,7 +1001,7 @@ return;
 
 
 /* -----------------------------------------------------
-   ACCELERATION AVEC GRAVITE
+   ACCELERATION + GRAVITE
 ----------------------------------------------------- */
 
 const g =
@@ -992,43 +1048,39 @@ z*z
 
 
 /* -----------------------------------------------------
-   ANGLE BRUT
+   ANGLE V1
 ----------------------------------------------------- */
 
 
 /*
-   C'est le calcul qui fonctionnait chez toi.
+   C'EST LA PARTIE IMPORTANTE.
 
-   On ne change pas sa géométrie.
+   On conserve exactement le principe
+   qui fonctionnait chez toi.
+
 */
 
 const rawAngle =
 Math.atan2(
 x,
 y
-) *
-180 /
+)
+* 180 /
 Math.PI;
 
 
 /* -----------------------------------------------------
-   ACCELERATION LONGITUDINALE
+   ACCELERATION LINEAIRE
 ----------------------------------------------------- */
-
-
-/*
-   e.acceleration ne contient normalement
-   plus la gravité.
-
-   On récupère les trois axes.
-*/
 
 const a =
 e.acceleration;
 
 
 let lx = 0;
+
 let ly = 0;
+
 let lz = 0;
 
 
@@ -1040,13 +1092,16 @@ a.z !== null
 ){
 
 lx =
-(a.x || 0) / 9.80665;
+(a.x || 0) /
+9.80665;
 
 ly =
-(a.y || 0) / 9.80665;
+(a.y || 0) /
+9.80665;
 
 lz =
-(a.z || 0) / 9.80665;
+(a.z || 0) /
+9.80665;
 
 }
 
@@ -1057,27 +1112,27 @@ raw.lz = lz;
 
 
 /*
-   Pour le moment on utilise Z.
+   Pour l'instant Z.
 
-   IMPORTANT :
-   après ton essai nous regarderons
-   les valeurs X/Y/Z pour déterminer
-   exactement quel axe correspond
-   à l'avant de ta moto.
+   On pourra déterminer le bon axe
+   après ton essai.
 */
 
-const longitudinalRaw =
-lz * LONG_SIGN;
+const measuredLong =
+lz *
+LONG_SIGN;
 
 
 /*
-   Petit filtre de l'accélération.
+   Filtre léger.
 */
 
 longAccel =
-ACCEL_FILTER * longAccel +
-(1 - ACCEL_FILTER) *
-longitudinalRaw;
+ACCEL_FILTER *
+longAccel +
+
+(1-ACCEL_FILTER) *
+measuredLong;
 
 
 /* -----------------------------------------------------
@@ -1086,139 +1141,58 @@ longitudinalRaw;
 
 if(calibrating){
 
-calibAngleSum +=
+calibAngle +=
 rawAngle;
 
-calibLongSum +=
-longitudinalRaw;
+calibLong +=
+measuredLong;
 
-calibCount++;
+calibN++;
 
 }
 
 
 /* -----------------------------------------------------
-   ANGLE DE BASE
+   ANGLE
 ----------------------------------------------------- */
 
-const baseAngle =
+const corrected =
 (
 rawAngle -
 angleOffset
-) *
+)
+*
 LEAN_SIGN;
 
 
-/* -----------------------------------------------------
-   COMPENSATION DYNAMIQUE
------------------------------------------------------ */
-
-
 /*
-   IMPORTANT :
-
-   On ne fait PAS une grosse compensation.
-
-   On compare simplement la direction
-   de l'accélération totale avec la gravité.
-
-   Une accélération latérale fait croire
-   à l'accéléromètre que la moto est moins
-   inclinée.
-
-   La correction théorique est :
-
-       atan(accel / gravite)
-
-   MAIS on ne prend qu'une petite fraction
-   de cette correction.
-
-   Cela évite le comportement "qui part
-   complètement en vrille" des versions
-   précédentes.
+   Filtre très léger.
 */
 
+angle =
+ANGLE_FILTER *
+angle +
 
-const lateralG =
-x;
-
-
-/*
-   Estimation de la correction.
-
-   atan2(accélération latérale, gravité)
-*/
-
-let dynamicCorrection =
-Math.atan2(
-lateralG,
-1
-) *
-180 /
-Math.PI;
-
-
-/*
-   Petite correction seulement.
-*/
-
-dynamicCorrection *=
-COMPENSATION_STRENGTH;
-
-
-/*
-   Limitation absolue.
-
-   Même si le capteur déconne,
-   la compensation ne pourra jamais
-   modifier l'angle de plus de 5°.
-*/
-
-dynamicCorrection =
-Math.max(
--5,
-Math.min(
-5,
-dynamicCorrection
-)
-);
-
-
-/*
-   Angle corrigé.
-*/
-
-const correctedAngle =
-baseAngle +
-dynamicCorrection;
+(1-ANGLE_FILTER) *
+corrected;
 
 
 /* -----------------------------------------------------
-   FILTRE ANGLE
+   MAX
 ----------------------------------------------------- */
 
-leanAngle =
-ANGLE_FILTER * leanAngle +
-(1 - ANGLE_FILTER) *
-correctedAngle;
-
-
-/* -----------------------------------------------------
-   MAXIMUMS
------------------------------------------------------ */
-
-if(leanAngle > maxRight){
+if(angle > maxRight){
 
 maxRight =
-leanAngle;
+angle;
 
 }
 
 
-if(leanAngle < maxLeft){
+if(angle < maxLeft){
 
 maxLeft =
-leanAngle;
+angle;
 
 }
 
@@ -1246,16 +1220,19 @@ longAccel;
 const now =
 performance.now();
 
+
 hzCount++;
 
 
-if(now - hzTimer >= 1000){
+if(
+now - hzTimer >= 1000
+){
 
 hz =
 Math.round(
 hzCount *
 1000 /
-(now - hzTimer)
+(now-hzTimer)
 );
 
 hzCount = 0;
@@ -1275,7 +1252,7 @@ function render(){
 
 $('angle').textContent =
 signed(
-leanAngle,
+angle,
 1
 ) + '°';
 
@@ -1301,14 +1278,14 @@ longAccel,
 ) + ' G';
 
 
-$('maxAccelEl').textContent =
+$('maxAccel').textContent =
 signed(
 maxAccel,
 2
 );
 
 
-$('maxBrakeEl').textContent =
+$('maxBrake').textContent =
 signed(
 maxBrake,
 2
@@ -1326,13 +1303,13 @@ $('hz').textContent =
 hz + ' Hz';
 
 
-updateGauge(
-leanAngle
+updateCursor(
+angle
 );
 
 
 /*
-   Diagnostic.
+   Diagnostic brut
 */
 
 $('raw').textContent =
@@ -1345,9 +1322,10 @@ Math.atan2(raw.x,raw.y)
 )}°
 
 ANGLE AFFICHE
-${fmt(leanAngle,2)}°
+${fmt(angle,2)}°
 
 ACCELERATION AVEC GRAVITE
+
 X = ${fmt(raw.x,3)} G
 Y = ${fmt(raw.y,3)} G
 Z = ${fmt(raw.z,3)} G
@@ -1355,16 +1333,21 @@ Z = ${fmt(raw.z,3)} G
 G TOTAL
 ${fmt(gTotal,3)} G
 
+
 ACCELERATION LINEAIRE
+
 X = ${fmt(raw.lx,3)} G
 Y = ${fmt(raw.ly,3)} G
 Z = ${fmt(raw.lz,3)} G
 
+
 ACCELERATION LONGITUDINALE
 ${fmt(longAccel,3)} G
 
+
 OFFSET ANGLE
 ${fmt(angleOffset,2)}°
+
 
 OFFSET LONGITUDINAL
 ${fmt(longOffset,3)} G`;
@@ -1380,7 +1363,9 @@ async function requestWakeLock(){
 
 try{
 
-if('wakeLock' in navigator){
+if(
+'wakeLock' in navigator
+){
 
 wakeLock =
 await navigator.wakeLock.request(
@@ -1423,11 +1408,11 @@ typeof DeviceMotionEvent !== 'undefined' &&
 typeof DeviceMotionEvent.requestPermission === 'function'
 ){
 
-const permission =
+const p =
 await DeviceMotionEvent.requestPermission();
 
 
-if(permission !== 'granted'){
+if(p !== 'granted'){
 
 throw new Error(
 'Permission capteurs refusée.'
@@ -1465,6 +1450,7 @@ true;
 
 
 startCalibration();
+
 
 requestWakeLock();
 
@@ -1520,9 +1506,11 @@ $('reset').addEventListener(
 () => {
 
 maxRight = 0;
+
 maxLeft = 0;
 
 maxAccel = 0;
+
 maxBrake = 0;
 
 });
@@ -1557,7 +1545,7 @@ alert(
 
 
 /* =====================================================
-   INITIALISATION
+   INIT
 ===================================================== */
 
 render();
