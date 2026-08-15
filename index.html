@@ -209,7 +209,7 @@ h1{
 
 
 /* =====================================================
-   MAX ANGLE
+   MAX
 ===================================================== */
 
 .maxrow{
@@ -228,12 +228,6 @@ h1{
   font-size:25px;
   font-weight:650;
   font-variant-numeric:tabular-nums;
-  margin-top:3px;
-}
-
-.sessionSmall{
-  font-size:11px;
-  color:var(--muted);
   margin-top:3px;
 }
 
@@ -264,6 +258,12 @@ h1{
   font-weight:650;
   font-variant-numeric:tabular-nums;
   margin-top:5px;
+}
+
+.sessionSmall{
+  font-size:11px;
+  color:var(--muted);
+  margin-top:3px;
 }
 
 
@@ -327,50 +327,72 @@ button:disabled{
 
 
 /* =====================================================
-   GRAPHIQUES
+   GRAPHIQUE PRINCIPAL
 ===================================================== */
 
 .chartWrap{
   width:100%;
-  margin-top:12px;
   overflow:hidden;
+  margin-top:12px;
+  position:relative;
 }
 
 canvas{
   display:block;
   width:100%;
+  height:300px;
   background:#0b1017;
   border-radius:12px;
+  touch-action:none;
 }
 
 
-/*
-   Graphique principal.
-*/
+/* =====================================================
+   VALEURS DU CURSEUR
+===================================================== */
 
-#chart{
-  height:240px;
+.chartInfo{
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  gap:8px;
+  margin-top:10px;
 }
 
+.chartInfoBox{
+  background:#0b1017;
+  border-radius:10px;
+  padding:8px 5px;
+  text-align:center;
+}
 
-/*
-   Miniature.
+.chartInfoValue{
+  font-size:18px;
+  font-weight:700;
+  font-variant-numeric:tabular-nums;
+}
 
-   Elle est volontairement compacte pour que
-   l'ensemble reste visible sur téléphone.
-*/
-
-.miniTitle{
-  margin-top:14px;
-  margin-bottom:6px;
-  font-size:11px;
+.chartInfoLabel{
+  font-size:10px;
   color:var(--muted);
-  text-transform:uppercase;
-  letter-spacing:.08em;
+  margin-top:2px;
 }
 
-#miniChart{
-  height:105px;
+
+/* =====================================================
+   MINIATURE GPS
+===================================================== */
+
+.gpsMapWrap{
+  width:100%;
+  margin-top:12px;
+}
+
+#gpsMap{
+  display:block;
+  width:100%;
+  height:170px;
+  background:#0b1017;
+  border-radius:12px;
 }
 
 
@@ -398,10 +420,6 @@ details{
 }
 
 
-/* =====================================================
-   MOBILE
-===================================================== */
-
 @media(max-width:420px){
 
   .grid{
@@ -424,12 +442,12 @@ details{
     padding:0 2%;
   }
 
-  #chart{
-    height:210px;
+  .chartInfoValue{
+    font-size:16px;
   }
 
-  #miniChart{
-    height:90px;
+  #gpsMap{
+    height:150px;
   }
 
 }
@@ -441,12 +459,9 @@ details{
 
 <body>
 
+
 <div class="wrap">
 
-
-<!-- =====================================================
-     EN-TÊTE
-===================================================== -->
 
 <div class="top">
 
@@ -501,7 +516,8 @@ details{
     <div class="mark m45r"></div>
 
     <div id="cursor"
-         class="cursor"></div>
+         class="cursor">
+    </div>
 
     <div class="gaugeLabels">
 
@@ -644,10 +660,6 @@ details{
 </section>
 
 
-<!-- =====================================================
-     CAPTEURS
-===================================================== -->
-
 <section class="card">
 
   <div class="label">
@@ -694,9 +706,7 @@ details{
     <button
       id="start"
       class="primary">
-
       DÉMARRER LES CAPTEURS
-
     </button>
 
 
@@ -704,34 +714,26 @@ details{
       id="session"
       class="blue"
       disabled>
-
       ▶ DÉMARRER SESSION
-
     </button>
 
 
     <button
       id="zero"
       class="warn">
-
       FAIRE LE ZÉRO
-
     </button>
 
 
     <button
       id="reset"
       class="danger">
-
       RESET MAX
-
     </button>
 
 
     <button id="screen">
-
       PLEIN ÉCRAN
-
     </button>
 
 
@@ -739,9 +741,7 @@ details{
       id="download"
       class="blue"
       disabled>
-
       💾 EXPORTER CSV
-
     </button>
 
   </div>
@@ -750,7 +750,7 @@ details{
 
 
 <!-- =====================================================
-     GRAPHIQUE
+     GRAND GRAPHIQUE
 ===================================================== -->
 
 <section
@@ -764,7 +764,8 @@ details{
   <div class="small">
 
     Angle = vert |
-    Vitesse = bleu
+    Vitesse = bleu |
+    Touchez le graphique pour lire les valeurs
 
   </div>
 
@@ -776,21 +777,74 @@ details{
   </div>
 
 
-  <!-- MINIATURE DU TRACÉ -->
+  <div class="chartInfo">
 
-  <div id="miniTitle"
-       class="miniTitle"
-       style="display:none">
+    <div class="chartInfoBox">
 
-    Aperçu de la session
+      <div id="chartTime"
+           class="chartInfoValue">
+        --:--
+      </div>
+
+      <div class="chartInfoLabel">
+        TEMPS
+      </div>
+
+    </div>
+
+
+    <div class="chartInfoBox">
+
+      <div id="chartAngle"
+           class="chartInfoValue">
+        --°
+      </div>
+
+      <div class="chartInfoLabel">
+        ANGLE
+      </div>
+
+    </div>
+
+
+    <div class="chartInfoBox">
+
+      <div id="chartSpeed"
+           class="chartInfoValue">
+        -- km/h
+      </div>
+
+      <div class="chartInfoLabel">
+        VITESSE
+      </div>
+
+    </div>
 
   </div>
 
-  <div id="miniWrap"
-       class="chartWrap"
-       style="display:none">
+</section>
 
-    <canvas id="miniChart"></canvas>
+
+<!-- =====================================================
+     MINIATURE GPS
+===================================================== -->
+
+<section
+  class="card"
+  style="grid-column:1/-1">
+
+  <div class="label">
+    Tracé GPS de la session
+  </div>
+
+  <div class="small">
+    Aperçu du parcours enregistré
+  </div>
+
+
+  <div class="gpsMapWrap">
+
+    <canvas id="gpsMap"></canvas>
 
   </div>
 
@@ -842,6 +896,7 @@ Ne manipule pas le téléphone en roulant.
 
 </div>
 
+
 </div>
 
 
@@ -872,7 +927,9 @@ let running = false;
 let calibrating = false;
 
 
-/* ANGLE */
+/* =====================================================
+   ANGLE
+===================================================== */
 
 let angle = 0;
 
@@ -885,12 +942,16 @@ let speedAtMaxRight = 0;
 let speedAtMaxLeft = 0;
 
 
-/* G */
+/* =====================================================
+   G TOTAL
+===================================================== */
 
 let gTotal = 1;
 
 
-/* FREQUENCE */
+/* =====================================================
+   FREQUENCE
+===================================================== */
 
 let hz = 0;
 
@@ -899,7 +960,9 @@ let hzCount = 0;
 let hzTimer = performance.now();
 
 
-/* AXES */
+/* =====================================================
+   AXES SUPPORT
+===================================================== */
 
 let verticalAxis = {
   x:0,
@@ -920,7 +983,9 @@ let longitudinalAxis = {
 };
 
 
-/* CALIBRATION */
+/* =====================================================
+   CALIBRATION
+===================================================== */
 
 let calibrationCount = 0;
 
@@ -931,7 +996,9 @@ let calibrationGravity = {
 };
 
 
-/* RAW */
+/* =====================================================
+   DONNEES BRUTES
+===================================================== */
 
 let raw = {
 
@@ -950,7 +1017,9 @@ let raw = {
 };
 
 
-/* GPS */
+/* =====================================================
+   GPS
+===================================================== */
 
 let gpsAvailable = false;
 
@@ -969,7 +1038,9 @@ let lastGpsLat = null;
 let lastGpsLon = null;
 
 
-/* SESSION */
+/* =====================================================
+   SESSION
+===================================================== */
 
 let sessionActive = false;
 
@@ -982,6 +1053,13 @@ let lastRecordTime = 0;
 let sessionMaxSpeed = 0;
 
 let sessionDistance = 0;
+
+
+/* =====================================================
+   CURSEUR GRAPHIQUE
+===================================================== */
+
+let chartCursorIndex = -1;
 
 
 /* =====================================================
@@ -1040,7 +1118,8 @@ function norm(v){
 
 function normalize(v){
 
-  const n = norm(v);
+  const n =
+    norm(v);
 
   if(n < 0.000001){
 
@@ -1053,9 +1132,13 @@ function normalize(v){
   }
 
   return {
+
     x:v.x/n,
+
     y:v.y/n,
+
     z:v.z/n
+
   };
 
 }
@@ -1103,6 +1186,7 @@ function distanceMeters(
     (lon2-lon1) *
     Math.PI / 180;
 
+
   const a =
     Math.sin(dp/2) *
     Math.sin(dp/2) +
@@ -1113,12 +1197,14 @@ function distanceMeters(
     Math.sin(dl/2) *
     Math.sin(dl/2);
 
+
   const c =
     2 *
     Math.atan2(
       Math.sqrt(a),
       Math.sqrt(1-a)
     );
+
 
   return R*c;
 
@@ -1129,9 +1215,13 @@ function distanceMeters(
    STATUT
 ===================================================== */
 
-function setStatus(text,on=false){
+function setStatus(
+  text,
+  on=false
+){
 
-  $('status').textContent = text;
+  $('status').textContent =
+    text;
 
   $('dot').classList.toggle(
     'on',
@@ -1148,6 +1238,9 @@ function setStatus(text,on=false){
 function startGPS(){
 
   if(!navigator.geolocation){
+
+    $('speed').textContent =
+      'GPS';
 
     $('gyroState').textContent =
       'GPS non disponible';
@@ -1240,6 +1333,7 @@ function startGPS(){
 
       },
 
+
       error => {
 
         gpsAvailable = false;
@@ -1249,6 +1343,7 @@ function startGPS(){
           error.message;
 
       },
+
 
       {
 
@@ -1276,9 +1371,11 @@ function startCalibration(){
   calibrationCount = 0;
 
   calibrationGravity = {
+
     x:0,
     y:0,
     z:0
+
   };
 
 
@@ -1325,9 +1422,11 @@ function finishCalibration(){
 
 
   lateralAxis = {
+
     x:1,
     y:0,
     z:0
+
   };
 
 
@@ -1362,31 +1461,11 @@ function finishCalibration(){
   $('gyroState').textContent =
     'Support calibré';
 
-
-  $('raw').textContent =
-    'Calibration terminée.\n\n' +
-
-    'AXE VERTICAL\n' +
-    'X = ' +
-    fmt(verticalAxis.x,3) +
-    '\nY = ' +
-    fmt(verticalAxis.y,3) +
-    '\nZ = ' +
-    fmt(verticalAxis.z,3) +
-
-    '\n\nAXE LONGITUDINAL\n' +
-    'X = ' +
-    fmt(longitudinalAxis.x,3) +
-    '\nY = ' +
-    fmt(longitudinalAxis.y,3) +
-    '\nZ = ' +
-    fmt(longitudinalAxis.z,3);
-
 }
 
 
 /* =====================================================
-   ANGLE
+   CALCUL ANGLE
 ===================================================== */
 
 function calculateAngleFromGravity(
@@ -1399,11 +1478,13 @@ function calculateAngleFromGravity(
       lateralAxis
     );
 
+
   const vertical =
     dot(
       gravity,
       verticalAxis
     );
+
 
   const a =
     Math.atan2(
@@ -1420,7 +1501,7 @@ function calculateAngleFromGravity(
 
 
 /* =====================================================
-   DEVICEMOTION
+   CAPTEUR
 ===================================================== */
 
 function handleMotion(event){
@@ -1582,10 +1663,6 @@ function handleMotion(event){
     );
 
 
-  /*
-     MAX GAUCHE + VITESSE ASSOCIÉE
-  */
-
   if(angle < maxLeft){
 
     maxLeft =
@@ -1596,10 +1673,6 @@ function handleMotion(event){
 
   }
 
-
-  /*
-     MAX DROITE + VITESSE ASSOCIÉE
-  */
 
   if(angle > maxRight){
 
@@ -1629,6 +1702,7 @@ function handleMotion(event){
         1000 /
         (now - hzTimer)
       );
+
 
     hzCount = 0;
 
@@ -1669,6 +1743,8 @@ function startSession(){
 
   sessionDistance = 0;
 
+  chartCursorIndex = -1;
+
 
   lastGpsLat =
     gpsLat;
@@ -1696,18 +1772,6 @@ function startSession(){
   $('session').classList.add(
     'danger'
   );
-
-
-  /*
-     On cache l'ancien aperçu
-     au démarrage d'une nouvelle session.
-  */
-
-  $('miniWrap').style.display =
-    'none';
-
-  $('miniTitle').style.display =
-    'none';
 
 
   $('gyroState').textContent =
@@ -1741,25 +1805,9 @@ function stopSession(){
     'Session terminée';
 
 
-  /*
-     Dessin du grand graphique.
-  */
-
   drawChart();
 
-
-  /*
-     Affichage de la miniature.
-  */
-
-  $('miniTitle').style.display =
-    'block';
-
-  $('miniWrap').style.display =
-    'block';
-
-
-  drawMiniChart();
+  drawGPSMap();
 
 }
 
@@ -1798,7 +1846,7 @@ function recordSession(){
     1000;
 
 
-  sessionData.push({
+  const item = {
 
     time:elapsed,
 
@@ -1812,7 +1860,12 @@ function recordSession(){
 
     g:gTotal
 
-  });
+  };
+
+
+  sessionData.push(
+    item
+  );
 
 
   if(
@@ -1825,11 +1878,25 @@ function recordSession(){
 
   }
 
+
+  /*
+     Le tracé GPS est redessiné pendant
+     la session avec une fréquence raisonnable.
+  */
+
+  if(
+    sessionData.length % 10 === 0
+  ){
+
+    drawGPSMap();
+
+  }
+
 }
 
 
 /* =====================================================
-   TEMPS
+   FORMAT TEMPS
 ===================================================== */
 
 function formatDuration(seconds){
@@ -1888,7 +1955,7 @@ function updateAngleColor(){
 
 
 /* =====================================================
-   CURSEUR
+   CURSEUR BARRE
 ===================================================== */
 
 function updateCursor(){
@@ -2032,7 +2099,9 @@ function render(){
 
 
   $('duration').textContent =
-    formatDuration(duration);
+    formatDuration(
+      duration
+    );
 
 
   $('points').textContent =
@@ -2097,71 +2166,153 @@ SESSION
 Active = ${sessionActive ? 'OUI' : 'NON'}
 Points = ${sessionData.length}
 Distance = ${fmt(sessionDistance/1000,3)} km
-Vitesse max = ${fmt(sessionMaxSpeed,1)} km/h
-
-
-MAX GAUCHE
-
-${fmt(maxLeft,1)}°
-Vitesse = ${fmt(speedAtMaxLeft,1)} km/h
-
-
-MAX DROITE
-
-${fmt(maxRight,1)}°
-Vitesse = ${fmt(speedAtMaxRight,1)} km/h`;
+Vitesse max = ${fmt(sessionMaxSpeed,1)} km/h`;
 
 }
 
 
 /* =====================================================
-   FONCTION COMMUNE DE PRÉPARATION DU GRAPHIQUE
+   RECHERCHE POINT DU GRAPHIQUE
 ===================================================== */
 
-function prepareCanvas(canvas){
+function getChartPointFromEvent(event){
+
+  if(sessionData.length < 2){
+    return -1;
+  }
+
+
+  const canvas =
+    $('chart');
 
   const rect =
     canvas.getBoundingClientRect();
 
-  const dpr =
-    window.devicePixelRatio || 1;
+
+  const x =
+    event.clientX -
+    rect.left;
 
 
-  canvas.width =
+  const left = 42;
+
+  const right = 42;
+
+
+  const plotW =
+    rect.width -
+    left -
+    right;
+
+
+  const ratio =
     Math.max(
-      1,
-      Math.round(rect.width * dpr)
+      0,
+      Math.min(
+        1,
+        (x-left) / plotW
+      )
     );
 
-  canvas.height =
-    Math.max(
-      1,
-      Math.round(rect.height * dpr)
+
+  const maxTime =
+    sessionData[
+      sessionData.length-1
+    ].time;
+
+
+  const targetTime =
+    ratio * maxTime;
+
+
+  /*
+     Recherche du point le plus proche.
+  */
+
+  let best = 0;
+
+  let bestDiff =
+    Infinity;
+
+
+  for(
+    let i=0;
+    i<sessionData.length;
+    i++
+  ){
+
+    const diff =
+      Math.abs(
+        sessionData[i].time -
+        targetTime
+      );
+
+
+    if(diff < bestDiff){
+
+      bestDiff = diff;
+
+      best = i;
+
+    }
+
+  }
+
+
+  return best;
+
+}
+
+
+/* =====================================================
+   AFFICHAGE VALEURS CURSEUR
+===================================================== */
+
+function updateChartInfo(){
+
+  if(
+    chartCursorIndex < 0 ||
+    chartCursorIndex >= sessionData.length
+  ){
+
+    $('chartTime').textContent =
+      '--:--';
+
+    $('chartAngle').textContent =
+      '--°';
+
+    $('chartSpeed').textContent =
+      '-- km/h';
+
+    return;
+
+  }
+
+
+  const p =
+    sessionData[
+      chartCursorIndex
+    ];
+
+
+  $('chartTime').textContent =
+    formatDuration(
+      p.time
     );
 
 
-  const ctx =
-    canvas.getContext('2d');
-
-  ctx.setTransform(
-    dpr,
-    0,
-    0,
-    dpr,
-    0,
-    0
-  );
+  $('chartAngle').textContent =
+    signed(
+      p.angle,
+      1
+    ) + '°';
 
 
-  return {
-
-    ctx:ctx,
-
-    W:rect.width,
-
-    H:rect.height
-
-  };
+  $('chartSpeed').textContent =
+    fmt(
+      p.speed,
+      1
+    ) + ' km/h';
 
 }
 
@@ -2175,13 +2326,40 @@ function drawChart(){
   const canvas =
     $('chart');
 
+  const rect =
+    canvas.getBoundingClientRect();
 
-  const {
-    ctx,
-    W,
-    H
-  } =
-    prepareCanvas(canvas);
+
+  const dpr =
+    window.devicePixelRatio || 1;
+
+
+  canvas.width =
+    rect.width * dpr;
+
+  canvas.height =
+    rect.height * dpr;
+
+
+  const ctx =
+    canvas.getContext('2d');
+
+
+  ctx.setTransform(
+    dpr,
+    0,
+    0,
+    dpr,
+    0,
+    0
+  );
+
+
+  const W =
+    rect.width;
+
+  const H =
+    rect.height;
 
 
   ctx.clearRect(
@@ -2209,6 +2387,8 @@ function drawChart(){
       H/2
     );
 
+    updateChartInfo();
+
     return;
 
   }
@@ -2221,6 +2401,7 @@ function drawChart(){
   const top = 20;
 
   const bottom = 32;
+
 
   const plotW =
     W-left-right;
@@ -2238,7 +2419,9 @@ function drawChart(){
   let maxAngleScale = 50;
 
 
-  for(const p of sessionData){
+  for(
+    const p of sessionData
+  ){
 
     maxAngleScale =
       Math.max(
@@ -2249,7 +2432,7 @@ function drawChart(){
   }
 
 
-  const maxSpeedScale =
+  let maxSpeedScale =
     Math.max(
       10,
       sessionMaxSpeed
@@ -2266,7 +2449,11 @@ function drawChart(){
   ctx.lineWidth = 1;
 
 
-  for(let i=0;i<=4;i++){
+  for(
+    let i=0;
+    i<=4;
+    i++
+  ){
 
     const y =
       top +
@@ -2289,10 +2476,6 @@ function drawChart(){
 
   }
 
-
-  /*
-     Zéro angle.
-  */
 
   const zeroY =
     top +
@@ -2319,7 +2502,7 @@ function drawChart(){
 
 
   /*
-     Échelle angle.
+     Labels angle.
   */
 
   ctx.fillStyle =
@@ -2358,7 +2541,7 @@ function drawChart(){
 
 
   /*
-     Échelle vitesse.
+     Labels vitesse.
   */
 
   ctx.textAlign =
@@ -2381,111 +2564,227 @@ function drawChart(){
 
 
   /*
-     ANGLE
+     COURBE ANGLE
   */
 
   ctx.strokeStyle =
     '#43d17a';
 
-  ctx.lineWidth = 2;
+  ctx.lineWidth =
+    2;
+
 
   ctx.beginPath();
 
 
-  sessionData.forEach((p,i)=>{
+  sessionData.forEach(
+    (p,i) => {
 
-    const x =
-      left +
-      (
-        p.time/maxTime
-      ) *
-      plotW;
-
-
-    const y =
-      zeroY -
-      (
-        p.angle/maxAngleScale
-      ) *
-      (
-        plotH/2
-      );
+      const x =
+        left +
+        (
+          p.time /
+          maxTime
+        ) *
+        plotW;
 
 
-    if(i===0){
+      const y =
+        zeroY -
+        (
+          p.angle /
+          maxAngleScale
+        ) *
+        plotH/2;
 
-      ctx.moveTo(
-        x,
-        y
-      );
+
+      if(i===0){
+
+        ctx.moveTo(
+          x,
+          y
+        );
+
+      }
+      else{
+
+        ctx.lineTo(
+          x,
+          y
+        );
+
+      }
 
     }
-    else{
-
-      ctx.lineTo(
-        x,
-        y
-      );
-
-    }
-
-  });
+  );
 
 
   ctx.stroke();
 
 
   /*
-     VITESSE
+     COURBE VITESSE
   */
 
   ctx.strokeStyle =
     '#5aa9ff';
 
-  ctx.lineWidth = 2;
+  ctx.lineWidth =
+    2;
+
 
   ctx.beginPath();
 
 
-  sessionData.forEach((p,i)=>{
+  sessionData.forEach(
+    (p,i) => {
 
-    const x =
+      const x =
+        left +
+        (
+          p.time /
+          maxTime
+        ) *
+        plotW;
+
+
+      const y =
+        H-bottom -
+        (
+          p.speed /
+          maxSpeedScale
+        ) *
+        plotH;
+
+
+      if(i===0){
+
+        ctx.moveTo(
+          x,
+          y
+        );
+
+      }
+      else{
+
+        ctx.lineTo(
+          x,
+          y
+        );
+
+      }
+
+    }
+  );
+
+
+  ctx.stroke();
+
+
+  /*
+     Curseur vertical.
+  */
+
+  if(
+    chartCursorIndex >= 0 &&
+    chartCursorIndex < sessionData.length
+  ){
+
+    const p =
+      sessionData[
+        chartCursorIndex
+      ];
+
+
+    const cursorX =
       left +
       (
-        p.time/maxTime
+        p.time /
+        maxTime
       ) *
       plotW;
 
 
-    const y =
+    ctx.strokeStyle =
+      '#ffffff';
+
+    ctx.lineWidth =
+      1;
+
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+      cursorX,
+      top
+    );
+
+    ctx.lineTo(
+      cursorX,
+      H-bottom
+    );
+
+    ctx.stroke();
+
+
+    /*
+       Point angle.
+    */
+
+    const angleY =
+      zeroY -
+      (
+        p.angle /
+        maxAngleScale
+      ) *
+      plotH/2;
+
+
+    ctx.fillStyle =
+      '#43d17a';
+
+    ctx.beginPath();
+
+    ctx.arc(
+      cursorX,
+      angleY,
+      5,
+      0,
+      Math.PI*2
+    );
+
+    ctx.fill();
+
+
+    /*
+       Point vitesse.
+    */
+
+    const speedY =
       H-bottom -
       (
-        p.speed/maxSpeedScale
+        p.speed /
+        maxSpeedScale
       ) *
       plotH;
 
 
-    if(i===0){
+    ctx.fillStyle =
+      '#5aa9ff';
 
-      ctx.moveTo(
-        x,
-        y
-      );
+    ctx.beginPath();
 
-    }
-    else{
+    ctx.arc(
+      cursorX,
+      speedY,
+      5,
+      0,
+      Math.PI*2
+    );
 
-      ctx.lineTo(
-        x,
-        y
-      );
+    ctx.fill();
 
-    }
-
-  });
-
-
-  ctx.stroke();
+  }
 
 
   /*
@@ -2494,9 +2793,6 @@ function drawChart(){
 
   ctx.textAlign =
     'left';
-
-  ctx.font =
-    '10px system-ui';
 
   ctx.fillStyle =
     '#43d17a';
@@ -2542,25 +2838,128 @@ function drawChart(){
     H-8
   );
 
+
+  updateChartInfo();
+
 }
 
 
 /* =====================================================
-   MINIATURE
+   INTERACTION GRAPHIQUE
 ===================================================== */
 
-function drawMiniChart(){
+function handleChartPointer(event){
+
+  if(sessionData.length < 2){
+    return;
+  }
+
+
+  const index =
+    getChartPointFromEvent(
+      event
+    );
+
+
+  if(index >= 0){
+
+    chartCursorIndex =
+      index;
+
+    drawChart();
+
+  }
+
+}
+
+
+$('chart').addEventListener(
+  'pointerdown',
+  event => {
+
+    $('chart').setPointerCapture(
+      event.pointerId
+    );
+
+    handleChartPointer(
+      event
+    );
+
+  }
+);
+
+
+$('chart').addEventListener(
+  'pointermove',
+  event => {
+
+    /*
+       Sur ordinateur :
+       déplacement avec bouton souris.
+
+       Sur téléphone :
+       le doigt peut déplacer librement
+       le curseur.
+    */
+
+    if(
+      event.buttons ||
+      event.pointerType === 'touch'
+    ){
+
+      handleChartPointer(
+        event
+      );
+
+    }
+
+  }
+);
+
+
+/* =====================================================
+   MINIATURE GPS
+===================================================== */
+
+function drawGPSMap(){
 
   const canvas =
-    $('miniChart');
+    $('gpsMap');
+
+  const rect =
+    canvas.getBoundingClientRect();
 
 
-  const {
-    ctx,
-    W,
-    H
-  } =
-    prepareCanvas(canvas);
+  const dpr =
+    window.devicePixelRatio || 1;
+
+
+  canvas.width =
+    rect.width * dpr;
+
+  canvas.height =
+    rect.height * dpr;
+
+
+  const ctx =
+    canvas.getContext('2d');
+
+
+  ctx.setTransform(
+    dpr,
+    0,
+    0,
+    dpr,
+    0,
+    0
+  );
+
+
+  const W =
+    rect.width;
+
+  const H =
+    rect.height;
 
 
   ctx.clearRect(
@@ -2571,195 +2970,328 @@ function drawMiniChart(){
   );
 
 
-  if(sessionData.length < 2){
+  /*
+     On ne prend que les points GPS valides.
+  */
+
+  const points =
+    sessionData.filter(
+      p =>
+        p.lat !== null &&
+        p.lon !== null &&
+        Number.isFinite(p.lat) &&
+        Number.isFinite(p.lon)
+    );
+
+
+  if(points.length < 2){
+
+    ctx.fillStyle =
+      '#9ba8b7';
+
+    ctx.font =
+      '12px system-ui';
+
+    ctx.textAlign =
+      'center';
+
+    ctx.fillText(
+      'Le tracé GPS apparaîtra pendant la session.',
+      W/2,
+      H/2
+    );
+
     return;
+
   }
 
 
-  const margin = 8;
+  let minLat = Infinity;
 
-  const plotW =
-    W - margin*2;
+  let maxLat = -Infinity;
 
-  const plotH =
-    H - margin*2;
+  let minLon = Infinity;
 
-
-  const maxTime =
-    sessionData[
-      sessionData.length-1
-    ].time;
+  let maxLon = -Infinity;
 
 
-  let maxAngle =
-    50;
+  for(
+    const p of points
+  ){
 
-
-  let maxSpeed =
-    10;
-
-
-  for(const p of sessionData){
-
-    maxAngle =
-      Math.max(
-        maxAngle,
-        Math.abs(p.angle)
+    minLat =
+      Math.min(
+        minLat,
+        p.lat
       );
 
-    maxSpeed =
+    maxLat =
       Math.max(
-        maxSpeed,
-        p.speed
+        maxLat,
+        p.lat
+      );
+
+    minLon =
+      Math.min(
+        minLon,
+        p.lon
+      );
+
+    maxLon =
+      Math.max(
+        maxLon,
+        p.lon
       );
 
   }
 
 
   /*
-     Ligne centrale.
+     Marge autour du tracé.
   */
 
-  const zeroY =
-    margin + plotH/2;
+  const margin = 20;
 
+  const width =
+    W - margin*2;
+
+  const height =
+    H - margin*2;
+
+
+  /*
+     Évite une division par zéro
+     sur un trajet presque immobile.
+  */
+
+  const latRange =
+    Math.max(
+      maxLat-minLat,
+      0.00001
+    );
+
+  const lonRange =
+    Math.max(
+      maxLon-minLon,
+      0.00001
+    );
+
+
+  /*
+     Même échelle X/Y autant que possible.
+  */
+
+  const scale =
+    Math.min(
+      width/lonRange,
+      height/latRange
+    );
+
+
+  const mapW =
+    lonRange * scale;
+
+  const mapH =
+    latRange * scale;
+
+
+  const offsetX =
+    (W-mapW)/2;
+
+  const offsetY =
+    (H-mapH)/2;
+
+
+  function project(p){
+
+    return {
+
+      x:
+        offsetX +
+        (
+          p.lon-minLon
+        ) *
+        scale,
+
+      y:
+        H -
+        offsetY -
+        (
+          p.lat-minLat
+        ) *
+        scale
+
+    };
+
+  }
+
+
+  /*
+     Fond grille légère.
+  */
 
   ctx.strokeStyle =
-    '#25303c';
+    '#18212c';
 
   ctx.lineWidth = 1;
 
 
-  ctx.beginPath();
+  for(
+    let x=0;
+    x<W;
+    x+=30
+  ){
 
-  ctx.moveTo(
-    margin,
-    zeroY
-  );
+    ctx.beginPath();
 
-  ctx.lineTo(
-    W-margin,
-    zeroY
-  );
+    ctx.moveTo(
+      x,
+      0
+    );
 
-  ctx.stroke();
+    ctx.lineTo(
+      x,
+      H
+    );
 
+    ctx.stroke();
 
-  /*
-     Angle.
-  */
-
-  ctx.strokeStyle =
-    '#43d17a';
-
-  ctx.lineWidth = 1.5;
-
-  ctx.beginPath();
+  }
 
 
-  sessionData.forEach((p,i)=>{
+  for(
+    let y=0;
+    y<H;
+    y+=30
+  ){
 
-    const x =
-      margin +
-      (
-        p.time/maxTime
-      ) *
-      plotW;
+    ctx.beginPath();
 
+    ctx.moveTo(
+      0,
+      y
+    );
 
-    const y =
-      zeroY -
-      (
-        p.angle/maxAngle
-      ) *
-      (
-        plotH/2
-      );
+    ctx.lineTo(
+      W,
+      y
+    );
 
+    ctx.stroke();
 
-    if(i===0){
-
-      ctx.moveTo(
-        x,
-        y
-      );
-
-    }
-    else{
-
-      ctx.lineTo(
-        x,
-        y
-      );
-
-    }
-
-  });
-
-
-  ctx.stroke();
+  }
 
 
   /*
-     Vitesse.
-
-     Même miniature mais avec l'échelle
-     adaptée à la vitesse.
+     Tracé GPS.
   */
 
   ctx.strokeStyle =
     '#5aa9ff';
 
+  ctx.lineWidth = 3;
+
+  ctx.lineJoin =
+    'round';
+
+  ctx.lineCap =
+    'round';
+
+
   ctx.beginPath();
 
 
-  sessionData.forEach((p,i)=>{
+  points.forEach(
+    (p,i) => {
 
-    const x =
-      margin +
-      (
-        p.time/maxTime
-      ) *
-      plotW;
+      const pos =
+        project(p);
 
 
-    const y =
-      H-margin -
-      (
-        p.speed/maxSpeed
-      ) *
-      plotH;
+      if(i===0){
 
+        ctx.moveTo(
+          pos.x,
+          pos.y
+        );
 
-    if(i===0){
+      }
+      else{
 
-      ctx.moveTo(
-        x,
-        y
-      );
+        ctx.lineTo(
+          pos.x,
+          pos.y
+        );
 
-    }
-    else{
-
-      ctx.lineTo(
-        x,
-        y
-      );
+      }
 
     }
-
-  });
+  );
 
 
   ctx.stroke();
 
 
   /*
-     Légende miniature.
+     Départ.
+  */
+
+  const start =
+    project(
+      points[0]
+    );
+
+
+  ctx.fillStyle =
+    '#43d17a';
+
+  ctx.beginPath();
+
+  ctx.arc(
+    start.x,
+    start.y,
+    5,
+    0,
+    Math.PI*2
+  );
+
+  ctx.fill();
+
+
+  /*
+     Arrivée.
+  */
+
+  const end =
+    project(
+      points[
+        points.length-1
+      ]
+    );
+
+
+  ctx.fillStyle =
+    '#ff4d4d';
+
+  ctx.beginPath();
+
+  ctx.arc(
+    end.x,
+    end.y,
+    5,
+    0,
+    Math.PI*2
+  );
+
+  ctx.fill();
+
+
+  /*
+     Légende.
   */
 
   ctx.font =
-    '9px system-ui';
+    '10px system-ui';
 
   ctx.textAlign =
     'left';
@@ -2768,19 +3300,19 @@ function drawMiniChart(){
     '#43d17a';
 
   ctx.fillText(
-    'Angle',
-    10,
-    12
+    'Départ',
+    8,
+    14
   );
 
 
   ctx.fillStyle =
-    '#5aa9ff';
+    '#ff4d4d';
 
   ctx.fillText(
-    'Vitesse',
+    'Arrivée',
     55,
-    12
+    14
   );
 
 }
@@ -2801,7 +3333,9 @@ function exportCSV(){
     'temps_s;angle_deg;vitesse_kmh;latitude;longitude;G_total\n';
 
 
-  for(const p of sessionData){
+  for(
+    const p of sessionData
+  ){
 
     csv +=
       p.time.toFixed(2) +
@@ -2844,7 +3378,9 @@ function exportCSV(){
 
 
   const a =
-    document.createElement('a');
+    document.createElement(
+      'a'
+    );
 
 
   a.href =
@@ -2855,33 +3391,51 @@ function exportCSV(){
     new Date();
 
 
-  a.download =
+  const name =
     'session_moto_' +
     date.getFullYear() +
     '-' +
-    String(date.getMonth()+1).padStart(2,'0') +
+    String(
+      date.getMonth()+1
+    ).padStart(2,'0') +
     '-' +
-    String(date.getDate()).padStart(2,'0') +
+    String(
+      date.getDate()
+    ).padStart(2,'0') +
     '_' +
-    String(date.getHours()).padStart(2,'0') +
+    String(
+      date.getHours()
+    ).padStart(2,'0') +
     '-' +
-    String(date.getMinutes()).padStart(2,'0') +
+    String(
+      date.getMinutes()
+    ).padStart(2,'0') +
     '.csv';
 
 
-  document.body.appendChild(a);
+  a.download =
+    name;
+
+
+  document.body.appendChild(
+    a
+  );
+
 
   a.click();
 
   a.remove();
 
-  URL.revokeObjectURL(url);
+
+  URL.revokeObjectURL(
+    url
+  );
 
 }
 
 
 /* =====================================================
-   DEMARRAGE
+   DEMARRAGE CAPTEURS
 ===================================================== */
 
 async function startSensors(){
@@ -2935,6 +3489,7 @@ async function startSensors(){
     $('start').textContent =
       'CAPTEURS ACTIFS';
 
+
     $('start').disabled =
       true;
 
@@ -2950,7 +3505,9 @@ async function startSensors(){
   }
   catch(error){
 
-    setStatus('Erreur');
+    setStatus(
+      'Erreur'
+    );
 
 
     alert(
@@ -2964,12 +3521,12 @@ async function startSensors(){
 
 
 /* =====================================================
-   BOUTON SESSION
+   BOUTONS
 ===================================================== */
 
 $('session').addEventListener(
   'click',
-  ()=>{
+  () => {
 
     if(!sessionActive){
 
@@ -2986,13 +3543,9 @@ $('session').addEventListener(
 );
 
 
-/* =====================================================
-   ZERO
-===================================================== */
-
 $('zero').addEventListener(
   'click',
-  ()=>{
+  () => {
 
     if(running){
 
@@ -3004,13 +3557,9 @@ $('zero').addEventListener(
 );
 
 
-/* =====================================================
-   RESET
-===================================================== */
-
 $('reset').addEventListener(
   'click',
-  ()=>{
+  () => {
 
     maxRight = 0;
 
@@ -3024,19 +3573,11 @@ $('reset').addEventListener(
 );
 
 
-/* =====================================================
-   START
-===================================================== */
-
 $('start').addEventListener(
   'click',
   startSensors
 );
 
-
-/* =====================================================
-   EXPORT
-===================================================== */
 
 $('download').addEventListener(
   'click',
@@ -3044,13 +3585,9 @@ $('download').addEventListener(
 );
 
 
-/* =====================================================
-   PLEIN ECRAN
-===================================================== */
-
 $('screen').addEventListener(
   'click',
-  async ()=>{
+  async () => {
 
     try{
 
@@ -3085,12 +3622,12 @@ $('screen').addEventListener(
 
 window.addEventListener(
   'resize',
-  ()=>{
+  () => {
+
     drawChart();
 
-    if(sessionData.length >= 2){
-      drawMiniChart();
-    }
+    drawGPSMap();
+
   }
 );
 
@@ -3103,6 +3640,9 @@ render();
 
 drawChart();
 
+drawGPSMap();
+
+
 setInterval(
   render,
   RENDER_MS
@@ -3111,4 +3651,5 @@ setInterval(
 </script>
 
 </body>
+
 </html>
