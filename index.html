@@ -132,7 +132,7 @@ details{margin-top:10px}.raw{font-family:ui-monospace,monospace;font-size:11px;c
 
 const ALPHA = 0.98;               // poids gyro dans le filtre complementaire
 const LEAN_SIGN = 1;               // -1 pour inverser droite/gauche a l'AFFICHAGE
-const GYRO_SIGN = 1;               // -1 si gamma et l'angle brut bougent en sens
+const GYRO_SIGN = -1;               // -1 si gamma et l'angle brut bougent en sens
                                     // oppose au diagnostic (desaccord gyro/accelero)
 const LONGG_SIGN = 1;              // -1 pour inverser accel/frein
 const MAX_DIVERGENCE_DEG = 40;     // garde-fou anti-emballement du filtre
