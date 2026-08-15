@@ -1,12 +1,20 @@
 <!doctype html>
 <html lang="fr">
+
 <head>
+
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+
+<meta name="viewport"
+      content="width=device-width,initial-scale=1,viewport-fit=cover">
+
 <meta name="theme-color" content="#080b10">
-<title>Inclinomètre Moto - Compensation</title>
+
+<title>Inclinomètre Moto</title>
+
 
 <style>
+
 :root{
   --bg:#080b10;
   --card:#111720;
@@ -18,7 +26,9 @@
   --line:#25303c;
 }
 
-*{box-sizing:border-box}
+*{
+  box-sizing:border-box;
+}
 
 html,body{
   margin:0;
@@ -29,7 +39,10 @@ html,body{
 
 body{
   min-height:100vh;
-  padding:env(safe-area-inset-top) 14px env(safe-area-inset-bottom);
+  padding:
+    env(safe-area-inset-top)
+    14px
+    env(safe-area-inset-bottom);
 }
 
 .wrap{
@@ -106,6 +119,7 @@ h1{
   color:var(--muted);
 }
 
+
 /* ================= BARRE ================= */
 
 .gauge{
@@ -178,11 +192,14 @@ h1{
   left:0;
   right:0;
   top:58px;
+
   display:flex;
   justify-content:space-between;
+
   font-size:10px;
   color:var(--muted);
 }
+
 
 /* ================= MAX ================= */
 
@@ -204,6 +221,7 @@ h1{
   font-variant-numeric:tabular-nums;
   margin-top:3px;
 }
+
 
 /* ================= AUTRES ================= */
 
@@ -276,6 +294,7 @@ details{
 }
 
 @media(max-width:420px){
+
   .grid{
     gap:8px;
   }
@@ -287,255 +306,318 @@ details{
   .reading{
     font-size:25px;
   }
+
 }
+
 </style>
+
 </head>
+
 
 <body>
 
+
 <div class="wrap">
 
-  <div class="top">
 
-    <h1>🏍️ Inclinomètre Moto</h1>
+<div class="top">
 
-    <div class="status">
-      <span id="dot" class="dot"></span>
-      <span id="status">Arrêté</span>
+  <h1>🏍️ Inclinomètre Moto</h1>
+
+  <div class="status">
+
+    <span id="dot" class="dot"></span>
+
+    <span id="status">
+      Arrêté
+    </span>
+
+  </div>
+
+</div>
+
+
+
+<div class="grid">
+
+
+<!-- =====================================================
+     ANGLE
+===================================================== -->
+
+<section class="card main">
+
+  <div class="label">
+    Inclinaison
+  </div>
+
+  <div id="angle" class="angle">
+    +0°
+  </div>
+
+  <div class="unit">
+    droite + / gauche −
+  </div>
+
+
+  <div class="gauge">
+
+    <div class="track"></div>
+
+    <div class="mark m45l"></div>
+    <div class="mark m35l"></div>
+
+    <div class="center"></div>
+
+    <div class="mark m35r"></div>
+    <div class="mark m45r"></div>
+
+    <div id="cursor"
+         class="cursor">
+    </div>
+
+
+    <div class="gaugeLabels">
+
+      <span>−50°</span>
+      <span>−45°</span>
+      <span>−35°</span>
+      <span>0°</span>
+      <span>+35°</span>
+      <span>+45°</span>
+      <span>+50°</span>
+
     </div>
 
   </div>
 
 
-  <div class="grid">
+  <div class="maxrow">
 
-    <!-- ================= ANGLE ================= -->
-
-    <section class="card main">
+    <div class="maxbox">
 
       <div class="label">
-        Inclinaison
+        Max gauche
       </div>
 
-      <div id="angle" class="angle">
-        +0°
+      <div id="maxLeft"
+           class="maxv">
+        0°
       </div>
 
-      <div class="unit">
-        droite + / gauche −
-      </div>
+    </div>
 
 
-      <div class="gauge">
-
-        <div class="track"></div>
-
-        <div class="mark m45l"></div>
-        <div class="mark m35l"></div>
-
-        <div class="center"></div>
-
-        <div class="mark m35r"></div>
-        <div class="mark m45r"></div>
-
-        <div id="cursor" class="cursor"></div>
-
-        <div class="gaugeLabels">
-          <span>−50°</span>
-          <span>−45°</span>
-          <span>−35°</span>
-          <span>0°</span>
-          <span>+35°</span>
-          <span>+45°</span>
-          <span>+50°</span>
-        </div>
-
-      </div>
-
-
-      <div class="maxrow">
-
-        <div class="maxbox">
-
-          <div class="label">
-            Max gauche
-          </div>
-
-          <div id="maxLeft" class="maxv">
-            0°
-          </div>
-
-        </div>
-
-
-        <div class="maxbox">
-
-          <div class="label">
-            Max droite
-          </div>
-
-          <div id="maxRight" class="maxv">
-            0°
-          </div>
-
-        </div>
-
-      </div>
-
-    </section>
-
-
-    <!-- ================= ACCELERATION ================= -->
-
-    <section class="card main">
+    <div class="maxbox">
 
       <div class="label">
-        Accélération longitudinale
+        Max droite
       </div>
 
-      <div id="gLong" class="reading">
-        +0.00 G
+      <div id="maxRight"
+           class="maxv">
+        0°
       </div>
 
-      <div class="small">
-        Accélération propre du téléphone
-      </div>
-
-
-      <div class="maxrow">
-
-        <div class="maxbox">
-
-          <div class="label">
-            Max frein
-          </div>
-
-          <div id="maxBrake" class="maxv">
-            0.00
-          </div>
-
-        </div>
-
-
-        <div class="maxbox">
-
-          <div class="label">
-            Max accél
-          </div>
-
-          <div id="maxAccel" class="maxv">
-            0.00
-          </div>
-
-        </div>
-
-      </div>
-
-    </section>
-
-
-    <!-- ================= FREQUENCE ================= -->
-
-    <section class="card">
-
-      <div class="label">
-        Fréquence
-      </div>
-
-      <div id="hz" class="reading">
-        0 Hz
-      </div>
-
-    </section>
-
-
-    <!-- ================= G TOTAL ================= -->
-
-    <section class="card">
-
-      <div class="label">
-        G total
-      </div>
-
-      <div id="gTotal" class="reading">
-        1.00 G
-      </div>
-
-    </section>
-
-
-    <!-- ================= BOUTONS ================= -->
-
-    <section
-      class="card"
-      style="grid-column:1/-1">
-
-      <div class="buttons">
-
-        <button
-          id="start"
-          class="primary">
-          DÉMARRER LES CAPTEURS
-        </button>
-
-        <button
-          id="zero"
-          class="warn">
-          FAIRE LE ZÉRO
-        </button>
-
-        <button
-          id="reset"
-          class="danger">
-          RESET MAX
-        </button>
-
-        <button id="screen">
-          PLEIN ÉCRAN
-        </button>
-
-      </div>
-
-    </section>
-
-
-    <!-- ================= DIAGNOSTIC ================= -->
-
-    <section
-      class="card"
-      style="grid-column:1/-1">
-
-      <div class="label">
-        Diagnostic
-      </div>
-
-      <details open>
-
-        <summary>
-          Données capteur
-        </summary>
-
-        <div id="raw" class="raw">
-          Aucune donnée.
-        </div>
-
-      </details>
-
-    </section>
+    </div>
 
   </div>
 
+</section>
 
-  <div class="note">
 
-    ⚠️ Version avec compensation dynamique.
-    La compensation utilise l'accélération propre du téléphone
-    pour retirer autant que possible l'effet des accélérations
-    sur la mesure de gravité.
+
+<!-- =====================================================
+     ACCELERATION LONGITUDINALE
+===================================================== -->
+
+<section class="card main">
+
+  <div class="label">
+    Accélération longitudinale
+  </div>
+
+  <div id="gLong"
+       class="reading">
+    +0.00 G
+  </div>
+
+  <div class="small">
+    + accélération / − freinage
+  </div>
+
+
+  <div class="maxrow">
+
+    <div class="maxbox">
+
+      <div class="label">
+        Max frein
+      </div>
+
+      <div id="maxBrake"
+           class="maxv">
+        0.00
+      </div>
+
+    </div>
+
+
+    <div class="maxbox">
+
+      <div class="label">
+        Max accél
+      </div>
+
+      <div id="maxAccel"
+           class="maxv">
+        0.00
+      </div>
+
+    </div>
 
   </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     FREQUENCE
+===================================================== -->
+
+<section class="card">
+
+  <div class="label">
+    Fréquence
+  </div>
+
+  <div id="hz"
+       class="reading">
+    0 Hz
+  </div>
+
+  <div id="gyroState"
+       class="small">
+    Compensation active
+  </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     G TOTAL
+===================================================== -->
+
+<section class="card">
+
+  <div class="label">
+    G total
+  </div>
+
+  <div id="gTotal"
+       class="reading">
+    1.00 G
+  </div>
+
+  <div class="small">
+    gravité + accélérations
+  </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     BOUTONS
+===================================================== -->
+
+<section
+  class="card"
+  style="grid-column:1/-1">
+
+  <div class="buttons">
+
+    <button
+      id="start"
+      class="primary">
+      DÉMARRER LES CAPTEURS
+    </button>
+
+    <button
+      id="zero"
+      class="warn">
+      FAIRE LE ZÉRO
+    </button>
+
+    <button
+      id="reset"
+      class="danger">
+      RESET MAX
+    </button>
+
+    <button
+      id="screen">
+      PLEIN ÉCRAN
+    </button>
+
+  </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     DIAGNOSTIC
+===================================================== -->
+
+<section
+  class="card"
+  style="grid-column:1/-1">
+
+  <div class="label">
+    Diagnostic
+  </div>
+
+  <details open>
+
+    <summary>
+      Données capteur
+    </summary>
+
+    <div id="raw"
+         class="raw">
+
+      Aucune donnée.
+
+    </div>
+
+  </details>
+
+</section>
 
 </div>
+
+
+
+<div class="note">
+
+  ⚠️ Prototype expérimental.
+
+  Le zéro mémorise maintenant l'orientation réelle
+  du téléphone dans son support.
+
+  L'inclinaison du support vers l'avant ou l'arrière
+  n'est donc plus supposée nulle.
+
+  Ne manipule pas le téléphone en roulant.
+
+</div>
+
+
+</div>
+
 
 
 <script>
@@ -547,11 +629,12 @@ details{
    CONFIGURATION
 ===================================================== */
 
-/*
-   Sens validé avec ta dernière version :
 
-   gauche = négatif
+/*
+   Sens validé avec ta version précédente.
+
    droite = positif
+   gauche = négatif
 */
 
 const LEAN_SIGN = -1;
@@ -560,34 +643,70 @@ const LEAN_SIGN = -1;
 /*
    Sens de l'accélération longitudinale.
 
-   À modifier uniquement si l'essai montre que
-   accélération et freinage sont inversés.
+   Si accélération et freinage sont inversés,
+   passer à -1.
 */
 
 const LONG_SIGN = 1;
+
+
+/*
+   Rafraîchissement rapide.
+
+   50 ms = 20 affichages / seconde.
+
+   Les capteurs continuent évidemment
+   à fonctionner à leur fréquence propre.
+*/
+
+const RENDER_MS = 50;
+
+
+/*
+   Calibration.
+
+   Pendant cette période :
+
+   - moto immobile
+   - téléphone dans sa position définitive
+   - moto droite
+*/
+
+const CALIBRATION_MS = 1200;
 
 
 /* =====================================================
    VARIABLES
 ===================================================== */
 
+
+/*
+   Etat.
+*/
+
 let running = false;
 
+let calibrating = false;
 
-/* Angle */
+
+/*
+   Angle.
+*/
 
 let angle = 0;
 
-let angleOffset = 0;
 
-
-/* Maximums */
+/*
+   Maximums.
+*/
 
 let maxRight = 0;
 let maxLeft = 0;
 
 
-/* Accélération longitudinale */
+/*
+   Accélération longitudinale.
+*/
 
 let longAccel = 0;
 
@@ -595,41 +714,127 @@ let maxAccel = 0;
 let maxBrake = 0;
 
 
-/* G total */
+/*
+   G total.
+*/
 
 let gTotal = 1;
 
 
-/* Fréquence */
+/*
+   Fréquence.
+*/
 
 let hz = 0;
+
 let hzCount = 0;
-let hzTimer = performance.now();
+
+let hzTimer =
+  performance.now();
 
 
-/* Calibration */
+/* =====================================================
+   AXES DU TELEPHONE APRES CALIBRATION
+===================================================== */
 
-let calibrating = false;
+
+/*
+   verticalAxis :
+
+   direction de la gravité lorsque la moto
+   est droite.
+
+   Exemple téléphone vertical :
+
+       X = 0
+       Y = 1
+       Z = 0
+
+   Exemple téléphone presque à plat :
+
+       X = 0
+       Y = 0
+       Z = 1
+*/
+
+let verticalAxis = {
+  x:0,
+  y:1,
+  z:0
+};
+
+
+/*
+   lateralAxis :
+
+   axe X du téléphone.
+
+   On suppose que le téléphone n'est pas
+   incliné latéralement dans son support.
+
+   C'est l'axe gauche/droite de la moto.
+*/
+
+let lateralAxis = {
+  x:1,
+  y:0,
+  z:0
+};
+
+
+/*
+   longitudinalAxis :
+
+   axe avant/arrière de la moto.
+
+   Il sera calculé automatiquement.
+
+   C'est particulièrement important :
+
+   téléphone vertical :
+       longitudinal ≈ Z
+
+   téléphone à plat :
+       longitudinal ≈ Y
+*/
+
+let longitudinalAxis = {
+  x:0,
+  y:0,
+  z:1
+};
+
+
+/* =====================================================
+   CALIBRATION
+===================================================== */
 
 let calibrationCount = 0;
-let calibrationAngleSum = 0;
+
+let calibrationGravity = {
+  x:0,
+  y:0,
+  z:0
+};
 
 
-/* Données brutes */
+/* =====================================================
+   DONNEES BRUTES
+===================================================== */
 
 let raw = {
 
-  x:0,
-  y:0,
-  z:0,
+  totalX:0,
+  totalY:0,
+  totalZ:0,
 
-  ax:0,
-  ay:0,
-  az:0,
+  dynX:0,
+  dynY:0,
+  dynZ:0,
 
-  gx:0,
-  gy:0,
-  gz:0
+  gravityX:0,
+  gravityY:0,
+  gravityZ:0
 
 };
 
@@ -662,13 +867,102 @@ function signed(value, decimals){
 }
 
 
+/*
+   Produit scalaire.
+
+   Permet de connaître combien d'un vecteur
+   se trouve dans une direction donnée.
+*/
+
+function dot(a,b){
+
+  return (
+    a.x*b.x +
+    a.y*b.y +
+    a.z*b.z
+  );
+
+}
+
+
+/*
+   Norme d'un vecteur.
+*/
+
+function norm(v){
+
+  return Math.sqrt(
+    v.x*v.x +
+    v.y*v.y +
+    v.z*v.z
+  );
+
+}
+
+
+/*
+   Normalisation.
+
+   Transforme un vecteur quelconque
+   en vecteur de longueur 1.
+*/
+
+function normalize(v){
+
+  const n =
+    norm(v);
+
+  if(n < 0.000001){
+
+    return {
+      x:0,
+      y:0,
+      z:0
+    };
+
+  }
+
+  return {
+    x:v.x/n,
+    y:v.y/n,
+    z:v.z/n
+  };
+
+}
+
+
+/*
+   Produit vectoriel.
+
+   a × b
+*/
+
+function cross(a,b){
+
+  return {
+
+    x:a.y*b.z - a.z*b.y,
+
+    y:a.z*b.x - a.x*b.z,
+
+    z:a.x*b.y - a.y*b.x
+
+  };
+
+}
+
+
 /* =====================================================
    STATUT
 ===================================================== */
 
-function setStatus(text,on=false){
+function setStatus(
+  text,
+  on=false
+){
 
-  $('status').textContent = text;
+  $('status').textContent =
+    text;
 
   $('dot').classList.toggle(
     'on',
@@ -679,86 +973,116 @@ function setStatus(text,on=false){
 
 
 /* =====================================================
-   CALCUL ANGLE
+   CALCUL DES AXES DU SUPPORT
 ===================================================== */
 
-/*
-   C'est ici que se trouve la nouvelle compensation.
+function calculateMountAxes(){
 
-   accelerationIncludingGravity :
-       gravité + accélération dynamique
+  /*
+     La gravité moyenne pendant le zéro
+     représente la verticale de la moto
+     dans le repère du téléphone.
+  */
 
-   acceleration :
-       accélération dynamique uniquement
-
-   Donc :
-
-       gravité ≈
-       accelerationIncludingGravity
-       - acceleration
-
-   On calcule ensuite l'angle uniquement avec
-   le vecteur de gravité estimé.
-
-   IMPORTANT :
-   il n'y a aucun filtre temporel ici.
-
-   Donc l'affichage reste aussi rapide que
-   dans ta version qui fonctionnait.
-*/
-
-function calculateAngle(
-  totalX,
-  totalY,
-  dynamicX,
-  dynamicY
-){
-
-  let gravityX =
-    totalX - dynamicX;
-
-  let gravityY =
-    totalY - dynamicY;
+  const g =
+    normalize(
+      calibrationGravity
+    );
 
 
   /*
-     Même conversion que dans ta version
-     validée, avec la correction du ±180°.
+     L'axe X du téléphone représente
+     le côté gauche/droite.
+
+     On le normalise.
   */
 
-  let a =
-    Math.atan2(
-      gravityX,
-      gravityY
-    ) *
-    180 /
-    Math.PI;
+  lateralAxis = {
+    x:1,
+    y:0,
+    z:0
+  };
 
 
   /*
-     Ton téléphone droit se trouvait autour
-     de +180 / -180.
-
-     On replace donc cette zone autour de 0°.
+     Verticale mémorisée.
   */
 
-  a -= 180;
+  verticalAxis = g;
 
 
   /*
-     Rebouclage.
+     Axe longitudinal :
+
+        X × verticale
+
+     Exemple téléphone vertical :
+
+        X = (1,0,0)
+        vertical = (0,1,0)
+
+        X × vertical = (0,0,1)
+
+     => Z = avant/arrière.
+
+     Exemple téléphone à plat :
+
+        X = (1,0,0)
+        vertical = (0,0,1)
+
+        X × vertical = (0,-1,0)
+
+     => Y = avant/arrière.
+
+     C'est exactement ce qu'on recherche.
   */
 
-  if(a > 180){
-    a -= 360;
+  let longitudinal =
+    cross(
+      lateralAxis,
+      verticalAxis
+    );
+
+
+  longitudinal =
+    normalize(
+      longitudinal
+    );
+
+
+  /*
+     Pour conserver le même sens que
+     l'ancienne mesure, on utilise le signe
+     du résultat Z lorsque le téléphone
+     est dans sa position verticale habituelle.
+
+     Dans la configuration portrait verticale,
+     l'axe longitudinal attendu est +Z.
+
+     Si le support est à plat, cela donne
+     automatiquement l'autre axe.
+  */
+
+  if(
+    Math.abs(longitudinal.x) +
+    Math.abs(longitudinal.y) +
+    Math.abs(longitudinal.z)
+    < 0.5
+  ){
+
+    longitudinalAxis = {
+      x:0,
+      y:0,
+      z:1
+    };
+
   }
+  else{
 
-  if(a < -180){
-    a += 360;
+    longitudinalAxis =
+      longitudinal;
+
   }
-
-
-  return a;
 
 }
 
@@ -773,15 +1097,27 @@ function startCalibration(){
 
   calibrationCount = 0;
 
-  calibrationAngleSum = 0;
+  calibrationGravity = {
+    x:0,
+    y:0,
+    z:0
+  };
+
+
+  $('gyroState').textContent =
+    'Calibration...';
+
 
   $('raw').textContent =
-    'Calibration en cours...\n\n' +
-    'Ne bouge pas le téléphone.';
+    'CALIBRATION...\n\n' +
+    'Moto droite et immobile.\n' +
+    'Téléphone dans sa position définitive.\n\n' +
+    'Ne touche à rien pendant 1,2 seconde.';
+
 
   setTimeout(
     finishCalibration,
-    1000
+    CALIBRATION_MS
   );
 
 }
@@ -789,29 +1125,139 @@ function startCalibration(){
 
 function finishCalibration(){
 
-  if(calibrationCount > 0){
+  if(calibrationCount < 10){
 
-    angleOffset =
-      calibrationAngleSum /
-      calibrationCount;
+    calibrating = false;
+
+    $('gyroState').textContent =
+      'Calibration impossible';
+
+    return;
 
   }
 
+
+  /*
+     On calcule la moyenne de la gravité.
+  */
+
+  calibrationGravity.x /=
+    calibrationCount;
+
+  calibrationGravity.y /=
+    calibrationCount;
+
+  calibrationGravity.z /=
+    calibrationCount;
+
+
+  /*
+     Construction automatique des axes
+     du support.
+  */
+
+  calculateMountAxes();
+
+
   calibrating = false;
+
+
+  /*
+     Angle zéro.
+  */
 
   angle = 0;
 
+
+  $('gyroState').textContent =
+    'Support calibré';
+
+
   $('raw').textContent =
-    'Calibration terminée.\n' +
-    'Offset = ' +
-    fmt(angleOffset,2) +
-    '°';
+    'Calibration terminée.\n\n' +
+
+    'AXE VERTICAL\n' +
+    'X = ' +
+    fmt(verticalAxis.x,3) +
+    '\nY = ' +
+    fmt(verticalAxis.y,3) +
+    '\nZ = ' +
+    fmt(verticalAxis.z,3) +
+
+    '\n\nAXE LONGITUDINAL\n' +
+    'X = ' +
+    fmt(longitudinalAxis.x,3) +
+    '\nY = ' +
+    fmt(longitudinalAxis.y,3) +
+    '\nZ = ' +
+    fmt(longitudinalAxis.z,3);
 
 }
 
 
 /* =====================================================
-   DEVICEMOTION
+   CALCUL ANGLE
+===================================================== */
+
+function calculateAngleFromGravity(
+  gravity
+){
+
+  /*
+     Composante latérale.
+
+     C'est la composante du vecteur gravité
+     sur l'axe gauche/droite du téléphone.
+  */
+
+  const lateral =
+    dot(
+      gravity,
+      lateralAxis
+    );
+
+
+  /*
+     Composante verticale.
+
+     C'est la composante vers la verticale
+     mémorisée lorsque la moto était droite.
+  */
+
+  const vertical =
+    dot(
+      gravity,
+      verticalAxis
+    );
+
+
+  /*
+     atan2 permet de conserver une bonne
+     mesure jusqu'aux grands angles.
+
+     Ici :
+
+       0°  = moto droite
+       +   = rotation suivant LEAN_SIGN
+       -   = rotation opposée
+  */
+
+  const a =
+    Math.atan2(
+      lateral,
+      vertical
+    )
+    * 180 /
+    Math.PI;
+
+
+  return a * LEAN_SIGN;
+
+}
+
+
+/* =====================================================
+   CAPTEUR
 ===================================================== */
 
 function handleMotion(event){
@@ -841,23 +1287,29 @@ function handleMotion(event){
     total.y === null ||
     total.z === null
   ){
+
     return;
+
   }
 
 
-  const totalX =
-    total.x / 9.80665;
+  const totalVector = {
 
-  const totalY =
-    total.y / 9.80665;
+    x:total.x / 9.80665,
+    y:total.y / 9.80665,
+    z:total.z / 9.80665
 
-  const totalZ =
-    total.z / 9.80665;
+  };
 
 
-  raw.x = totalX;
-  raw.y = totalY;
-  raw.z = totalZ;
+  raw.totalX =
+    totalVector.x;
+
+  raw.totalY =
+    totalVector.y;
+
+  raw.totalZ =
+    totalVector.z;
 
 
   /*
@@ -865,18 +1317,21 @@ function handleMotion(event){
      ACCELERATION DYNAMIQUE
      -------------------------------------------------
 
-     C'est elle qui permet de retirer l'effet
-     de l'accélération latérale sur la mesure
-     d'inclinaison.
+     C'est l'accélération sans la gravité
+     lorsqu'elle est fournie par le navigateur.
   */
 
   const dynamic =
     event.acceleration;
 
 
-  let dynamicX = 0;
-  let dynamicY = 0;
-  let dynamicZ = 0;
+  let dynamicVector = {
+
+    x:0,
+    y:0,
+    z:0
+
+  };
 
 
   if(
@@ -886,138 +1341,204 @@ function handleMotion(event){
     dynamic.z !== null
   ){
 
-    dynamicX =
-      dynamic.x / 9.80665;
+    dynamicVector = {
 
-    dynamicY =
-      dynamic.y / 9.80665;
+      x:dynamic.x / 9.80665,
 
-    dynamicZ =
-      dynamic.z / 9.80665;
+      y:dynamic.y / 9.80665,
+
+      z:dynamic.z / 9.80665
+
+    };
 
   }
 
 
-  raw.ax = dynamicX;
-  raw.ay = dynamicY;
-  raw.az = dynamicZ;
+  raw.dynX =
+    dynamicVector.x;
+
+  raw.dynY =
+    dynamicVector.y;
+
+  raw.dynZ =
+    dynamicVector.z;
 
 
   /*
-     =================================================
+     -------------------------------------------------
      G TOTAL
-     =================================================
+     -------------------------------------------------
   */
 
   gTotal =
-    Math.sqrt(
-      totalX * totalX +
-      totalY * totalY +
-      totalZ * totalZ
+    norm(
+      totalVector
     );
 
 
   /*
-     =================================================
-     ANGLE COMPENSÉ
-     =================================================
+     -------------------------------------------------
+     GRAVITE ESTIMEE
+     -------------------------------------------------
+
+     Total = gravité + accélération
+
+     Donc :
+
+     gravité = total - accélération
   */
 
-  const compensatedRawAngle =
-    calculateAngle(
-      totalX,
-      totalY,
-      dynamicX,
-      dynamicY
-    );
+  const gravityVector = {
+
+    x:
+      totalVector.x -
+      dynamicVector.x,
+
+    y:
+      totalVector.y -
+      dynamicVector.y,
+
+    z:
+      totalVector.z -
+      dynamicVector.z
+
+  };
 
 
-  /*
-     =================================================
+  raw.gravityX =
+    gravityVector.x;
+
+  raw.gravityY =
+    gravityVector.y;
+
+  raw.gravityZ =
+    gravityVector.z;
+
+
+  /* =================================================
      CALIBRATION
-     =================================================
-  */
+  ================================================= */
 
   if(calibrating){
 
-    calibrationAngleSum +=
-      compensatedRawAngle;
+    /*
+       Pendant la calibration, la moto est
+       immobile : on mesure donc directement
+       la gravité dans la position du support.
+    */
+
+    calibrationGravity.x +=
+      totalVector.x;
+
+    calibrationGravity.y +=
+      totalVector.y;
+
+    calibrationGravity.z +=
+      totalVector.z;
 
     calibrationCount++;
+
+    return;
 
   }
 
 
   /*
-     =================================================
-     ANGLE FINAL
-     =================================================
+     Si le téléphone a démarré sans calibration,
+     on ne calcule pas d'angle.
   */
 
+  if(
+    norm(verticalAxis) < 0.5
+  ){
+
+    return;
+
+  }
+
+
+  /* =================================================
+     ANGLE
+  ================================================= */
+
+
   angle =
-    (
-      compensatedRawAngle -
-      angleOffset
-    ) *
-    LEAN_SIGN;
+    calculateAngleFromGravity(
+      normalize(
+        gravityVector
+      )
+    );
 
 
   /*
      =================================================
-     MAX ANGLE
+     ACCELERATION LONGITUDINALE
      =================================================
+
+     Maintenant on ne prend PLUS Z.
+
+     On projette le vecteur d'accélération
+     sur l'axe avant/arrière calculé pendant
+     le zéro.
+
+     Donc cela fonctionne avec :
+
+       téléphone vertical
+       téléphone incliné
+       téléphone presque à plat
   */
+
+  longAccel =
+    dot(
+      dynamicVector,
+      longitudinalAxis
+    )
+    * LONG_SIGN;
+
+
+  /* =================================================
+     MAX
+  ================================================= */
 
   if(angle > maxRight){
 
-    maxRight = angle;
+    maxRight =
+      angle;
 
   }
 
 
   if(angle < maxLeft){
 
-    maxLeft = angle;
+    maxLeft =
+      angle;
 
   }
 
 
-  /*
-     =================================================
-     ACCÉLÉRATION LONGITUDINALE
-     =================================================
-
-     On conserve exactement le principe
-     de ta version précédente : axe Z.
-  */
-
-  longAccel =
-    dynamicZ *
-    LONG_SIGN;
-
-
   if(longAccel > maxAccel){
 
-    maxAccel = longAccel;
+    maxAccel =
+      longAccel;
 
   }
 
 
   if(longAccel < maxBrake){
 
-    maxBrake = longAccel;
+    maxBrake =
+      longAccel;
 
   }
 
 
-  /*
-     =================================================
-     FRÉQUENCE
-     =================================================
-  */
+  /* =================================================
+     FREQUENCE
+  ================================================= */
 
   const now =
     performance.now();
+
 
   hzCount++;
 
@@ -1032,6 +1553,7 @@ function handleMotion(event){
         1000 /
         (now - hzTimer)
       );
+
 
     hzCount = 0;
 
@@ -1076,14 +1598,12 @@ function updateCursor(){
       'var(--red)';
 
   }
-
   else if(abs >= 35){
 
     $('cursor').style.background =
       'var(--yellow)';
 
   }
-
   else{
 
     $('cursor').style.background =
@@ -1100,20 +1620,12 @@ function updateCursor(){
 
 function render(){
 
-  /*
-     ANGLE
-  */
-
   $('angle').textContent =
     signed(
       angle,
       0
     ) + '°';
 
-
-  /*
-     MAX GAUCHE
-  */
 
   $('maxLeft').textContent =
     signed(
@@ -1122,20 +1634,12 @@ function render(){
     ) + '°';
 
 
-  /*
-     MAX DROITE
-  */
-
   $('maxRight').textContent =
     signed(
       maxRight,
       0
     ) + '°';
 
-
-  /*
-     ACCÉLÉRATION
-  */
 
   $('gLong').textContent =
     signed(
@@ -1158,10 +1662,6 @@ function render(){
     );
 
 
-  /*
-     G TOTAL
-  */
-
   $('gTotal').textContent =
     fmt(
       gTotal,
@@ -1169,112 +1669,67 @@ function render(){
     ) + ' G';
 
 
-  /*
-     FRÉQUENCE
-  */
-
   $('hz').textContent =
     hz + ' Hz';
 
-
-  /*
-     CURSEUR
-  */
 
   updateCursor();
 
 
   /*
-     =================================================
      DIAGNOSTIC
-     =================================================
-
-     On affiche maintenant les trois informations
-     importantes :
-
-       1. mesure brute
-       2. accélération dynamique
-       3. angle compensé
   */
-
-  const rawAngle =
-    Math.atan2(
-      raw.x,
-      raw.y
-    ) *
-    180 /
-    Math.PI;
-
-
-  const rawCorrected =
-    calculateAngle(
-      raw.x,
-      raw.y,
-      0,
-      0
-    );
-
-
-  const gravityX =
-    raw.x - raw.ax;
-
-  const gravityY =
-    raw.y - raw.ay;
-
-
-  const gravityAngle =
-    calculateAngle(
-      raw.x,
-      raw.y,
-      raw.ax,
-      raw.ay
-    );
-
 
   $('raw').textContent =
 
-`ANGLE ATAN2 BRUT
-${fmt(rawAngle,2)}°
+`ACCÉLÉRATION AVEC GRAVITÉ
 
-ANGLE APRÈS CORRECTION ±180°
-${fmt(rawCorrected,2)}°
-
-ANGLE AVEC COMPENSATION
-${fmt(gravityAngle,2)}°
-
-ANGLE AFFICHÉ
-${fmt(angle,2)}°
-
-OFFSET ZÉRO
-${fmt(angleOffset,2)}°
-
-
-ACCÉLÉRATION AVEC GRAVITÉ
-
-X = ${fmt(raw.x,3)} G
-Y = ${fmt(raw.y,3)} G
-Z = ${fmt(raw.z,3)} G
+X = ${fmt(raw.totalX,3)} G
+Y = ${fmt(raw.totalY,3)} G
+Z = ${fmt(raw.totalZ,3)} G
 
 
 ACCÉLÉRATION DYNAMIQUE
 
-X = ${fmt(raw.ax,3)} G
-Y = ${fmt(raw.ay,3)} G
-Z = ${fmt(raw.az,3)} G
+X = ${fmt(raw.dynX,3)} G
+Y = ${fmt(raw.dynY,3)} G
+Z = ${fmt(raw.dynZ,3)} G
 
 
 GRAVITÉ ESTIMÉE
 
-X = ${fmt(gravityX,3)} G
-Y = ${fmt(gravityY,3)} G
+X = ${fmt(raw.gravityX,3)} G
+Y = ${fmt(raw.gravityY,3)} G
+Z = ${fmt(raw.gravityZ,3)} G
 
 
 G TOTAL
+
 ${fmt(gTotal,3)} G
 
 
+ANGLE
+
+${fmt(angle,2)}°
+
+
 ACCÉLÉRATION LONGITUDINALE
-${fmt(longAccel,3)} G`;
+
+${fmt(longAccel,3)} G
+
+
+AXE VERTICAL DU SUPPORT
+
+X = ${fmt(verticalAxis.x,3)}
+Y = ${fmt(verticalAxis.y,3)}
+Z = ${fmt(verticalAxis.z,3)}
+
+
+AXE LONGITUDINAL CALCULÉ
+
+X = ${fmt(longitudinalAxis.x,3)}
+Y = ${fmt(longitudinalAxis.y,3)}
+Z = ${fmt(longitudinalAxis.z,3)}`;
 
 }
 
@@ -1288,7 +1743,7 @@ async function startSensors(){
   try{
 
     /*
-       Autorisation iPhone / iPad.
+       Permission iOS / iPadOS.
     */
 
     if(
@@ -1309,6 +1764,17 @@ async function startSensors(){
       }
 
     }
+
+
+    /*
+       Supprime un éventuel ancien listener
+       avant d'en installer un nouveau.
+    */
+
+    window.removeEventListener(
+      'devicemotion',
+      handleMotion
+    );
 
 
     window.addEventListener(
@@ -1338,13 +1804,15 @@ async function startSensors(){
 
 
     /*
-       Zéro automatique.
+       Calibration obligatoire :
+
+       téléphone exactement dans sa position
+       définitive sur le support.
     */
 
     startCalibration();
 
   }
-
   catch(error){
 
     setStatus(
@@ -1363,7 +1831,7 @@ async function startSensors(){
 
 
 /* =====================================================
-   BOUTON ZERO
+   ZERO
 ===================================================== */
 
 $('zero').addEventListener(
@@ -1389,9 +1857,11 @@ $('reset').addEventListener(
   () => {
 
     maxRight = 0;
+
     maxLeft = 0;
 
     maxAccel = 0;
+
     maxBrake = 0;
 
   }
@@ -1409,7 +1879,7 @@ $('start').addEventListener(
 
 
 /* =====================================================
-   PLEIN ÉCRAN
+   PLEIN ECRAN
 ===================================================== */
 
 $('screen').addEventListener(
@@ -1424,7 +1894,6 @@ $('screen').addEventListener(
           .requestFullscreen();
 
       }
-
       else{
 
         await document.exitFullscreen();
@@ -1432,7 +1901,6 @@ $('screen').addEventListener(
       }
 
     }
-
     catch(error){
 
       alert(
@@ -1451,20 +1919,13 @@ $('screen').addEventListener(
 
 render();
 
-
-/*
-   Même rafraîchissement rapide que ta version
-   qui fonctionnait.
-
-   AUCUN FILTRE LENT SUR L'ANGLE.
-*/
-
 setInterval(
   render,
-  50
+  RENDER_MS
 );
 
 </script>
 
 </body>
+
 </html>
