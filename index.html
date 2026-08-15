@@ -1,347 +1,353 @@
 <!doctype html>
 <html lang="fr">
-
 <head>
 
 <meta charset="utf-8">
 
 <meta name="viewport"
-content="width=device-width,initial-scale=1,viewport-fit=cover">
+      content="width=device-width,initial-scale=1,viewport-fit=cover">
 
-<meta name="theme-color"
-content="#080b10">
+<meta name="theme-color" content="#080b10">
 
 <title>Inclinomètre Moto</title>
 
 <style>
 
 :root{
---bg:#080b10;
---card:#111720;
---text:#f3f6fa;
---muted:#9ba8b7;
---accent:#43d17a;
---yellow:#ffcc33;
---red:#ff4d4d;
---line:#25303c;
+  --bg:#080b10;
+  --card:#111720;
+  --text:#f3f6fa;
+  --muted:#9ba8b7;
+  --accent:#43d17a;
+  --yellow:#ffcc33;
+  --red:#ff4d4d;
+  --line:#25303c;
 }
 
 *{
-box-sizing:border-box;
+  box-sizing:border-box;
 }
 
 html,body{
-margin:0;
-background:var(--bg);
-color:var(--text);
-font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
 }
 
 body{
-min-height:100vh;
-padding:
-env(safe-area-inset-top)
-14px
-env(safe-area-inset-bottom);
+  min-height:100vh;
+  padding:
+    env(safe-area-inset-top)
+    14px
+    env(safe-area-inset-bottom);
 }
 
 .wrap{
-max-width:760px;
-margin:auto;
+  max-width:760px;
+  margin:auto;
 }
 
 .top{
-display:flex;
-justify-content:space-between;
-align-items:center;
-padding:14px 2px 8px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:14px 2px 8px;
 }
 
 h1{
-font-size:19px;
-margin:0;
+  font-size:19px;
+  margin:0;
 }
 
 .status{
-font-size:12px;
-color:var(--muted);
+  font-size:12px;
+  color:var(--muted);
 }
 
 .dot{
-display:inline-block;
-width:9px;
-height:9px;
-border-radius:50%;
-background:#777;
-margin-right:6px;
+  display:inline-block;
+  width:9px;
+  height:9px;
+  border-radius:50%;
+  background:#777;
+  margin-right:6px;
 }
 
-.on{
-background:var(--accent);
+.dot.on{
+  background:var(--accent);
 }
 
 .grid{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:10px;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
 }
 
 .card{
-background:var(--card);
-border:1px solid var(--line);
-border-radius:16px;
-padding:14px;
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:14px;
 }
 
 .main{
-grid-column:1/-1;
-text-align:center;
-padding:18px 12px;
+  grid-column:1/-1;
+  text-align:center;
+  padding:18px 12px;
 }
 
 .label{
-color:var(--muted);
-font-size:12px;
-text-transform:uppercase;
-letter-spacing:.08em;
+  color:var(--muted);
+  font-size:12px;
+  text-transform:uppercase;
+  letter-spacing:.08em;
 }
 
 .angle{
-font-size:clamp(58px,18vw,105px);
-line-height:1;
-font-weight:700;
-margin:10px 0 4px;
-font-variant-numeric:tabular-nums;
+  font-size:clamp(58px,18vw,105px);
+  line-height:1;
+  font-weight:700;
+  margin:10px 0 4px;
+  font-variant-numeric:tabular-nums;
 }
 
 .unit{
-font-size:17px;
-color:var(--muted);
+  font-size:17px;
+  color:var(--muted);
 }
 
 
 /* =====================================================
-   CURSEUR
+   BARRE D'INCLINAISON
 ===================================================== */
 
 .gauge{
-position:relative;
-height:78px;
-margin:12px 15px 0;
+  position:relative;
+  height:82px;
+  margin:14px 12px 0;
 }
 
 
 /*
-   Barre :
+   Échelle totale :
 
-   -50°     -45°    -35°        0°        +35°   +45°   +50°
-    |--------|-------|-----------|-----------|------|------|
+   -50°          -45°       -35°        0°       +35°       +45°       +50°
+     |-------------|----------|-----------|----------|----------|-------------|
 
-   Rouge     Jaune   Vert                  Jaune  Rouge
+   Rouge          Jaune      Vert                  Jaune      Rouge
 */
 
 .track{
-position:absolute;
-left:0;
-right:0;
-top:34px;
-height:10px;
-border-radius:10px;
+  position:absolute;
+  left:0;
+  right:0;
+  top:34px;
+  height:10px;
+  border-radius:10px;
 
-background:linear-gradient(
-to right,
+  background:linear-gradient(
+    to right,
 
-var(--red) 0%,
-var(--red) 5%,
+    var(--red) 0%,
+    var(--red) 5%,
 
-var(--yellow) 5%,
-var(--yellow) 15%,
+    var(--yellow) 5%,
+    var(--yellow) 15%,
 
-var(--accent) 15%,
-var(--accent) 85%,
+    var(--accent) 15%,
+    var(--accent) 85%,
 
-var(--yellow) 85%,
-var(--yellow) 95%,
+    var(--yellow) 85%,
+    var(--yellow) 95%,
 
-var(--red) 95%,
-var(--red) 100%
-);
-
+    var(--red) 95%,
+    var(--red) 100%
+  );
 }
 
 
-/*
-   Repères :
+/* Repères 45° */
 
-   35° = 15% / 85%
-   45° = 5% / 95%
-*/
-
-.mark{
-position:absolute;
-top:26px;
-width:2px;
-height:26px;
-background:#fff;
-opacity:.55;
+.mark45L,
+.mark45R,
+.mark35L,
+.mark35R{
+  position:absolute;
+  top:25px;
+  width:2px;
+  height:28px;
+  background:#fff;
+  opacity:.55;
 }
 
-.m45l{left:5%;}
-.m35l{left:15%;}
-.m35r{left:85%;}
-.m45r{left:95%;}
+.mark45L{
+  left:5%;
+}
+
+.mark35L{
+  left:15%;
+}
+
+.mark35R{
+  left:85%;
+}
+
+.mark45R{
+  left:95%;
+}
+
+
+/* Centre */
 
 .center{
-position:absolute;
-left:50%;
-top:22px;
-width:3px;
-height:34px;
-background:#fff;
-opacity:.5;
-transform:translateX(-50%);
+  position:absolute;
+  left:50%;
+  top:21px;
+  width:3px;
+  height:36px;
+  background:#fff;
+  opacity:.6;
+  transform:translateX(-50%);
 }
 
 
-/*
-   Curseur
-*/
+/* Curseur */
 
 .cursor{
-position:absolute;
-top:16px;
-left:50%;
+  position:absolute;
+  left:50%;
+  top:15px;
 
-width:6px;
-height:48px;
+  width:6px;
+  height:48px;
 
-border-radius:5px;
+  border-radius:5px;
 
-background:var(--accent);
+  background:var(--accent);
 
-transform:translateX(-50%);
+  transform:translateX(-50%);
 
-transition:
-left .04s linear,
-background .06s linear;
+  box-shadow:0 0 8px rgba(67,209,122,.8);
 
-box-shadow:
-0 0 8px rgba(67,209,122,.8);
-
+  transition:
+    left .04s linear,
+    background .05s linear;
 }
 
 
-/*
-   Etiquettes
-*/
+/* Texte sous la barre */
 
-.labels{
-position:absolute;
-left:0;
-right:0;
-top:57px;
+.gaugeLabels{
+  position:absolute;
+  left:0;
+  right:0;
+  top:58px;
 
-display:flex;
-justify-content:space-between;
+  display:flex;
+  justify-content:space-between;
 
-font-size:10px;
-color:var(--muted);
+  font-size:10px;
+  color:var(--muted);
 }
 
 .maxrow{
-display:flex;
-justify-content:space-around;
-margin-top:15px;
+  display:flex;
+  justify-content:space-around;
+  margin-top:15px;
 }
 
 .maxv{
-font-size:25px;
-font-weight:650;
-font-variant-numeric:tabular-nums;
+  font-size:25px;
+  font-weight:650;
+  font-variant-numeric:tabular-nums;
 }
 
 .reading{
-font-size:29px;
-font-weight:650;
-font-variant-numeric:tabular-nums;
-margin-top:5px;
+  font-size:29px;
+  font-weight:650;
+  font-variant-numeric:tabular-nums;
+  margin-top:5px;
 }
 
 .small{
-font-size:12px;
-color:var(--muted);
-margin-top:4px;
+  font-size:12px;
+  color:var(--muted);
+  margin-top:4px;
 }
 
 .buttons{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:10px;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
 }
 
 button{
-width:100%;
-border:0;
-border-radius:13px;
-padding:14px 10px;
-font-size:16px;
-font-weight:700;
-background:#202a35;
-color:var(--text);
+  width:100%;
+  border:0;
+  border-radius:13px;
+  padding:14px 10px;
+  font-size:16px;
+  font-weight:700;
+  background:#202a35;
+  color:var(--text);
 }
 
 button.primary{
-background:var(--accent);
-color:#07100b;
+  background:var(--accent);
+  color:#07100b;
 }
 
 button.warn{
-background:#4a3c1e;
-color:#ffe3a0;
+  background:#4a3c1e;
+  color:#ffe3a0;
 }
 
 button.danger{
-background:#472329;
-color:#ffb9b9;
+  background:#472329;
+  color:#ffb9b9;
+}
+
+button:disabled{
+  opacity:.65;
 }
 
 .note{
-font-size:12px;
-line-height:1.45;
-color:var(--muted);
-padding:12px 2px 24px;
+  font-size:12px;
+  line-height:1.45;
+  color:var(--muted);
+  padding:12px 2px 24px;
 }
 
 details{
-margin-top:10px;
+  margin-top:10px;
 }
 
 .raw{
-font-family:ui-monospace,monospace;
-font-size:11px;
-line-height:1.6;
-white-space:pre-wrap;
-color:#b9c5d2;
+  font-family:ui-monospace,monospace;
+  font-size:11px;
+  line-height:1.6;
+  white-space:pre-wrap;
+  color:#b9c5d2;
 }
 
 @media(max-width:420px){
 
-.grid{
-gap:8px;
-}
+  .grid{
+    gap:8px;
+  }
 
-.card{
-padding:12px;
-}
+  .card{
+    padding:12px;
+  }
 
-.reading{
-font-size:25px;
-}
+  .reading{
+    font-size:25px;
+  }
 
 }
 
 </style>
-
 </head>
 
 
@@ -350,19 +356,23 @@ font-size:25px;
 <div class="wrap">
 
 
+<!-- ===================================================
+     EN-TÊTE
+=================================================== -->
+
 <div class="top">
 
-<h1>🏍️ Inclinomètre Moto</h1>
+  <h1>🏍️ Inclinomètre Moto</h1>
 
-<div class="status">
+  <div class="status">
 
-<span id="dot" class="dot"></span>
+    <span id="dot" class="dot"></span>
 
-<span id="status">
-Arrêté
-</span>
+    <span id="status">
+      Arrêté
+    </span>
 
-</div>
+  </div>
 
 </div>
 
@@ -373,259 +383,264 @@ Arrêté
 
 <!-- ===================================================
      ANGLE
-==================================================== -->
+=================================================== -->
 
 <section class="card main">
 
-<div class="label">
-Inclinaison
-</div>
+  <div class="label">
+    Inclinaison
+  </div>
 
-<div id="angle"
-class="angle">
-+0.0°
-</div>
+  <div id="angle" class="angle">
+    +0.0°
+  </div>
 
-<div class="unit">
-droite + / gauche −
-</div>
-
-
-<div class="gauge">
-
-<div class="track"></div>
-
-<div class="mark m45l"></div>
-<div class="mark m35l"></div>
-
-<div class="center"></div>
-
-<div class="mark m35r"></div>
-<div class="mark m45r"></div>
-
-<div id="cursor"
-class="cursor">
-</div>
-
-<div class="labels">
-
-<span>−50°</span>
-<span>−45°</span>
-<span>−35°</span>
-<span>0°</span>
-<span>+35°</span>
-<span>+45°</span>
-<span>+50°</span>
-
-</div>
-
-</div>
+  <div class="unit">
+    droite + / gauche −
+  </div>
 
 
-<div class="maxrow">
+  <!-- BARRE -->
 
-<div>
+  <div class="gauge">
 
-<div class="label">
-Max droite
-</div>
+    <div class="track"></div>
 
-<div id="maxRight"
-class="maxv">
-+0.0°
-</div>
+    <div class="mark45L"></div>
+    <div class="mark35L"></div>
 
-</div>
+    <div class="center"></div>
+
+    <div class="mark35R"></div>
+    <div class="mark45R"></div>
+
+    <div id="cursor" class="cursor"></div>
+
+    <div class="gaugeLabels">
+
+      <span>−50°</span>
+      <span>−45°</span>
+      <span>−35°</span>
+      <span>0°</span>
+      <span>+35°</span>
+      <span>+45°</span>
+      <span>+50°</span>
+
+    </div>
+
+  </div>
 
 
-<div>
+  <!-- MAX -->
 
-<div class="label">
-Max gauche
-</div>
+  <div class="maxrow">
 
-<div id="maxLeft"
-class="maxv">
-+0.0°
-</div>
+    <div>
 
-</div>
+      <div class="label">
+        Max droite
+      </div>
 
-</div>
+      <div id="maxRight" class="maxv">
+        +0.0°
+      </div>
+
+    </div>
+
+
+    <div>
+
+      <div class="label">
+        Max gauche
+      </div>
+
+      <div id="maxLeft" class="maxv">
+        +0.0°
+      </div>
+
+    </div>
+
+  </div>
 
 </section>
 
 
 
 <!-- ===================================================
-     ACCELERATION
-==================================================== -->
+     ACCELERATION LONGITUDINALE
+=================================================== -->
 
 <section class="card main">
 
-<div class="label">
-Accélération longitudinale
-</div>
+  <div class="label">
+    Accélération longitudinale
+  </div>
 
-<div id="gLong"
-class="reading">
-+0.00 G
-</div>
+  <div id="gLong" class="reading">
+    +0.00 G
+  </div>
 
-<div class="small">
-+ accélération / − freinage
-</div>
-
-
-<div class="maxrow">
-
-<div>
-
-<div class="label">
-Max accél
-</div>
-
-<div id="maxAccel"
-class="maxv">
-+0.00
-</div>
-
-</div>
+  <div class="small">
+    + accélération / − freinage
+  </div>
 
 
-<div>
+  <div class="maxrow">
 
-<div class="label">
-Max frein
-</div>
+    <div>
 
-<div id="maxBrake"
-class="maxv">
-+0.00
-</div>
+      <div class="label">
+        Max accél
+      </div>
 
-</div>
+      <div id="maxAccel" class="maxv">
+        +0.00
+      </div>
 
-</div>
+    </div>
+
+
+    <div>
+
+      <div class="label">
+        Max frein
+      </div>
+
+      <div id="maxBrake" class="maxv">
+        +0.00
+      </div>
+
+    </div>
+
+  </div>
 
 </section>
 
 
 
-<!-- FREQUENCE -->
+<!-- ===================================================
+     FRÉQUENCE
+=================================================== -->
 
 <section class="card">
 
-<div class="label">
-Fréquence
-</div>
+  <div class="label">
+    Fréquence
+  </div>
 
-<div id="hz"
-class="reading">
-0 Hz
-</div>
+  <div id="hz" class="reading">
+    0 Hz
+  </div>
 
-<div class="small">
-Capteur mouvement
-</div>
+  <div class="small">
+    Capteur mouvement
+  </div>
 
 </section>
 
 
 
-<!-- G TOTAL -->
+<!-- ===================================================
+     G TOTAL
+=================================================== -->
 
 <section class="card">
 
-<div class="label">
-G total
-</div>
+  <div class="label">
+    G total
+  </div>
 
-<div id="gTotal"
-class="reading">
-1.00 G
-</div>
+  <div id="gTotal" class="reading">
+    1.00 G
+  </div>
 
-<div class="small">
-Gravité + accélérations
-</div>
-
-</section>
-
-
-
-<!-- BOUTONS -->
-
-<section class="card"
-style="grid-column:1/-1">
-
-<div class="buttons">
-
-<button id="start"
-class="primary">
-
-DÉMARRER LES CAPTEURS
-
-</button>
-
-<button id="zero"
-class="warn">
-
-FAIRE LE ZÉRO
-
-</button>
-
-<button id="reset"
-class="danger">
-
-RESET MAX
-
-</button>
-
-<button id="screen">
-
-PLEIN ÉCRAN
-
-</button>
-
-</div>
+  <div class="small">
+    Gravité + accélérations
+  </div>
 
 </section>
 
 
 
-<!-- DIAGNOSTIC -->
+<!-- ===================================================
+     BOUTONS
+=================================================== -->
 
 <section class="card"
-style="grid-column:1/-1">
+         style="grid-column:1/-1">
 
-<div class="label">
-Calibration
-</div>
+  <div class="buttons">
 
-<div id="calibText"
-class="small">
+    <button id="start"
+            class="primary">
 
-Moto droite et immobile.
-Le zéro se fait pendant 1 seconde.
+      DÉMARRER LES CAPTEURS
 
-</div>
+    </button>
 
 
-<details>
+    <button id="zero"
+            class="warn">
 
-<summary>
-Diagnostic brut
-</summary>
+      FAIRE LE ZÉRO
 
-<div id="raw"
-class="raw">
+    </button>
 
-Aucune donnée.
 
-</div>
+    <button id="reset"
+            class="danger">
 
-</details>
+      RESET MAX
+
+    </button>
+
+
+    <button id="screen">
+
+      PLEIN ÉCRAN
+
+    </button>
+
+  </div>
+
+</section>
+
+
+
+<!-- ===================================================
+     DIAGNOSTIC
+=================================================== -->
+
+<section class="card"
+         style="grid-column:1/-1">
+
+  <div class="label">
+    Calibration
+  </div>
+
+  <div id="calibText"
+       class="small">
+
+    Moto droite et immobile.
+    Le zéro se fait pendant 1 seconde.
+
+  </div>
+
+
+  <details>
+
+    <summary>
+      Diagnostic brut
+    </summary>
+
+    <div id="raw"
+         class="raw">
+
+      Aucune donnée.
+
+    </div>
+
+  </details>
 
 </section>
 
@@ -635,14 +650,16 @@ Aucune donnée.
 
 <div class="note">
 
-⚠️ Prototype expérimental.
-Cette version ne fait volontairement
-AUCUNE compensation dynamique de l'angle.
+  ⚠️ Prototype expérimental.
+  Cette version utilise uniquement
+  l'accéléromètre pour l'inclinaison.
+  Aucune compensation dynamique
+  n'est appliquée pour le moment.
 
-L'accélération longitudinale est affichée
-séparément.
+  L'accélération longitudinale est
+  affichée séparément.
 
-Ne manipule pas le téléphone en roulant.
+  Ne manipule pas le téléphone en roulant.
 
 </div>
 
@@ -656,61 +673,53 @@ Ne manipule pas le téléphone en roulant.
 
 
 /* =====================================================
-   PARAMETRES
+   PARAMÈTRES
 ===================================================== */
 
 
 /*
-   SENS DE L'ANGLE
+   IMPORTANT :
 
-   Si l'angle affiché est inversé :
-   mettre -1.
+   Ton ancienne version avait le sens
+   gauche/droite inversé.
+
+   On inverse donc ici le signe du calcul.
+
+   Si après essai le sens est encore inversé,
+   il suffira de remettre +1.
 */
 
-const LEAN_SIGN = 1;
+const LEAN_SIGN = -1;
 
 
 /*
-   SENS ACCELERATION
+   Sens de l'accélération longitudinale.
 
-   Si accélération/freinage est inversé :
-   mettre -1.
+   On commence avec +1.
+
+   On déterminera ensuite l'axe exact
+   avec le diagnostic.
 */
 
 const LONG_SIGN = 1;
 
 
 /*
-   Calibration
+   Durée de calibration.
 */
 
 const CALIBRATION_MS = 1000;
 
 
 /*
-   Affichage rapide
+   Fréquence d'affichage.
+
+   Les capteurs continuent de fonctionner
+   à leur propre fréquence.
+
 */
 
-const RENDER_MS = 100;
-
-
-/*
-   Lissage angle.
-
-   Très léger.
-
-   0.90 = assez stable
-   0.95 = plus rapide mais plus bruité
-*/
-
-const ANGLE_FILTER = 0.90;
-
-
-/*
-   Lissage accélération.
-*/
-
-const ACCEL_FILTER = 0.80;
+const RENDER_MS = 50;
 
 
 /* =====================================================
@@ -734,7 +743,7 @@ let maxLeft = 0;
 
 
 /*
-   ACCELERATION
+   ACCÉLÉRATION
 */
 
 let longAccel = 0;
@@ -747,18 +756,18 @@ let maxBrake = 0;
 
 
 /*
-   CAPTEURS BRUTS
+   VALEURS BRUTES
 */
 
 let raw = {
 
-x:0,
-y:0,
-z:0,
+  x:0,
+  y:0,
+  z:0,
 
-lx:0,
-ly:0,
-lz:0
+  lx:0,
+  ly:0,
+  lz:0
 
 };
 
@@ -771,7 +780,7 @@ let gTotal = 1;
 
 
 /*
-   FREQUENCE
+   FRÉQUENCE
 */
 
 let hz = 0;
@@ -779,7 +788,7 @@ let hz = 0;
 let hzCount = 0;
 
 let hzTimer =
-performance.now();
+  performance.now();
 
 
 /*
@@ -790,9 +799,9 @@ let calibrating = false;
 
 let calibN = 0;
 
-let calibAngle = 0;
+let calibAngleSum = 0;
 
-let calibLong = 0;
+let calibLongSum = 0;
 
 
 /*
@@ -807,23 +816,23 @@ let wakeLock = null;
 ===================================================== */
 
 const $ =
-id => document.getElementById(id);
+  id => document.getElementById(id);
 
 
 function fmt(v,n=1){
 
-return Number.isFinite(v)
-? v.toFixed(n)
-: '0';
+  return Number.isFinite(v)
+    ? v.toFixed(n)
+    : '0';
 
 }
 
 
 function signed(v,n=1){
 
-return (
-v >= 0 ? '+' : ''
-) + fmt(v,n);
+  return (
+    v >= 0 ? '+' : ''
+  ) + fmt(v,n);
 
 }
 
@@ -832,18 +841,15 @@ v >= 0 ? '+' : ''
    STATUT
 ===================================================== */
 
-function setStatus(
-text,
-on=false
-){
+function setStatus(text,on=false){
 
-$('status').textContent =
-text;
+  $('status').textContent =
+    text;
 
-$('dot').classList.toggle(
-'on',
-on
-);
+  $('dot').classList.toggle(
+    'on',
+    on
+  );
 
 }
 
@@ -854,49 +860,51 @@ on
 
 function startCalibration(){
 
-calibrating = true;
+  calibrating = true;
 
-calibN = 0;
+  calibN = 0;
 
-calibAngle = 0;
+  calibAngleSum = 0;
 
-calibLong = 0;
-
-
-$('calibText').textContent =
-'Calibration : ne touche pas à la moto...';
+  calibLongSum = 0;
 
 
-setTimeout(
-finishCalibration,
-CALIBRATION_MS
-);
+  $('calibText').textContent =
+    'Calibration : ne touche pas à la moto...';
+
+
+  setTimeout(
+    finishCalibration,
+    CALIBRATION_MS
+  );
 
 }
 
 
 function finishCalibration(){
 
-if(calibN > 0){
+  if(calibN > 0){
 
-angleOffset =
-calibAngle / calibN;
-
-longOffset =
-calibLong / calibN;
-
-}
+    angleOffset =
+      calibAngleSum / calibN;
 
 
-calibrating = false;
+    longOffset =
+      calibLongSum / calibN;
 
-angle = 0;
-
-longAccel = 0;
+  }
 
 
-$('calibText').textContent =
-'Calibration terminée.';
+  calibrating = false;
+
+
+  angle = 0;
+
+  longAccel = 0;
+
+
+  $('calibText').textContent =
+    'Calibration terminée.';
 
 }
 
@@ -907,339 +915,317 @@ $('calibText').textContent =
 
 function updateCursor(value){
 
-/*
-   IMPORTANT :
+  /*
+     Échelle :
 
-   L'AFFICHAGE est volontairement inversé
-   par rapport à la valeur numérique.
+     -50° = 0%
+       0° = 50%
+     +50° = 100%
+  */
 
-   Valeur négative = GAUCHE
-   → curseur à GAUCHE
-
-   Valeur positive = DROITE
-   → curseur à DROITE
-*/
-
-
-let displayAngle =
-value;
-
-
-/*
-   On limite uniquement l'affichage
-   entre -50 et +50.
-*/
-
-displayAngle =
-Math.max(
--50,
-Math.min(
-50,
-displayAngle
-)
-);
+  let displayAngle =
+    Math.max(
+      -50,
+      Math.min(
+        50,
+        value
+      )
+    );
 
 
-/*
-   Conversion :
-
-   -50° => 0 %
-   0°   => 50 %
-   +50° => 100 %
-*/
-
-const percent =
-50 +
-displayAngle;
+  let percent =
+    50 + displayAngle;
 
 
-$('cursor').style.left =
-percent + '%';
+  $('cursor').style.left =
+    percent + '%';
 
 
-/*
-   Couleur :
+  /*
+     Couleur :
 
-   vert : |angle| < 35
-   jaune : 35 <= |angle| < 45
-   rouge : >= 45
-*/
+     0 à 35°  = vert
+     35 à 45° = jaune
+     >45°     = rouge
+  */
 
-const abs =
-Math.abs(value);
+  const abs =
+    Math.abs(value);
 
 
-if(abs >= 45){
+  if(abs >= 45){
 
-$('cursor').style.background =
-'var(--red)';
+    $('cursor').style.background =
+      'var(--red)';
 
-}else if(abs >= 35){
+  }
+  else if(abs >= 35){
 
-$('cursor').style.background =
-'var(--yellow)';
+    $('cursor').style.background =
+      'var(--yellow)';
 
-}else{
+  }
+  else{
 
-$('cursor').style.background =
-'var(--accent)';
+    $('cursor').style.background =
+      'var(--accent)';
 
-}
+  }
 
 }
 
 
 /* =====================================================
-   CAPTEUR
+   LECTURE CAPTEURS
 ===================================================== */
 
 function handleMotion(e){
 
-if(!running){
-return;
-}
+  if(!running){
+    return;
+  }
 
 
-/* -----------------------------------------------------
-   ACCELERATION + GRAVITE
------------------------------------------------------ */
+  /* ---------------------------------------------------
+     ACCÉLÉRATION AVEC GRAVITÉ
+  --------------------------------------------------- */
 
-const g =
-e.accelerationIncludingGravity;
+  const g =
+    e.accelerationIncludingGravity;
 
 
-if(
-!g ||
-g.x === null ||
-g.y === null ||
-g.z === null
-){
+  if(
+    !g ||
+    g.x === null ||
+    g.y === null ||
+    g.z === null
+  ){
 
-return;
+    return;
 
-}
+  }
 
 
-const x =
-(g.x || 0) / 9.80665;
+  const x =
+    (g.x || 0) / 9.80665;
 
-const y =
-(g.y || 0) / 9.80665;
+  const y =
+    (g.y || 0) / 9.80665;
 
-const z =
-(g.z || 0) / 9.80665;
+  const z =
+    (g.z || 0) / 9.80665;
 
 
-raw.x = x;
-raw.y = y;
-raw.z = z;
+  raw.x = x;
+  raw.y = y;
+  raw.z = z;
 
 
-/*
-   G total
-*/
+  /*
+     G total
+  */
 
-gTotal =
-Math.sqrt(
-x*x +
-y*y +
-z*z
-);
+  gTotal =
+    Math.sqrt(
+      x*x +
+      y*y +
+      z*z
+    );
 
 
-/* -----------------------------------------------------
-   ANGLE V1
------------------------------------------------------ */
+  /* ---------------------------------------------------
+     ANGLE
+  --------------------------------------------------- */
 
 
-/*
-   C'EST LA PARTIE IMPORTANTE.
+  /*
+     C'est le calcul de ta V1.
 
-   On conserve exactement le principe
-   qui fonctionnait chez toi.
+     On ne fait ici :
+     - aucun gyro
+     - aucune compensation
+     - aucun filtre
 
-*/
+     On veut retrouver exactement
+     le comportement que tu avais validé.
+  */
 
-const rawAngle =
-Math.atan2(
-x,
-y
-)
-* 180 /
-Math.PI;
+  const rawAngle =
+    Math.atan2(
+      x,
+      y
+    ) *
+    180 /
+    Math.PI;
 
 
-/* -----------------------------------------------------
-   ACCELERATION LINEAIRE
------------------------------------------------------ */
+  /*
+     Application du zéro
+     et inversion gauche/droite.
+  */
 
-const a =
-e.acceleration;
+  const correctedAngle =
+    (
+      rawAngle -
+      angleOffset
+    ) *
+    LEAN_SIGN;
 
 
-let lx = 0;
+  /*
+     Angle affiché directement.
+  */
 
-let ly = 0;
+  angle =
+    correctedAngle;
 
-let lz = 0;
 
+  /* ---------------------------------------------------
+     ACCÉLÉRATION LINÉAIRE
+  --------------------------------------------------- */
 
-if(
-a &&
-a.x !== null &&
-a.y !== null &&
-a.z !== null
-){
 
-lx =
-(a.x || 0) /
-9.80665;
+  const a =
+    e.acceleration;
 
-ly =
-(a.y || 0) /
-9.80665;
 
-lz =
-(a.z || 0) /
-9.80665;
+  let lx = 0;
 
-}
+  let ly = 0;
 
+  let lz = 0;
 
-raw.lx = lx;
-raw.ly = ly;
-raw.lz = lz;
 
+  if(
+    a &&
+    a.x !== null &&
+    a.y !== null &&
+    a.z !== null
+  ){
 
-/*
-   Pour l'instant Z.
+    lx =
+      (a.x || 0) /
+      9.80665;
 
-   On pourra déterminer le bon axe
-   après ton essai.
-*/
+    ly =
+      (a.y || 0) /
+      9.80665;
 
-const measuredLong =
-lz *
-LONG_SIGN;
+    lz =
+      (a.z || 0) /
+      9.80665;
 
+  }
 
-/*
-   Filtre léger.
-*/
 
-longAccel =
-ACCEL_FILTER *
-longAccel +
+  raw.lx = lx;
 
-(1-ACCEL_FILTER) *
-measuredLong;
+  raw.ly = ly;
 
+  raw.lz = lz;
 
-/* -----------------------------------------------------
-   CALIBRATION
------------------------------------------------------ */
 
-if(calibrating){
+  /*
+     Pour l'instant on utilise Z
+     comme accélération longitudinale.
 
-calibAngle +=
-rawAngle;
+     Le diagnostic nous permettra
+     de vérifier si c'est bien le bon axe.
+  */
 
-calibLong +=
-measuredLong;
+  const measuredLong =
+    lz *
+    LONG_SIGN;
 
-calibN++;
 
-}
+  longAccel =
+    measuredLong;
 
 
-/* -----------------------------------------------------
-   ANGLE
------------------------------------------------------ */
+  /* ---------------------------------------------------
+     CALIBRATION
+  --------------------------------------------------- */
 
-const corrected =
-(
-rawAngle -
-angleOffset
-)
-*
-LEAN_SIGN;
+  if(calibrating){
 
+    calibAngleSum +=
+      rawAngle;
 
-/*
-   Filtre très léger.
-*/
 
-angle =
-ANGLE_FILTER *
-angle +
+    calibLongSum +=
+      measuredLong;
 
-(1-ANGLE_FILTER) *
-corrected;
 
+    calibN++;
 
-/* -----------------------------------------------------
-   MAX
------------------------------------------------------ */
+  }
 
-if(angle > maxRight){
 
-maxRight =
-angle;
+  /* ---------------------------------------------------
+     MAXIMUMS
+  --------------------------------------------------- */
 
-}
+  if(angle > maxRight){
 
+    maxRight =
+      angle;
 
-if(angle < maxLeft){
+  }
 
-maxLeft =
-angle;
 
-}
+  if(angle < maxLeft){
 
+    maxLeft =
+      angle;
 
-if(longAccel > maxAccel){
+  }
 
-maxAccel =
-longAccel;
 
-}
+  if(longAccel > maxAccel){
 
+    maxAccel =
+      longAccel;
 
-if(longAccel < maxBrake){
+  }
 
-maxBrake =
-longAccel;
 
-}
+  if(longAccel < maxBrake){
 
+    maxBrake =
+      longAccel;
 
-/* -----------------------------------------------------
-   FREQUENCE
------------------------------------------------------ */
+  }
 
-const now =
-performance.now();
 
+  /* ---------------------------------------------------
+     FRÉQUENCE
+  --------------------------------------------------- */
 
-hzCount++;
+  const now =
+    performance.now();
 
 
-if(
-now - hzTimer >= 1000
-){
+  hzCount++;
 
-hz =
-Math.round(
-hzCount *
-1000 /
-(now-hzTimer)
-);
 
-hzCount = 0;
+  if(
+    now - hzTimer >= 1000
+  ){
 
-hzTimer = now;
+    hz =
+      Math.round(
+        hzCount *
+        1000 /
+        (now - hzTimer)
+      );
 
-}
+
+    hzCount = 0;
+
+    hzTimer =
+      now;
+
+  }
 
 }
 
@@ -1250,81 +1236,110 @@ hzTimer = now;
 
 function render(){
 
-$('angle').textContent =
-signed(
-angle,
-1
-) + '°';
+  /*
+     ANGLE
+  */
+
+  $('angle').textContent =
+    signed(
+      angle,
+      1
+    ) + '°';
 
 
-$('maxRight').textContent =
-signed(
-maxRight,
-1
-) + '°';
+  /*
+     MAX
+  */
+
+  $('maxRight').textContent =
+    signed(
+      maxRight,
+      1
+    ) + '°';
 
 
-$('maxLeft').textContent =
-signed(
-maxLeft,
-1
-) + '°';
+  $('maxLeft').textContent =
+    signed(
+      maxLeft,
+      1
+    ) + '°';
 
 
-$('gLong').textContent =
-signed(
-longAccel,
-2
-) + ' G';
+  /*
+     ACCÉLÉRATION
+  */
+
+  $('gLong').textContent =
+    signed(
+      longAccel,
+      2
+    ) + ' G';
 
 
-$('maxAccel').textContent =
-signed(
-maxAccel,
-2
-);
+  $('maxAccel').textContent =
+    signed(
+      maxAccel,
+      2
+    );
 
 
-$('maxBrake').textContent =
-signed(
-maxBrake,
-2
-);
+  $('maxBrake').textContent =
+    signed(
+      maxBrake,
+      2
+    );
 
 
-$('gTotal').textContent =
-fmt(
-gTotal,
-2
-) + ' G';
+  /*
+     G TOTAL
+  */
+
+  $('gTotal').textContent =
+    fmt(
+      gTotal,
+      2
+    ) + ' G';
 
 
-$('hz').textContent =
-hz + ' Hz';
+  /*
+     FRÉQUENCE
+  */
+
+  $('hz').textContent =
+    hz + ' Hz';
 
 
-updateCursor(
-angle
-);
+  /*
+     CURSEUR
+  */
+
+  updateCursor(
+    angle
+  );
 
 
-/*
-   Diagnostic brut
-*/
+  /*
+     DIAGNOSTIC
+  */
 
-$('raw').textContent =
+  const rawAngle =
+    Math.atan2(
+      raw.x,
+      raw.y
+    ) *
+    180 /
+    Math.PI;
+
+
+  $('raw').textContent =
 
 `ANGLE BRUT
-${fmt(
-Math.atan2(raw.x,raw.y)
-*180/Math.PI,
-2
-)}°
+${fmt(rawAngle,2)}°
 
-ANGLE AFFICHE
+ANGLE APRÈS ZÉRO
 ${fmt(angle,2)}°
 
-ACCELERATION AVEC GRAVITE
+ACCÉLÉRATION AVEC GRAVITÉ
 
 X = ${fmt(raw.x,3)} G
 Y = ${fmt(raw.y,3)} G
@@ -1334,14 +1349,14 @@ G TOTAL
 ${fmt(gTotal,3)} G
 
 
-ACCELERATION LINEAIRE
+ACCÉLÉRATION LINÉAIRE
 
 X = ${fmt(raw.lx,3)} G
 Y = ${fmt(raw.ly,3)} G
 Z = ${fmt(raw.lz,3)} G
 
 
-ACCELERATION LONGITUDINALE
+ACCÉLÉRATION LONGITUDINALE
 ${fmt(longAccel,3)} G
 
 
@@ -1350,7 +1365,11 @@ ${fmt(angleOffset,2)}°
 
 
 OFFSET LONGITUDINAL
-${fmt(longOffset,3)} G`;
+${fmt(longOffset,3)} G
+
+
+LEAN SIGN
+${LEAN_SIGN}`;
 
 }
 
@@ -1361,199 +1380,236 @@ ${fmt(longOffset,3)} G`;
 
 async function requestWakeLock(){
 
-try{
+  try{
 
-if(
-'wakeLock' in navigator
-){
+    if(
+      'wakeLock' in navigator
+    ){
 
-wakeLock =
-await navigator.wakeLock.request(
-'screen'
-);
+      wakeLock =
+        await navigator.wakeLock.request(
+          'screen'
+        );
 
-}
+    }
 
-}catch(e){}
+  }
+  catch(e){
+
+    /* Rien de grave */
+
+  }
 
 }
 
 
 document.addEventListener(
-'visibilitychange',
-async () => {
+  'visibilitychange',
+  async () => {
 
-if(
-running &&
-document.visibilityState === 'visible'
-){
+    if(
+      running &&
+      document.visibilityState === 'visible'
+    ){
 
-await requestWakeLock();
+      await requestWakeLock();
 
-}
+    }
 
-});
+  }
+);
 
 
 /* =====================================================
-   DEMARRAGE
+   DÉMARRAGE
 ===================================================== */
 
 async function startSensors(){
 
-try{
+  try{
 
-if(
-typeof DeviceMotionEvent !== 'undefined' &&
-typeof DeviceMotionEvent.requestPermission === 'function'
-){
+    /*
+       Permission iPhone/iPad
+    */
 
-const p =
-await DeviceMotionEvent.requestPermission();
+    if(
+      typeof DeviceMotionEvent !== 'undefined' &&
+      typeof DeviceMotionEvent.requestPermission === 'function'
+    ){
 
-
-if(p !== 'granted'){
-
-throw new Error(
-'Permission capteurs refusée.'
-);
-
-}
-
-}
+      const permission =
+        await DeviceMotionEvent.requestPermission();
 
 
-window.addEventListener(
-'devicemotion',
-handleMotion,
-{
-passive:true
-}
-);
+      if(permission !== 'granted'){
+
+        throw new Error(
+          'Permission capteurs refusée.'
+        );
+
+      }
+
+    }
 
 
-running = true;
+    /*
+       Évite d'ajouter plusieurs fois
+       le même listener.
+    */
+
+    window.addEventListener(
+      'devicemotion',
+      handleMotion,
+      {
+        passive:true
+      }
+    );
 
 
-setStatus(
-'Capteurs actifs',
-true
-);
+    running = true;
 
 
-$('start').textContent =
-'CAPTEURS ACTIFS';
+    setStatus(
+      'Capteurs actifs',
+      true
+    );
 
 
-$('start').disabled =
-true;
+    $('start').textContent =
+      'CAPTEURS ACTIFS';
 
 
-startCalibration();
+    $('start').disabled =
+      true;
 
 
-requestWakeLock();
+    /*
+       Zéro automatique
+    */
+
+    startCalibration();
 
 
-}catch(err){
+    requestWakeLock();
 
-setStatus(
-'Permission refusée'
-);
+  }
+  catch(err){
+
+    setStatus(
+      'Permission refusée'
+    );
 
 
-alert(
-'Impossible d’accéder aux capteurs : ' +
-err.message
-);
+    alert(
+      'Impossible d’accéder aux capteurs : ' +
+      err.message
+    );
 
-}
+  }
 
 }
 
 
 /* =====================================================
-   BOUTONS
+   BOUTON ZÉRO
+===================================================== */
+
+$('zero').addEventListener(
+  'click',
+  () => {
+
+    if(running){
+
+      startCalibration();
+
+    }
+    else{
+
+      alert(
+        'Démarre d’abord les capteurs.'
+      );
+
+    }
+
+  }
+);
+
+
+/* =====================================================
+   RESET MAX
+===================================================== */
+
+$('reset').addEventListener(
+  'click',
+  () => {
+
+    maxRight = 0;
+
+    maxLeft = 0;
+
+    maxAccel = 0;
+
+    maxBrake = 0;
+
+  }
+);
+
+
+/* =====================================================
+   START
 ===================================================== */
 
 $('start').addEventListener(
-'click',
-startSensors
+  'click',
+  startSensors
 );
-
-
-$('zero').addEventListener(
-'click',
-() => {
-
-if(running){
-
-startCalibration();
-
-}else{
-
-alert(
-'Démarre d’abord les capteurs.'
-);
-
-}
-
-});
-
-
-$('reset').addEventListener(
-'click',
-() => {
-
-maxRight = 0;
-
-maxLeft = 0;
-
-maxAccel = 0;
-
-maxBrake = 0;
-
-});
-
-
-$('screen').addEventListener(
-'click',
-async () => {
-
-try{
-
-if(!document.fullscreenElement){
-
-await document.documentElement
-.requestFullscreen();
-
-}else{
-
-await document.exitFullscreen();
-
-}
-
-}catch(e){
-
-alert(
-'Plein écran indisponible.'
-);
-
-}
-
-});
 
 
 /* =====================================================
-   INIT
+   PLEIN ÉCRAN
+===================================================== */
+
+$('screen').addEventListener(
+  'click',
+  async () => {
+
+    try{
+
+      if(!document.fullscreenElement){
+
+        await document.documentElement
+          .requestFullscreen();
+
+      }
+      else{
+
+        await document.exitFullscreen();
+
+      }
+
+    }
+    catch(e){
+
+      alert(
+        'Plein écran indisponible dans ce navigateur.'
+      );
+
+    }
+
+  }
+);
+
+
+/* =====================================================
+   INITIALISATION
 ===================================================== */
 
 render();
 
 
 setInterval(
-render,
-RENDER_MS
+  render,
+  RENDER_MS
 );
 
 </script>
