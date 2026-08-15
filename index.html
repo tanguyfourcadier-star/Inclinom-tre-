@@ -12,7 +12,6 @@
 
 <title>Inclinomètre Moto</title>
 
-
 <style>
 
 :root{
@@ -23,6 +22,7 @@
   --accent:#43d17a;
   --yellow:#ffcc33;
   --red:#ff4d4d;
+  --blue:#5aa9ff;
   --line:#25303c;
 }
 
@@ -107,7 +107,9 @@ h1{
 }
 
 
-/* ================= ANGLE ================= */
+/* =====================================================
+   ANGLE
+===================================================== */
 
 .angle{
   font-size:clamp(75px,22vw,125px);
@@ -125,7 +127,9 @@ h1{
 }
 
 
-/* ================= BARRE ================= */
+/* =====================================================
+   BARRE
+===================================================== */
 
 .gauge{
   position:relative;
@@ -145,16 +149,12 @@ h1{
     to right,
     var(--red) 0%,
     var(--red) 5%,
-
     var(--yellow) 5%,
     var(--yellow) 15%,
-
     var(--accent) 15%,
     var(--accent) 85%,
-
     var(--yellow) 85%,
     var(--yellow) 95%,
-
     var(--red) 95%,
     var(--red) 100%
   );
@@ -201,27 +201,27 @@ h1{
   left:0;
   right:0;
   top:58px;
-
   display:flex;
   justify-content:space-between;
-
   font-size:10px;
   color:var(--muted);
 }
 
 
-/* ================= MAX ================= */
+/* =====================================================
+   MAX
+===================================================== */
 
 .maxrow{
   display:flex;
   justify-content:space-between;
   margin-top:18px;
-  padding:0 15%;
+  padding:0 8%;
 }
 
 .maxbox{
   text-align:center;
-  min-width:100px;
+  min-width:120px;
 }
 
 .maxv{
@@ -232,7 +232,44 @@ h1{
 }
 
 
-/* ================= AUTRES ================= */
+/* =====================================================
+   VITESSE
+===================================================== */
+
+.speed{
+  font-size:42px;
+  font-weight:700;
+  font-variant-numeric:tabular-nums;
+  margin-top:4px;
+}
+
+.speedUnit{
+  font-size:14px;
+  color:var(--muted);
+}
+
+
+/* =====================================================
+   INFOS SESSION
+===================================================== */
+
+.sessionValue{
+  font-size:25px;
+  font-weight:650;
+  font-variant-numeric:tabular-nums;
+  margin-top:5px;
+}
+
+.sessionSmall{
+  font-size:11px;
+  color:var(--muted);
+  margin-top:3px;
+}
+
+
+/* =====================================================
+   AUTRES
+===================================================== */
 
 .reading{
   font-size:29px;
@@ -279,9 +316,38 @@ button.danger{
   color:#ffb9b9;
 }
 
-button:disabled{
-  opacity:.65;
+button.blue{
+  background:#1d3855;
+  color:#bcdcff;
 }
+
+button:disabled{
+  opacity:.5;
+}
+
+
+/* =====================================================
+   GRAPHIQUE
+===================================================== */
+
+.chartWrap{
+  width:100%;
+  overflow:hidden;
+  margin-top:12px;
+}
+
+canvas{
+  display:block;
+  width:100%;
+  height:300px;
+  background:#0b1017;
+  border-radius:12px;
+}
+
+
+/* =====================================================
+   NOTE
+===================================================== */
 
 .note{
   font-size:12px;
@@ -302,6 +368,7 @@ details{
   color:#b9c5d2;
 }
 
+
 @media(max-width:420px){
 
   .grid{
@@ -316,6 +383,14 @@ details{
     font-size:25px;
   }
 
+  .speed{
+    font-size:36px;
+  }
+
+  .maxrow{
+    padding:0 2%;
+  }
+
 }
 
 </style>
@@ -328,6 +403,10 @@ details{
 
 <div class="wrap">
 
+
+<!-- =====================================================
+     EN-TÊTE
+===================================================== -->
 
 <div class="top">
 
@@ -344,7 +423,6 @@ details{
   </div>
 
 </div>
-
 
 
 <div class="grid">
@@ -386,7 +464,6 @@ details{
          class="cursor">
     </div>
 
-
     <div class="gaugeLabels">
 
       <span>−50°</span>
@@ -404,6 +481,7 @@ details{
 
   <div class="maxrow">
 
+
     <div class="maxbox">
 
       <div class="label">
@@ -413,6 +491,11 @@ details{
       <div id="maxLeft"
            class="maxv">
         0°
+      </div>
+
+      <div id="speedMaxLeft"
+           class="sessionSmall">
+        à 0 km/h
       </div>
 
     </div>
@@ -429,22 +512,109 @@ details{
         0°
       </div>
 
+      <div id="speedMaxRight"
+           class="sessionSmall">
+        à 0 km/h
+      </div>
+
     </div>
+
 
   </div>
 
 </section>
 
 
+<!-- =====================================================
+     VITESSE
+===================================================== -->
+
+<section class="card main">
+
+  <div class="label">
+    Vitesse GPS
+  </div>
+
+  <div id="speed"
+       class="speed">
+    0
+  </div>
+
+  <div class="speedUnit">
+    km/h
+  </div>
+
+</section>
+
 
 <!-- =====================================================
-     FREQUENCE
+     INFOS SESSION
 ===================================================== -->
 
 <section class="card">
 
   <div class="label">
-    Fréquence
+    Vitesse max
+  </div>
+
+  <div id="maxSpeed"
+       class="sessionValue">
+    0 km/h
+  </div>
+
+</section>
+
+
+<section class="card">
+
+  <div class="label">
+    Distance
+  </div>
+
+  <div id="distance"
+       class="sessionValue">
+    0.00 km
+  </div>
+
+</section>
+
+
+<section class="card">
+
+  <div class="label">
+    Durée session
+  </div>
+
+  <div id="duration"
+       class="sessionValue">
+    00:00
+  </div>
+
+</section>
+
+
+<section class="card">
+
+  <div class="label">
+    Points enregistrés
+  </div>
+
+  <div id="points"
+       class="sessionValue">
+    0
+  </div>
+
+</section>
+
+
+<!-- =====================================================
+     G TOTAL / FREQUENCE
+===================================================== -->
+
+<section class="card">
+
+  <div class="label">
+    Fréquence capteur
   </div>
 
   <div id="hz"
@@ -454,16 +624,11 @@ details{
 
   <div id="gyroState"
        class="small">
-    Compensation active
+    En attente
   </div>
 
 </section>
 
-
-
-<!-- =====================================================
-     G TOTAL
-===================================================== -->
 
 <section class="card">
 
@@ -476,12 +641,7 @@ details{
     1.00 G
   </div>
 
-  <div class="small">
-    gravité + accélérations
-  </div>
-
 </section>
-
 
 
 <!-- =====================================================
@@ -497,30 +657,89 @@ details{
     <button
       id="start"
       class="primary">
+
       DÉMARRER LES CAPTEURS
+
     </button>
+
+
+    <button
+      id="session"
+      class="blue"
+      disabled>
+
+      ▶ DÉMARRER SESSION
+
+    </button>
+
 
     <button
       id="zero"
       class="warn">
+
       FAIRE LE ZÉRO
+
     </button>
+
 
     <button
       id="reset"
       class="danger">
+
       RESET MAX
+
     </button>
+
 
     <button
       id="screen">
+
       PLEIN ÉCRAN
+
+    </button>
+
+
+    <button
+      id="download"
+      class="blue"
+      disabled>
+
+      💾 EXPORTER CSV
+
     </button>
 
   </div>
 
 </section>
 
+
+<!-- =====================================================
+     GRAPHIQUE
+===================================================== -->
+
+<section
+  class="card"
+  style="grid-column:1/-1">
+
+  <div class="label">
+    Analyse de la session
+  </div>
+
+  <div class="small">
+
+    Angle = courbe principale |
+    Vitesse = courbe secondaire
+
+  </div>
+
+
+  <div class="chartWrap">
+
+    <canvas id="chart"></canvas>
+
+  </div>
+
+</section>
 
 
 <!-- =====================================================
@@ -535,7 +754,7 @@ details{
     Diagnostic
   </div>
 
-  <details open>
+  <details>
 
     <summary>
       Données capteur
@@ -552,30 +771,24 @@ details{
 
 </section>
 
-</div>
 
+</div>
 
 
 <div class="note">
 
-  ⚠️ Prototype expérimental.
+⚠️ Prototype expérimental basé sur les capteurs
+du téléphone et le GPS.
 
-  Le zéro mémorise la position réelle
-  du téléphone sur son support.
+La vitesse GPS peut avoir un délai et une précision
+variable selon les conditions de réception.
 
-  L'axe longitudinal est toujours calculé
-  automatiquement pour la compensation.
-
-  L'affichage de l'accélération longitudinale
-  a été retiré volontairement.
-
-  Ne manipule pas le téléphone en roulant.
+Ne manipule pas le téléphone en roulant.
 
 </div>
 
 
 </div>
-
 
 
 <script>
@@ -587,43 +800,27 @@ details{
    CONFIGURATION
 ===================================================== */
 
-
-/*
-   droite = positif
-   gauche = négatif
-
-   Cette valeur fait partie du calcul réel.
-*/
-
 const LEAN_SIGN = 1;
 
-
-/*
-   Axe longitudinal conservé dans le calcul
-   interne pour la géométrie du support.
-
-   Il n'est simplement plus affiché.
-*/
-
-const LONG_SIGN = 1;
-
-
-/*
-   Rafraîchissement rapide.
-*/
-
 const RENDER_MS = 50;
-
-
-/*
-   Durée de calibration.
-*/
 
 const CALIBRATION_MS = 1200;
 
 
+/*
+   Intervalle d'enregistrement.
+
+   100 ms = 10 points par seconde.
+
+   C'est largement suffisant pour une analyse de
+   session sans créer un fichier énorme.
+*/
+
+const RECORD_INTERVAL_MS = 100;
+
+
 /* =====================================================
-   VARIABLES
+   VARIABLES CAPTEURS
 ===================================================== */
 
 let running = false;
@@ -631,24 +828,36 @@ let running = false;
 let calibrating = false;
 
 
-/* Angle */
+/* =====================================================
+   ANGLE
+===================================================== */
 
 let angle = 0;
-
-
-/* Maximums */
 
 let maxRight = 0;
 
 let maxLeft = 0;
 
 
-/* G total */
+/*
+   Vitesse au moment du maximum.
+*/
+
+let speedAtMaxRight = 0;
+
+let speedAtMaxLeft = 0;
+
+
+/* =====================================================
+   G TOTAL
+===================================================== */
 
 let gTotal = 1;
 
 
-/* Fréquence */
+/* =====================================================
+   FREQUENCE
+===================================================== */
 
 let hz = 0;
 
@@ -659,13 +868,8 @@ let hzTimer =
 
 
 /* =====================================================
-   AXES
+   AXES DU SUPPORT
 ===================================================== */
-
-
-/*
-   Verticale mémorisée au zéro.
-*/
 
 let verticalAxis = {
   x:0,
@@ -673,25 +877,11 @@ let verticalAxis = {
   z:0
 };
 
-
-/*
-   Axe latéral du téléphone.
-*/
-
 let lateralAxis = {
   x:1,
   y:0,
   z:0
 };
-
-
-/*
-   Axe longitudinal du support.
-
-   Il est toujours calculé car il est utile
-   pour conserver la géométrie et pourra servir
-   pour une évolution ultérieure.
-*/
 
 let longitudinalAxis = {
   x:0,
@@ -735,6 +925,46 @@ let raw = {
 
 
 /* =====================================================
+   GPS
+===================================================== */
+
+let gpsAvailable = false;
+
+let gpsWatchId = null;
+
+let gpsSpeed = 0;
+
+let gpsAccuracy = 0;
+
+let gpsLat = null;
+
+let gpsLon = null;
+
+let lastGpsLat = null;
+
+let lastGpsLon = null;
+
+
+/* =====================================================
+   SESSION
+===================================================== */
+
+let sessionActive = false;
+
+let sessionStart = 0;
+
+let sessionData = [];
+
+let sessionTimer = null;
+
+let lastRecordTime = 0;
+
+let sessionMaxSpeed = 0;
+
+let sessionDistance = 0;
+
+
+/* =====================================================
    OUTILS
 ===================================================== */
 
@@ -762,9 +992,9 @@ function signed(value, decimals){
 }
 
 
-/*
-   Produit scalaire.
-*/
+/* =====================================================
+   VECTORIEL
+===================================================== */
 
 function dot(a,b){
 
@@ -777,10 +1007,6 @@ function dot(a,b){
 }
 
 
-/*
-   Norme.
-*/
-
 function norm(v){
 
   return Math.sqrt(
@@ -791,10 +1017,6 @@ function norm(v){
 
 }
 
-
-/*
-   Normalisation.
-*/
 
 function normalize(v){
 
@@ -812,17 +1034,17 @@ function normalize(v){
   }
 
   return {
+
     x:v.x/n,
+
     y:v.y/n,
+
     z:v.z/n
+
   };
 
 }
 
-
-/*
-   Produit vectoriel.
-*/
 
 function cross(a,b){
 
@@ -835,6 +1057,58 @@ function cross(a,b){
     z:a.x*b.y - a.y*b.x
 
   };
+
+}
+
+
+/* =====================================================
+   DISTANCE GPS
+===================================================== */
+
+function distanceMeters(
+  lat1,
+  lon1,
+  lat2,
+  lon2
+){
+
+  const R = 6371000;
+
+  const p1 =
+    lat1 * Math.PI / 180;
+
+  const p2 =
+    lat2 * Math.PI / 180;
+
+  const dp =
+    (lat2-lat1) *
+    Math.PI / 180;
+
+  const dl =
+    (lon2-lon1) *
+    Math.PI / 180;
+
+
+  const a =
+    Math.sin(dp/2) *
+    Math.sin(dp/2) +
+
+    Math.cos(p1) *
+    Math.cos(p2) *
+
+    Math.sin(dl/2) *
+    Math.sin(dl/2);
+
+
+  const c =
+    2 *
+    Math.atan2(
+      Math.sqrt(a),
+      Math.sqrt(1-a)
+    );
+
+
+  return R*c;
 
 }
 
@@ -860,75 +1134,154 @@ function setStatus(
 
 
 /* =====================================================
-   CALCUL AXES DU SUPPORT
+   GPS
 ===================================================== */
 
-function calculateMountAxes(){
+function startGPS(){
 
-  /*
-     Verticale moyenne.
-  */
+  if(!navigator.geolocation){
 
-  const g =
-    normalize(
-      calibrationGravity
-    );
+    $('speed').textContent =
+      'GPS';
 
+    $('gyroState').textContent =
+      'GPS non disponible';
 
-  /*
-     Axe latéral.
-  */
-
-  lateralAxis = {
-    x:1,
-    y:0,
-    z:0
-  };
-
-
-  /*
-     Verticale réelle du support.
-  */
-
-  verticalAxis = g;
-
-
-  /*
-     Axe longitudinal :
-
-       verticale × latéral
-  */
-
-  let longitudinal =
-    cross(
-      verticalAxis,
-      lateralAxis
-    );
-
-
-  longitudinal =
-    normalize(
-      longitudinal
-    );
-
-
-  if(
-    norm(longitudinal) < 0.5
-  ){
-
-    longitudinalAxis = {
-      x:0,
-      y:0,
-      z:1
-    };
+    return;
 
   }
-  else{
 
-    longitudinalAxis =
-      longitudinal;
 
-  }
+  gpsWatchId =
+    navigator.geolocation.watchPosition(
+
+      position => {
+
+        gpsAvailable = true;
+
+
+        const coords =
+          position.coords;
+
+
+        /*
+           Vitesse GPS en m/s.
+
+           Certains navigateurs peuvent retourner null.
+        */
+
+        if(
+          coords.speed !== null &&
+          Number.isFinite(coords.speed)
+        ){
+
+          gpsSpeed =
+            Math.max(
+              0,
+              coords.speed * 3.6
+            );
+
+        }
+
+
+        /*
+           Si speed n'est pas disponible,
+           on conserve la dernière valeur.
+        */
+
+
+        gpsAccuracy =
+          coords.accuracy || 0;
+
+
+        gpsLat =
+          coords.latitude;
+
+
+        gpsLon =
+          coords.longitude;
+
+
+        /*
+           Distance.
+
+           On ignore les positions très imprécises.
+        */
+
+        if(
+          lastGpsLat !== null &&
+          lastGpsLon !== null &&
+          gpsAccuracy < 50
+        ){
+
+          const d =
+            distanceMeters(
+              lastGpsLat,
+              lastGpsLon,
+              gpsLat,
+              gpsLon
+            );
+
+
+          /*
+             On évite les gros sauts GPS.
+          */
+
+          if(d < 100){
+
+            sessionDistance += d;
+
+          }
+
+        }
+
+
+        lastGpsLat =
+          gpsLat;
+
+        lastGpsLon =
+          gpsLon;
+
+
+        if(sessionActive){
+
+          if(
+            gpsSpeed >
+            sessionMaxSpeed
+          ){
+
+            sessionMaxSpeed =
+              gpsSpeed;
+
+          }
+
+        }
+
+      },
+
+
+      error => {
+
+        gpsAvailable = false;
+
+        $('gyroState').textContent =
+          'GPS : ' +
+          error.message;
+
+      },
+
+
+      {
+
+        enableHighAccuracy:true,
+
+        maximumAge:200,
+
+        timeout:5000
+
+      }
+
+    );
 
 }
 
@@ -944,21 +1297,16 @@ function startCalibration(){
   calibrationCount = 0;
 
   calibrationGravity = {
+
     x:0,
     y:0,
     z:0
+
   };
 
 
   $('gyroState').textContent =
     'Calibration...';
-
-
-  $('raw').textContent =
-    'CALIBRATION...\n\n' +
-    'Moto droite et immobile.\n' +
-    'Téléphone dans sa position définitive.\n\n' +
-    'Ne touche à rien pendant 1,2 seconde.';
 
 
   setTimeout(
@@ -993,7 +1341,57 @@ function finishCalibration(){
     calibrationCount;
 
 
-  calculateMountAxes();
+  /*
+     Verticale du support.
+  */
+
+  verticalAxis =
+    normalize(
+      calibrationGravity
+    );
+
+
+  /*
+     Axe latéral.
+
+     On conserve le même principe
+     que la version validée.
+  */
+
+  lateralAxis = {
+
+    x:1,
+    y:0,
+    z:0
+
+  };
+
+
+  /*
+     Axe longitudinal.
+  */
+
+  let longitudinal =
+    cross(
+      verticalAxis,
+      lateralAxis
+    );
+
+
+  longitudinal =
+    normalize(
+      longitudinal
+    );
+
+
+  if(
+    norm(longitudinal) > 0.5
+  ){
+
+    longitudinalAxis =
+      longitudinal;
+
+  }
 
 
   calibrating = false;
@@ -1006,24 +1404,23 @@ function finishCalibration(){
 
 
   $('raw').textContent =
+    'Calibration terminée.\n\n' +
 
-'Calibration terminée.\n\n' +
+    'AXE VERTICAL\n' +
+    'X = ' +
+    fmt(verticalAxis.x,3) +
+    '\nY = ' +
+    fmt(verticalAxis.y,3) +
+    '\nZ = ' +
+    fmt(verticalAxis.z,3) +
 
-'AXE VERTICAL\n' +
-'X = ' +
-fmt(verticalAxis.x,3) +
-'\nY = ' +
-fmt(verticalAxis.y,3) +
-'\nZ = ' +
-fmt(verticalAxis.z,3) +
-
-'\n\nAXE LONGITUDINAL\n' +
-'X = ' +
-fmt(longitudinalAxis.x,3) +
-'\nY = ' +
-fmt(longitudinalAxis.y,3) +
-'\nZ = ' +
-fmt(longitudinalAxis.z,3);
+    '\n\nAXE LONGITUDINAL\n' +
+    'X = ' +
+    fmt(longitudinalAxis.x,3) +
+    '\nY = ' +
+    fmt(longitudinalAxis.y,3) +
+    '\nZ = ' +
+    fmt(longitudinalAxis.z,3);
 
 }
 
@@ -1065,7 +1462,7 @@ function calculateAngleFromGravity(
 
 
 /* =====================================================
-   CAPTEURS
+   CAPTEUR DE MOUVEMENT
 ===================================================== */
 
 function handleMotion(event){
@@ -1074,10 +1471,6 @@ function handleMotion(event){
     return;
   }
 
-
-  /*
-     ACCÉLÉRATION AVEC GRAVITÉ
-  */
 
   const total =
     event.accelerationIncludingGravity;
@@ -1121,10 +1514,7 @@ function handleMotion(event){
 
 
   /*
-     ACCÉLÉRATION DYNAMIQUE
-
-     Elle reste utilisée par le coeur du calcul
-     pour corriger la mesure en virage.
+     Accélération dynamique.
   */
 
   const dynamic =
@@ -1171,7 +1561,7 @@ function handleMotion(event){
 
 
   /*
-     G TOTAL
+     G total.
   */
 
   gTotal =
@@ -1181,7 +1571,10 @@ function handleMotion(event){
 
 
   /*
-     GRAVITÉ ESTIMÉE
+     Estimation de la gravité.
+
+     Cette partie reste identique dans son principe
+     à la version que tu as validée.
   */
 
   const gravityVector = {
@@ -1212,7 +1605,7 @@ function handleMotion(event){
 
 
   /*
-     CALIBRATION
+     Calibration.
   */
 
   if(calibrating){
@@ -1243,7 +1636,7 @@ function handleMotion(event){
 
 
   /*
-     ANGLE COMPENSÉ
+     ANGLE
   */
 
   angle =
@@ -1255,20 +1648,41 @@ function handleMotion(event){
 
 
   /*
-     MAX ANGLE
+     MAX GAUCHE
   */
 
-  if(angle > maxRight){
-    maxRight = angle;
-  }
+  if(
+    angle < maxLeft
+  ){
 
-  if(angle < maxLeft){
-    maxLeft = angle;
+    maxLeft =
+      angle;
+
+    speedAtMaxLeft =
+      gpsSpeed;
+
   }
 
 
   /*
-     FRÉQUENCE
+     MAX DROITE
+  */
+
+  if(
+    angle > maxRight
+  ){
+
+    maxRight =
+      angle;
+
+    speedAtMaxRight =
+      gpsSpeed;
+
+  }
+
+
+  /*
+     Fréquence.
   */
 
   const now =
@@ -1300,27 +1714,231 @@ function handleMotion(event){
 
 
 /* =====================================================
-   COULEUR DE L'ANGLE
+   SESSION
+===================================================== */
+
+function startSession(){
+
+  if(!running){
+
+    alert(
+      'Démarre d’abord les capteurs.'
+    );
+
+    return;
+
+  }
+
+
+  sessionActive = true;
+
+  sessionStart =
+    performance.now();
+
+  lastRecordTime = 0;
+
+  sessionData = [];
+
+  sessionMaxSpeed = 0;
+
+  sessionDistance = 0;
+
+
+  /*
+     On repart de la position GPS actuelle
+     pour le calcul de distance.
+  */
+
+  lastGpsLat =
+    gpsLat;
+
+  lastGpsLon =
+    gpsLon;
+
+
+  /*
+     Reset des maximums de session.
+  */
+
+  maxRight = 0;
+
+  maxLeft = 0;
+
+  speedAtMaxRight = 0;
+
+  speedAtMaxLeft = 0;
+
+
+  $('session').textContent =
+    '■ ARRÊTER SESSION';
+
+  $('session').classList.remove(
+    'blue'
+  );
+
+  $('session').classList.add(
+    'danger'
+  );
+
+
+  $('gyroState').textContent =
+    'SESSION ENREGISTRÉE';
+
+}
+
+
+function stopSession(){
+
+  sessionActive = false;
+
+
+  $('session').textContent =
+    '▶ DÉMARRER SESSION';
+
+  $('session').classList.remove(
+    'danger'
+  );
+
+  $('session').classList.add(
+    'blue'
+  );
+
+
+  $('download').disabled =
+    sessionData.length === 0;
+
+
+  $('gyroState').textContent =
+    'Session terminée';
+
+
+  drawChart();
+
+}
+
+
+/* =====================================================
+   ENREGISTREMENT
+===================================================== */
+
+function recordSession(){
+
+  if(!sessionActive){
+    return;
+  }
+
+
+  const now =
+    performance.now();
+
+
+  if(
+    now - lastRecordTime <
+    RECORD_INTERVAL_MS
+  ){
+
+    return;
+
+  }
+
+
+  lastRecordTime =
+    now;
+
+
+  const elapsed =
+    (now - sessionStart) /
+    1000;
+
+
+  const item = {
+
+    time:elapsed,
+
+    angle:angle,
+
+    speed:gpsSpeed,
+
+    lat:gpsLat,
+
+    lon:gpsLon,
+
+    g:gTotal
+
+  };
+
+
+  sessionData.push(
+    item
+  );
+
+
+  /*
+     Vitesse maximale.
+  */
+
+  if(
+    gpsSpeed >
+    sessionMaxSpeed
+  ){
+
+    sessionMaxSpeed =
+      gpsSpeed;
+
+  }
+
+}
+
+
+/* =====================================================
+   FORMAT TEMPS
+===================================================== */
+
+function formatDuration(seconds){
+
+  const s =
+    Math.floor(seconds);
+
+  const minutes =
+    Math.floor(s / 60);
+
+  const secs =
+    s % 60;
+
+
+  return (
+    String(minutes).padStart(2,'0') +
+    ':' +
+    String(secs).padStart(2,'0')
+  );
+
+}
+
+
+/* =====================================================
+   COULEUR ANGLE
 ===================================================== */
 
 function updateAngleColor(){
 
-  const absAngle =
+  const abs =
     Math.abs(angle);
 
 
-  if(absAngle >= 45){
+  if(abs >= 45){
 
     $('angle').style.color =
       'var(--red)';
 
   }
-  else if(absAngle >= 35){
+
+  else if(abs >= 35){
 
     $('angle').style.color =
       'var(--yellow)';
 
   }
+
   else{
 
     $('angle').style.color =
@@ -1390,7 +2008,7 @@ function updateCursor(){
 function render(){
 
   /*
-     ANGLE
+     Angle.
   */
 
   $('angle').textContent =
@@ -1400,15 +2018,11 @@ function render(){
     ) + '°';
 
 
-  /*
-     COULEUR DU CHIFFRE
-  */
-
   updateAngleColor();
 
 
   /*
-     MAX GAUCHE
+     Maximums.
   */
 
   $('maxLeft').textContent =
@@ -1418,10 +2032,6 @@ function render(){
     ) + '°';
 
 
-  /*
-     MAX DROITE
-  */
-
   $('maxRight').textContent =
     signed(
       maxRight,
@@ -1429,8 +2039,89 @@ function render(){
     ) + '°';
 
 
+  $('speedMaxLeft').textContent =
+    'à ' +
+    fmt(
+      speedAtMaxLeft,
+      0
+    ) +
+    ' km/h';
+
+
+  $('speedMaxRight').textContent =
+    'à ' +
+    fmt(
+      speedAtMaxRight,
+      0
+    ) +
+    ' km/h';
+
+
   /*
-     G TOTAL
+     Vitesse.
+  */
+
+  $('speed').textContent =
+    fmt(
+      gpsSpeed,
+      0
+    );
+
+
+  /*
+     Infos session.
+  */
+
+  $('maxSpeed').textContent =
+    fmt(
+      sessionMaxSpeed,
+      0
+    ) + ' km/h';
+
+
+  $('distance').textContent =
+    fmt(
+      sessionDistance / 1000,
+      2
+    ) + ' km';
+
+
+  let duration = 0;
+
+
+  if(sessionActive){
+
+    duration =
+      (
+        performance.now() -
+        sessionStart
+      ) / 1000;
+
+  }
+
+
+  else if(sessionData.length > 0){
+
+    duration =
+      sessionData[
+        sessionData.length - 1
+      ].time;
+
+  }
+
+
+  $('duration').textContent =
+    formatDuration(
+      duration
+    );
+
+
+  $('points').textContent =
+    sessionData.length;
+
+
+  /*
+     G total.
   */
 
   $('gTotal').textContent =
@@ -1441,7 +2132,7 @@ function render(){
 
 
   /*
-     FRÉQUENCE
+     Fréquence.
   */
 
   $('hz').textContent =
@@ -1449,18 +2140,21 @@ function render(){
 
 
   /*
-     CURSEUR
+     Curseur.
   */
 
   updateCursor();
 
 
   /*
-     DIAGNOSTIC
+     Enregistrement.
+  */
 
-     Les valeurs dynamiques restent visibles ici
-     parce qu'elles sont utiles pour contrôler le
-     fonctionnement de la compensation.
+  recordSession();
+
+
+  /*
+     Diagnostic.
   */
 
   $('raw').textContent =
@@ -1486,34 +2180,602 @@ Y = ${fmt(raw.gravityY,3)} G
 Z = ${fmt(raw.gravityZ,3)} G
 
 
-G TOTAL
-
-${fmt(gTotal,3)} G
-
-
 ANGLE
 
 ${fmt(angle,2)}°
 
 
-AXE VERTICAL DU SUPPORT
+GPS
 
-X = ${fmt(verticalAxis.x,3)}
-Y = ${fmt(verticalAxis.y,3)}
-Z = ${fmt(verticalAxis.z,3)}
+Vitesse = ${fmt(gpsSpeed,2)} km/h
+Précision = ${fmt(gpsAccuracy,1)} m
+Latitude = ${gpsLat === null ? '—' : fmt(gpsLat,6)}
+Longitude = ${gpsLon === null ? '—' : fmt(gpsLon,6)}
 
 
-AXE LONGITUDINAL CALCULÉ
+SESSION
 
-X = ${fmt(longitudinalAxis.x,3)}
-Y = ${fmt(longitudinalAxis.y,3)}
-Z = ${fmt(longitudinalAxis.z,3)}`;
+Active = ${sessionActive ? 'OUI' : 'NON'}
+Points = ${sessionData.length}
+Distance = ${fmt(sessionDistance/1000,3)} km
+Vitesse max = ${fmt(sessionMaxSpeed,1)} km/h`;
 
 }
 
 
 /* =====================================================
-   DÉMARRAGE
+   GRAPHIQUE
+===================================================== */
+
+function drawChart(){
+
+  const canvas =
+    $('chart');
+
+  const rect =
+    canvas.getBoundingClientRect();
+
+
+  const dpr =
+    window.devicePixelRatio || 1;
+
+
+  canvas.width =
+    rect.width * dpr;
+
+  canvas.height =
+    rect.height * dpr;
+
+
+  const ctx =
+    canvas.getContext('2d');
+
+
+  ctx.scale(
+    dpr,
+    dpr
+  );
+
+
+  const W =
+    rect.width;
+
+  const H =
+    rect.height;
+
+
+  /*
+     Fond.
+  */
+
+  ctx.clearRect(
+    0,
+    0,
+    W,
+    H
+  );
+
+
+  /*
+     Aucun enregistrement.
+  */
+
+  if(sessionData.length < 2){
+
+    ctx.fillStyle =
+      '#9ba8b7';
+
+    ctx.font =
+      '13px system-ui';
+
+    ctx.textAlign =
+      'center';
+
+    ctx.fillText(
+      'Le graphique apparaîtra après une session.',
+      W/2,
+      H/2
+    );
+
+    return;
+
+  }
+
+
+  /*
+     Marges.
+  */
+
+  const left =
+    42;
+
+  const right =
+    42;
+
+  const top =
+    20;
+
+  const bottom =
+    32;
+
+
+  const plotW =
+    W - left - right;
+
+  const plotH =
+    H - top - bottom;
+
+
+  /*
+     Temps maximum.
+  */
+
+  const maxTime =
+    sessionData[
+      sessionData.length - 1
+    ].time;
+
+
+  /*
+     Angle max pour affichage.
+
+     On conserve au minimum ±50°.
+  */
+
+  let maxAngleScale = 50;
+
+
+  for(
+    const p of sessionData
+  ){
+
+    maxAngleScale =
+      Math.max(
+        maxAngleScale,
+        Math.abs(p.angle)
+      );
+
+  }
+
+
+  /*
+     Vitesse max.
+  */
+
+  let maxSpeedScale =
+    Math.max(
+      10,
+      sessionMaxSpeed
+    );
+
+
+  /*
+     Grille horizontale.
+  */
+
+  ctx.strokeStyle =
+    '#25303c';
+
+  ctx.lineWidth =
+    1;
+
+
+  for(
+    let i=0;
+    i<=4;
+    i++
+  ){
+
+    const y =
+      top +
+      plotH *
+      i /
+      4;
+
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+      left,
+      y
+    );
+
+    ctx.lineTo(
+      W-right,
+      y
+    );
+
+    ctx.stroke();
+
+  }
+
+
+  /*
+     Ligne zéro angle.
+  */
+
+  const zeroY =
+    top +
+    plotH/2;
+
+
+  ctx.strokeStyle =
+    '#5a6675';
+
+
+  ctx.beginPath();
+
+  ctx.moveTo(
+    left,
+    zeroY
+  );
+
+  ctx.lineTo(
+    W-right,
+    zeroY
+  );
+
+  ctx.stroke();
+
+
+  /*
+     Axe gauche : angle.
+  */
+
+  ctx.fillStyle =
+    '#9ba8b7';
+
+  ctx.font =
+    '10px system-ui';
+
+  ctx.textAlign =
+    'right';
+
+
+  ctx.fillText(
+    '+' +
+    Math.round(maxAngleScale) +
+    '°',
+    left-5,
+    top+5
+  );
+
+
+  ctx.fillText(
+    '0°',
+    left-5,
+    zeroY+3
+  );
+
+
+  ctx.fillText(
+    '-' +
+    Math.round(maxAngleScale) +
+    '°',
+    left-5,
+    H-bottom
+  );
+
+
+  /*
+     Axe droit : vitesse.
+  */
+
+  ctx.textAlign =
+    'left';
+
+
+  ctx.fillText(
+    Math.round(maxSpeedScale) +
+    ' km/h',
+    W-right+5,
+    top+5
+  );
+
+
+  ctx.fillText(
+    '0',
+    W-right+5,
+    H-bottom
+  );
+
+
+  /*
+     COURBE ANGLE
+  */
+
+  ctx.strokeStyle =
+    '#43d17a';
+
+  ctx.lineWidth =
+    2;
+
+
+  ctx.beginPath();
+
+
+  sessionData.forEach(
+    (p,i) => {
+
+      const x =
+        left +
+        (
+          p.time /
+          maxTime
+        ) *
+        plotW;
+
+
+      const y =
+        zeroY -
+        (
+          p.angle /
+          maxAngleScale
+        ) *
+        (
+          plotH/2
+        );
+
+
+      if(i === 0){
+
+        ctx.moveTo(
+          x,
+          y
+        );
+
+      }
+      else{
+
+        ctx.lineTo(
+          x,
+          y
+        );
+
+      }
+
+    }
+  );
+
+
+  ctx.stroke();
+
+
+  /*
+     COURBE VITESSE
+  */
+
+  ctx.strokeStyle =
+    '#5aa9ff';
+
+  ctx.lineWidth =
+    2;
+
+
+  ctx.beginPath();
+
+
+  sessionData.forEach(
+    (p,i) => {
+
+      const x =
+        left +
+        (
+          p.time /
+          maxTime
+        ) *
+        plotW;
+
+
+      const y =
+        H -
+        bottom -
+        (
+          p.speed /
+          maxSpeedScale
+        ) *
+        plotH;
+
+
+      if(i === 0){
+
+        ctx.moveTo(
+          x,
+          y
+        );
+
+      }
+      else{
+
+        ctx.lineTo(
+          x,
+          y
+        );
+
+      }
+
+    }
+  );
+
+
+  ctx.stroke();
+
+
+  /*
+     Légende.
+  */
+
+  ctx.textAlign =
+    'left';
+
+  ctx.fillStyle =
+    '#43d17a';
+
+  ctx.fillText(
+    '● Angle',
+    left,
+    12
+  );
+
+
+  ctx.fillStyle =
+    '#5aa9ff';
+
+  ctx.fillText(
+    '● Vitesse',
+    left+65,
+    12
+  );
+
+
+  /*
+     Temps.
+  */
+
+  ctx.fillStyle =
+    '#9ba8b7';
+
+  ctx.textAlign =
+    'center';
+
+
+  ctx.fillText(
+    '0 s',
+    left,
+    H-8
+  );
+
+
+  ctx.fillText(
+    formatDuration(maxTime),
+    W-right,
+    H-8
+  );
+
+}
+
+
+/* =====================================================
+   EXPORT CSV
+===================================================== */
+
+function exportCSV(){
+
+  if(sessionData.length === 0){
+
+    return;
+
+  }
+
+
+  let csv =
+    'temps_s;angle_deg;vitesse_kmh;latitude;longitude;G_total\n';
+
+
+  for(
+    const p of sessionData
+  ){
+
+    csv +=
+      p.time.toFixed(2) +
+      ';' +
+      p.angle.toFixed(2) +
+      ';' +
+      p.speed.toFixed(2) +
+      ';' +
+      (
+        p.lat === null
+        ? ''
+        : p.lat.toFixed(6)
+      ) +
+      ';' +
+      (
+        p.lon === null
+        ? ''
+        : p.lon.toFixed(6)
+      ) +
+      ';' +
+      p.g.toFixed(3) +
+      '\n';
+
+  }
+
+
+  const blob =
+    new Blob(
+      [csv],
+      {
+        type:'text/csv;charset=utf-8'
+      }
+    );
+
+
+  const url =
+    URL.createObjectURL(
+      blob
+    );
+
+
+  const a =
+    document.createElement(
+      'a'
+    );
+
+
+  a.href =
+    url;
+
+
+  const date =
+    new Date();
+
+
+  const name =
+    'session_moto_' +
+    date.getFullYear() +
+    '-' +
+    String(
+      date.getMonth()+1
+    ).padStart(2,'0') +
+    '-' +
+    String(
+      date.getDate()
+    ).padStart(2,'0') +
+    '_' +
+    String(
+      date.getHours()
+    ).padStart(2,'0') +
+    '-' +
+    String(
+      date.getMinutes()
+    ).padStart(2,'0') +
+    '.csv';
+
+
+  a.download =
+    name;
+
+
+  document.body.appendChild(
+    a
+  );
+
+
+  a.click();
+
+
+  a.remove();
+
+
+  URL.revokeObjectURL(
+    url
+  );
+
+}
+
+
+/* =====================================================
+   DEMARRAGE CAPTEURS
 ===================================================== */
 
 async function startSensors(){
@@ -1521,7 +2783,7 @@ async function startSensors(){
   try{
 
     /*
-       Permission iOS / iPadOS.
+       Permission iOS.
     */
 
     if(
@@ -1543,10 +2805,6 @@ async function startSensors(){
 
     }
 
-
-    /*
-       Évite les listeners multiples.
-    */
 
     window.removeEventListener(
       'devicemotion',
@@ -1580,9 +2838,19 @@ async function startSensors(){
       true;
 
 
+    $('session').disabled =
+      false;
+
+
     /*
-       Calibration avec le téléphone
-       dans sa position définitive.
+       GPS.
+    */
+
+    startGPS();
+
+
+    /*
+       Calibration.
     */
 
     startCalibration();
@@ -1606,6 +2874,29 @@ async function startSensors(){
 
 
 /* =====================================================
+   BOUTON SESSION
+===================================================== */
+
+$('session').addEventListener(
+  'click',
+  () => {
+
+    if(!sessionActive){
+
+      startSession();
+
+    }
+    else{
+
+      stopSession();
+
+    }
+
+  }
+);
+
+
+/* =====================================================
    ZERO
 ===================================================== */
 
@@ -1624,7 +2915,7 @@ $('zero').addEventListener(
 
 
 /* =====================================================
-   RESET MAX
+   RESET
 ===================================================== */
 
 $('reset').addEventListener(
@@ -1634,6 +2925,10 @@ $('reset').addEventListener(
     maxRight = 0;
 
     maxLeft = 0;
+
+    speedAtMaxRight = 0;
+
+    speedAtMaxLeft = 0;
 
   }
 );
@@ -1650,7 +2945,17 @@ $('start').addEventListener(
 
 
 /* =====================================================
-   PLEIN ÉCRAN
+   EXPORT
+===================================================== */
+
+$('download').addEventListener(
+  'click',
+  exportCSV
+);
+
+
+/* =====================================================
+   PLEIN ECRAN
 ===================================================== */
 
 $('screen').addEventListener(
@@ -1685,10 +2990,22 @@ $('screen').addEventListener(
 
 
 /* =====================================================
+   REDIMENSIONNEMENT GRAPHIQUE
+===================================================== */
+
+window.addEventListener(
+  'resize',
+  drawChart
+);
+
+
+/* =====================================================
    INITIALISATION
 ===================================================== */
 
 render();
+
+drawChart();
 
 
 setInterval(
