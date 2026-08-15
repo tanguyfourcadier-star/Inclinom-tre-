@@ -1,21 +1,12 @@
 <!doctype html>
 <html lang="fr">
-
 <head>
-
 <meta charset="utf-8">
-
-<meta name="viewport"
-      content="width=device-width,initial-scale=1,viewport-fit=cover">
-
-<meta name="theme-color"
-      content="#080b10">
-
-<title>Inclinomètre Moto</title>
-
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#080b10">
+<title>Inclinomètre Moto - Compensation</title>
 
 <style>
-
 :root{
   --bg:#080b10;
   --card:#111720;
@@ -27,9 +18,7 @@
   --line:#25303c;
 }
 
-*{
-  box-sizing:border-box;
-}
+*{box-sizing:border-box}
 
 html,body{
   margin:0;
@@ -40,10 +29,7 @@ html,body{
 
 body{
   min-height:100vh;
-  padding:
-    env(safe-area-inset-top)
-    14px
-    env(safe-area-inset-bottom);
+  padding:env(safe-area-inset-top) 14px env(safe-area-inset-bottom);
 }
 
 .wrap{
@@ -120,10 +106,7 @@ h1{
   color:var(--muted);
 }
 
-
-/* =========================
-   BARRE D'ANGLE
-========================= */
+/* ================= BARRE ================= */
 
 .gauge{
   position:relative;
@@ -141,19 +124,14 @@ h1{
 
   background:linear-gradient(
     to right,
-
     var(--red) 0%,
     var(--red) 5%,
-
     var(--yellow) 5%,
     var(--yellow) 15%,
-
     var(--accent) 15%,
     var(--accent) 85%,
-
     var(--yellow) 85%,
     var(--yellow) 95%,
-
     var(--red) 95%,
     var(--red) 100%
   );
@@ -200,18 +178,13 @@ h1{
   left:0;
   right:0;
   top:58px;
-
   display:flex;
   justify-content:space-between;
-
   font-size:10px;
   color:var(--muted);
 }
 
-
-/* =========================
-   MAX
-========================= */
+/* ================= MAX ================= */
 
 .maxrow{
   display:flex;
@@ -232,10 +205,7 @@ h1{
   margin-top:3px;
 }
 
-
-/* =========================
-   AUTRES
-========================= */
+/* ================= AUTRES ================= */
 
 .reading{
   font-size:29px;
@@ -306,7 +276,6 @@ details{
 }
 
 @media(max-width:420px){
-
   .grid{
     gap:8px;
   }
@@ -318,304 +287,261 @@ details{
   .reading{
     font-size:25px;
   }
-
 }
-
 </style>
-
 </head>
-
 
 <body>
 
-
 <div class="wrap">
 
+  <div class="top">
+    <h1>🏍️ Inclinomètre Moto</h1>
 
-<div class="top">
+    <div class="status">
+      <span id="dot" class="dot"></span>
+      <span id="status">Arrêté</span>
+    </div>
+  </div>
 
-<h1>🏍️ Inclinomètre Moto</h1>
 
-<div class="status">
+  <div class="grid">
 
-<span id="dot" class="dot"></span>
+    <!-- ================= ANGLE ================= -->
 
-<span id="status">
-Arrêté
-</span>
+    <section class="card main">
+
+      <div class="label">
+        Inclinaison
+      </div>
+
+      <div id="angle" class="angle">
+        +0°
+      </div>
+
+      <div class="unit">
+        droite + / gauche −
+      </div>
+
+
+      <div class="gauge">
+
+        <div class="track"></div>
+
+        <div class="mark m45l"></div>
+        <div class="mark m35l"></div>
+
+        <div class="center"></div>
+
+        <div class="mark m35r"></div>
+        <div class="mark m45r"></div>
+
+        <div id="cursor" class="cursor"></div>
+
+        <div class="gaugeLabels">
+          <span>−50°</span>
+          <span>−45°</span>
+          <span>−35°</span>
+          <span>0°</span>
+          <span>+35°</span>
+          <span>+45°</span>
+          <span>+50°</span>
+        </div>
+
+      </div>
+
+
+      <div class="maxrow">
+
+        <div class="maxbox">
+
+          <div class="label">
+            Max gauche
+          </div>
+
+          <div id="maxLeft" class="maxv">
+            0°
+          </div>
+
+        </div>
+
+
+        <div class="maxbox">
+
+          <div class="label">
+            Max droite
+          </div>
+
+          <div id="maxRight" class="maxv">
+            0°
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- ================= ACCELERATION ================= -->
+
+    <section class="card main">
+
+      <div class="label">
+        Accélération longitudinale
+      </div>
+
+      <div id="gLong" class="reading">
+        +0.00 G
+      </div>
+
+      <div class="small">
+        Accélération du téléphone
+      </div>
+
+
+      <div class="maxrow">
+
+        <div class="maxbox">
+
+          <div class="label">
+            Max frein
+          </div>
+
+          <div id="maxBrake" class="maxv">
+            0.00
+          </div>
+
+        </div>
+
+
+        <div class="maxbox">
+
+          <div class="label">
+            Max accél
+          </div>
+
+          <div id="maxAccel" class="maxv">
+            0.00
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- ================= FREQUENCE ================= -->
+
+    <section class="card">
+
+      <div class="label">
+        Fréquence
+      </div>
+
+      <div id="hz" class="reading">
+        0 Hz
+      </div>
+
+      <div id="gyroState" class="small">
+        Gyro en attente
+      </div>
+
+    </section>
+
+
+    <!-- ================= G TOTAL ================= -->
+
+    <section class="card">
+
+      <div class="label">
+        G total
+      </div>
+
+      <div id="gTotal" class="reading">
+        1.00 G
+      </div>
+
+      <div class="small">
+        Gravité + accélérations
+      </div>
+
+    </section>
+
+
+    <!-- ================= BOUTONS ================= -->
+
+    <section
+      class="card"
+      style="grid-column:1/-1">
+
+      <div class="buttons">
+
+        <button
+          id="start"
+          class="primary">
+          DÉMARRER LES CAPTEURS
+        </button>
+
+        <button
+          id="zero"
+          class="warn">
+          FAIRE LE ZÉRO
+        </button>
+
+        <button
+          id="reset"
+          class="danger">
+          RESET MAX
+        </button>
+
+        <button id="screen">
+          PLEIN ÉCRAN
+        </button>
+
+      </div>
+
+    </section>
+
+
+    <!-- ================= DIAGNOSTIC ================= -->
+
+    <section
+      class="card"
+      style="grid-column:1/-1">
+
+      <div class="label">
+        Diagnostic
+      </div>
+
+      <details open>
+
+        <summary>
+          Données capteur
+        </summary>
+
+        <div id="raw" class="raw">
+          Aucune donnée.
+        </div>
+
+      </details>
+
+    </section>
+
+  </div>
+
+
+  <div class="note">
+
+    ⚠️ Compensation dynamique expérimentale.
+    Le gyroscope suit les mouvements rapides et
+    l'accéléromètre sert de référence lente.
+    Teste d'abord à basse vitesse.
+
+  </div>
 
 </div>
-
-</div>
-
-
-
-<div class="grid">
-
-
-<!-- =========================
-     ANGLE
-========================= -->
-
-<section class="card main">
-
-<div class="label">
-Inclinaison
-</div>
-
-<div id="angle" class="angle">
-+0°
-</div>
-
-<div class="unit">
-droite + / gauche −
-</div>
-
-
-<div class="gauge">
-
-<div class="track"></div>
-
-<div class="mark m45l"></div>
-<div class="mark m35l"></div>
-
-<div class="center"></div>
-
-<div class="mark m35r"></div>
-<div class="mark m45r"></div>
-
-<div id="cursor" class="cursor"></div>
-
-
-<div class="gaugeLabels">
-
-<span>−50°</span>
-<span>−45°</span>
-<span>−35°</span>
-<span>0°</span>
-<span>+35°</span>
-<span>+45°</span>
-<span>+50°</span>
-
-</div>
-
-</div>
-
-
-<div class="maxrow">
-
-
-<div class="maxbox">
-
-<div class="label">
-Max gauche
-</div>
-
-<div id="maxLeft" class="maxv">
-0°
-</div>
-
-</div>
-
-
-<div class="maxbox">
-
-<div class="label">
-Max droite
-</div>
-
-<div id="maxRight" class="maxv">
-0°
-</div>
-
-</div>
-
-
-</div>
-
-</section>
-
-
-
-<!-- =========================
-     ACCELERATION
-========================= -->
-
-<section class="card main">
-
-<div class="label">
-Accélération longitudinale
-</div>
-
-<div id="gLong" class="reading">
-+0.00 G
-</div>
-
-<div class="small">
-+ accélération / − freinage
-</div>
-
-
-<div class="maxrow">
-
-
-<div class="maxbox">
-
-<div class="label">
-Max frein
-</div>
-
-<div id="maxBrake" class="maxv">
-0.00
-</div>
-
-</div>
-
-
-<div class="maxbox">
-
-<div class="label">
-Max accél
-</div>
-
-<div id="maxAccel" class="maxv">
-0.00
-</div>
-
-</div>
-
-
-</div>
-
-</section>
-
-
-
-<!-- =========================
-     COMPENSATION
-========================= -->
-
-<section class="card">
-
-<div class="label">
-Correction virage
-</div>
-
-<div id="compensation" class="reading">
-0.0°
-</div>
-
-<div id="compState" class="small">
-inactive
-</div>
-
-</section>
-
-
-
-<!-- =========================
-     G TOTAL
-========================= -->
-
-<section class="card">
-
-<div class="label">
-G total
-</div>
-
-<div id="gTotal" class="reading">
-1.00 G
-</div>
-
-<div class="small">
-accélération + gravité
-</div>
-
-</section>
-
-
-
-<!-- =========================
-     BOUTONS
-========================= -->
-
-<section
-class="card"
-style="grid-column:1/-1">
-
-<div class="buttons">
-
-<button
-id="start"
-class="primary">
-DÉMARRER LES CAPTEURS
-</button>
-
-<button
-id="zero"
-class="warn">
-FAIRE LE ZÉRO
-</button>
-
-<button
-id="reset"
-class="danger">
-RESET MAX
-</button>
-
-<button
-id="screen">
-PLEIN ÉCRAN
-</button>
-
-</div>
-
-</section>
-
-
-
-<!-- =========================
-     DIAGNOSTIC
-========================= -->
-
-<section
-class="card"
-style="grid-column:1/-1">
-
-<div class="label">
-Diagnostic brut
-</div>
-
-<details>
-
-<summary>
-Afficher les données
-</summary>
-
-<div id="raw" class="raw">
-Aucune donnée.
-</div>
-
-</details>
-
-</section>
-
-
-</div>
-
-
-<div class="note">
-
-⚠️ Prototype expérimental.
-Ne manipule pas le téléphone en roulant.
-La compensation est volontairement faible pour
-commencer les essais progressivement.
-
-</div>
-
-
-</div>
-
 
 
 <script>
@@ -623,131 +549,138 @@ commencer les essais progressivement.
 'use strict';
 
 
-/* =========================================================
-   PARAMÈTRES
-========================================================= */
+/* =====================================================
+   CONFIGURATION
+===================================================== */
 
 
 /*
-   IMPORTANT :
+   Sens de l'affichage.
 
-   Si tu veux vérifier que l'angle est exactement
-   celui de la version qui fonctionnait :
-
-       false
-
-   Une fois l'angle validé :
-
-       true
-
-   pour essayer la compensation.
+   Cette valeur est celle de ta version qui fonctionne.
 */
 
-const COMPENSATION_ACTIVE = true;
+const LEAN_SIGN = -1;
 
 
 /*
-   Sens validé avec ta version précédente.
-
-   Si droite/gauche sont à nouveau inversées,
-   changer UNIQUEMENT cette valeur.
-
-   1 ou -1
-*/
-
-const LEAN_SIGN = 1;
-
-
-/*
-   Accélération longitudinale.
-
-   Le téléphone étant entre horizontal et vertical,
-   cette valeur devra être vérifiée dans le diagnostic.
-
-   Pour l'instant on utilise Z.
+   Sens de l'accélération longitudinale.
+   On pourra inverser avec -1 si nécessaire.
 */
 
 const LONG_SIGN = 1;
 
 
 /*
-   Compensation volontairement faible.
+   AXE DU GYROSCOPE
 
-   On ne cherche pas à corriger 100 % du phénomène.
+   Pour le roulis du téléphone, on commence avec BETA.
 
-   On veut d'abord vérifier que la direction
-   de la correction est bonne.
+   Si le diagnostic montre que beta ne réagit pas quand
+   tu inclines le téléphone gauche/droite, on changera
+   uniquement cette ligne.
+
+   rotationRate est exprimé en degrés/seconde.
 */
 
-const COMPENSATION_GAIN = 0.20;
+const GYRO_AXIS = 'beta';
 
 
 /*
-   Compensation maximale.
+   Sens du gyroscope.
 
-   Même si le capteur fait quelque chose d'étrange,
-   la correction ne dépassera jamais 5°.
+   On commence à +1.
+
+   Si le gyro fait partir l'angle dans le mauvais sens,
+   il suffira de mettre -1.
 */
 
-const MAX_COMPENSATION = 5;
+const GYRO_SIGN = 1;
 
 
 /*
-   Lissage de la compensation.
+   FILTRE
+
+   0.995 = très forte confiance au gyro.
+
+   C'est volontairement beaucoup plus lent que la V2
+   précédente : l'accéléromètre ne pourra donc pas
+   brutalement tirer l'angle vers une mauvaise valeur
+   pendant un virage.
 */
 
-const COMP_FILTER = 0.10;
+const GYRO_ALPHA = 0.995;
 
 
 /*
-   Si G total est trop différent de 1G,
-   on considère que l'accélération est perturbée.
+   Quand l'accélération totale s'éloigne de 1G,
+   on considère que l'accéléromètre est perturbé.
 
-   Dans ce cas on ne corrige pas.
+   Dans ce cas on lui fait encore moins confiance.
 */
 
-const G_MIN = 0.90;
-const G_MAX = 1.10;
+const DYNAMIC_G = 0.10;
 
 
 /*
-   Affichage rapide.
+   Temps maximum entre deux événements.
 */
 
-const RENDER_PERIOD = 50;
+const MAX_DT = 0.10;
 
 
-/* =========================================================
+/* =====================================================
    VARIABLES
-========================================================= */
+===================================================== */
 
 let running = false;
 
 
-/* ANGLE */
+/* Angle final */
 
 let angle = 0;
 
-let rawAngle = 0;
+
+/* Angle provenant uniquement de l'accéléromètre */
+
+let accelAngle = 0;
+
+
+/* Offset du zéro */
 
 let angleOffset = 0;
 
 
-/* COMPENSATION */
+/* Gyroscope */
 
-let compensation = 0;
+let gyroAngle = 0;
+let gyroBias = 0;
+let gyroAvailable = false;
 
-let compensationFiltered = 0;
+
+/* Temps */
+
+let lastTime = null;
 
 
-/* MAX */
+/* Calibration */
+
+let calibrating = false;
+
+let calibrationCount = 0;
+
+let calibrationAngleSum = 0;
+
+let calibrationGyroSum = 0;
+
+
+/* Maximums */
 
 let maxRight = 0;
-
 let maxLeft = 0;
 
 
-/* ACCELERATION */
+/* Accélération longitudinale */
 
 let longAccel = 0;
 
@@ -756,12 +689,12 @@ let maxAccel = 0;
 let maxBrake = 0;
 
 
-/* G TOTAL */
+/* G total */
 
 let gTotal = 1;
 
 
-/* FREQUENCE */
+/* Fréquence */
 
 let hz = 0;
 
@@ -770,16 +703,7 @@ let hzCount = 0;
 let hzTimer = performance.now();
 
 
-/* CALIBRATION */
-
-let calibrating = false;
-
-let calibrationCount = 0;
-
-let calibrationSum = 0;
-
-
-/* DONNEES BRUTES */
+/* Raw */
 
 let raw = {
 
@@ -789,42 +713,46 @@ let raw = {
 
   ax:0,
   ay:0,
-  az:0
+  az:0,
+
+  alpha:0,
+  beta:0,
+  gamma:0
 
 };
 
 
-/* =========================================================
+/* =====================================================
    OUTILS
-========================================================= */
+===================================================== */
 
-const $ = id =>
-  document.getElementById(id);
+const $ =
+  id => document.getElementById(id);
 
 
-function fmt(v,n=1){
+function fmt(value, decimals){
 
-  if(!Number.isFinite(v))
+  if(!Number.isFinite(value)){
     return '0';
+  }
 
-  return v.toFixed(n);
-
-}
-
-
-function signed(v,n=1){
-
-  if(!Number.isFinite(v))
-    v = 0;
-
-  return (v >= 0 ? '+' : '') + v.toFixed(n);
+  return value.toFixed(decimals);
 
 }
 
 
-/* =========================================================
+function signed(value, decimals){
+
+  return (
+    value >= 0 ? '+' : ''
+  ) + fmt(value, decimals);
+
+}
+
+
+/* =====================================================
    STATUT
-========================================================= */
+===================================================== */
 
 function setStatus(text,on=false){
 
@@ -838,47 +766,42 @@ function setStatus(text,on=false){
 }
 
 
-/* =========================================================
-   CALCUL ANGLE
-========================================================= */
+/* =====================================================
+   ANGLE ACCÉLÉROMÈTRE
+===================================================== */
 
+function calculateAngle(x,y){
 
-/*
-   C'est le calcul de base.
+  /*
+     C'est EXACTEMENT le principe de ta version
+     qui fonctionnait.
 
-   On traite correctement le passage :
-
-       +180 / -180
-
-   pour éviter le problème que tu avais
-   autour de la verticale.
-*/
-
-function calculateRawAngle(x,y){
+     On conserve donc cette partie inchangée.
+  */
 
   let a =
-    Math.atan2(x,y)
-    * 180
-    / Math.PI;
+    Math.atan2(
+      x,
+      y
+    ) *
+    180 /
+    Math.PI;
 
 
   /*
-     Transformation autour de 180°.
+     Le zéro physique se trouve autour de ±180°.
   */
 
   a -= 180;
 
 
-  /*
-     Ramène toujours l'angle
-     dans -180 ... +180.
-  */
-
-  while(a > 180)
+  if(a > 180){
     a -= 360;
+  }
 
-  while(a < -180)
+  if(a < -180){
     a += 360;
+  }
 
 
   return a;
@@ -886,9 +809,9 @@ function calculateRawAngle(x,y){
 }
 
 
-/* =========================================================
+/* =====================================================
    CALIBRATION
-========================================================= */
+===================================================== */
 
 function startCalibration(){
 
@@ -896,15 +819,14 @@ function startCalibration(){
 
   calibrationCount = 0;
 
-  calibrationSum = 0;
+  calibrationAngleSum = 0;
 
-  compensationFiltered = 0;
-
-  compensation = 0;
+  calibrationGyroSum = 0;
 
 
-  $('compState').textContent =
-    'calibration';
+  $('raw').textContent =
+    'CALIBRATION...\n\n' +
+    'Téléphone et moto immobiles.';
 
 
   setTimeout(
@@ -920,7 +842,12 @@ function finishCalibration(){
   if(calibrationCount > 0){
 
     angleOffset =
-      calibrationSum /
+      calibrationAngleSum /
+      calibrationCount;
+
+
+    gyroBias =
+      calibrationGyroSum /
       calibrationCount;
 
   }
@@ -928,130 +855,47 @@ function finishCalibration(){
 
   calibrating = false;
 
+
+  /*
+     On démarre le gyro exactement
+     sur l'angle calibré.
+  */
+
+  gyroAngle = 0;
+
   angle = 0;
 
 
-  $('compState').textContent =
-    COMPENSATION_ACTIVE
-      ? 'active'
-      : 'inactive';
+  $('raw').textContent =
+    'Calibration terminée.\n' +
+    'Offset angle = ' +
+    fmt(angleOffset,2) +
+    '°\n' +
+    'Biais gyro = ' +
+    fmt(gyroBias,2) +
+    '°/s';
 
 }
 
 
-/* =========================================================
-   COMPENSATION
-========================================================= */
-
-
-/*
-   Cette fonction est volontairement simple.
-
-   Elle ne remplace PAS la mesure d'angle.
-
-   Elle ajoute seulement une petite correction.
-
-   Si elle donne de mauvais résultats,
-   COMPENSATION_ACTIVE peut être mis à false.
-*/
-
-function calculateCompensation(){
-
-  if(!COMPENSATION_ACTIVE)
-    return 0;
-
-
-  /*
-     Si le vecteur total n'est pas proche de 1G,
-     on considère que la mesure est trop perturbée.
-  */
-
-  if(
-    gTotal < G_MIN ||
-    gTotal > G_MAX
-  ){
-
-    return 0;
-
-  }
-
-
-  /*
-     Accélération latérale.
-
-     Pour le montage actuel,
-     X correspond à la composante latérale
-     utilisée par notre angle.
-  */
-
-  const lateral =
-    raw.x;
-
-
-  /*
-     Estimation très simple
-     de l'angle apparent.
-  */
-
-  let correction =
-    Math.atan2(
-      lateral,
-      1
-    )
-    * 180
-    / Math.PI;
-
-
-  /*
-     On n'utilise qu'une petite partie.
-  */
-
-  correction *=
-    COMPENSATION_GAIN;
-
-
-  /*
-     Limitation absolue.
-  */
-
-  correction =
-    Math.max(
-      -MAX_COMPENSATION,
-      Math.min(
-        MAX_COMPENSATION,
-        correction
-      )
-    );
-
-
-  return correction;
-
-}
-
-
-/* =========================================================
+/* =====================================================
    DEVICEMOTION
-========================================================= */
+===================================================== */
 
 function handleMotion(event){
 
-  if(!running)
+  if(!running){
     return;
+  }
 
-
-  /*
-     ACCELERATION + GRAVITÉ
-
-     C'est cette donnée qui sert
-     à calculer l'angle.
-  */
 
   const g =
     event.accelerationIncludingGravity;
 
 
-  if(!g)
+  if(!g){
     return;
+  }
 
 
   if(
@@ -1059,11 +903,13 @@ function handleMotion(event){
     g.y === null ||
     g.z === null
   ){
-
     return;
-
   }
 
+
+  /*
+     Conversion en G.
+  */
 
   const x =
     g.x / 9.80665;
@@ -1080,9 +926,9 @@ function handleMotion(event){
   raw.z = z;
 
 
-  /*
-     G total.
-  */
+  /* =================================================
+     G TOTAL
+  ================================================= */
 
   gTotal =
     Math.sqrt(
@@ -1092,111 +938,247 @@ function handleMotion(event){
     );
 
 
-  /*
-     ANGLE BRUT
-  */
+  /* =================================================
+     ANGLE ACCÉLÉROMÈTRE
+  ================================================= */
 
-  const baseAngle =
-    calculateRawAngle(
+  const rawAngle =
+    calculateAngle(
       x,
       y
     );
 
 
+  accelAngle =
+    (
+      rawAngle -
+      angleOffset
+    ) *
+    LEAN_SIGN;
+
+
+  /* =================================================
+     GYROSCOPE
+  ================================================= */
+
+  const rr =
+    event.rotationRate;
+
+
+  let gyroRate = null;
+
+
+  if(
+    rr &&
+    Number.isFinite(
+      rr[GYRO_AXIS]
+    )
+  ){
+
+    gyroRate =
+      rr[GYRO_AXIS] *
+      GYRO_SIGN;
+
+    gyroAvailable = true;
+
+  }
+
+
   /*
-     CALIBRATION
+     Diagnostic gyro.
   */
+
+  if(rr){
+
+    raw.alpha =
+      Number.isFinite(rr.alpha)
+      ? rr.alpha
+      : 0;
+
+    raw.beta =
+      Number.isFinite(rr.beta)
+      ? rr.beta
+      : 0;
+
+    raw.gamma =
+      Number.isFinite(rr.gamma)
+      ? rr.gamma
+      : 0;
+
+  }
+
+
+  /* =================================================
+     CALIBRATION
+  ================================================= */
 
   if(calibrating){
 
-    calibrationSum +=
-      baseAngle;
+    calibrationAngleSum +=
+      rawAngle;
+
+    if(gyroRate !== null){
+
+      calibrationGyroSum +=
+        rr[GYRO_AXIS];
+
+    }
 
     calibrationCount++;
 
   }
 
 
-  /*
-     ANGLE DE BASE
-  */
+  /* =================================================
+     TEMPS
+  ================================================= */
 
-  rawAngle =
-    (
-      baseAngle -
-      angleOffset
-    )
-    *
-    LEAN_SIGN;
+  const now =
+    performance.now();
 
 
-  /*
-     COMPENSATION
-  */
+  let dt = 0.02;
 
-  if(!calibrating){
 
-    const target =
-      calculateCompensation();
+  if(lastTime !== null){
+
+    dt =
+      Math.min(
+        (now - lastTime) / 1000,
+        MAX_DT
+      );
+
+  }
+
+
+  lastTime = now;
+
+
+  /* =================================================
+     FILTRE COMPLEMENTAIRE
+  ================================================= */
+
+  if(
+    !calibrating &&
+    gyroRate !== null
+  ){
+
+    /*
+       Première initialisation du gyro.
+    */
+
+    if(
+      !Number.isFinite(
+        gyroAngle
+      )
+    ){
+
+      gyroAngle = accelAngle;
+
+    }
 
 
     /*
-       Filtre très lent et stable.
+       Intégration du gyroscope.
+
+       Le gyro mesure la variation d'angle.
     */
 
-    compensationFiltered +=
+    gyroAngle +=
       (
-        target -
-        compensationFiltered
-      )
-      *
-      COMP_FILTER;
+        gyroRate -
+        gyroBias
+      ) *
+      dt;
 
 
-    compensation =
-      compensationFiltered;
+    /*
+       Écart entre gyro et accéléromètre.
+    */
+
+    let error =
+      accelAngle -
+      gyroAngle;
+
+
+    /*
+       Évite le problème du passage
+       -180 / +180.
+    */
+
+    while(error > 180){
+      error -= 360;
+    }
+
+    while(error < -180){
+      error += 360;
+    }
+
+
+    /*
+       En ligne droite / à l'arrêt :
+       l'accéléromètre corrige lentement le gyro.
+
+       En virage / forte accélération :
+       on réduit fortement cette correction.
+    */
+
+    const dynamic =
+      Math.abs(
+        gTotal - 1
+      );
+
+
+    let correction =
+      1 - GYRO_ALPHA;
+
+
+    if(dynamic > DYNAMIC_G){
+
+      /*
+         L'accéléromètre est perturbé :
+         correction presque nulle.
+      */
+
+      correction *= 0.10;
+
+    }
+    else if(dynamic > 0.05){
+
+      correction *= 0.30;
+
+    }
+
+
+    gyroAngle +=
+      error *
+      correction;
+
+
+    angle =
+      gyroAngle;
 
   }
   else{
 
-    compensation = 0;
+    /*
+       Si pas de gyro :
+       on utilise exactement
+       l'ancienne mesure.
+    */
+
+    angle =
+      accelAngle;
+
+    gyroAngle =
+      angle;
 
   }
 
 
-  /*
-     ANGLE FINAL
-  */
-
-  angle =
-    rawAngle +
-    compensation;
-
-
-  /*
-     MAX ANGLE
-  */
-
-  if(angle > maxRight)
-    maxRight = angle;
-
-
-  if(angle < maxLeft)
-    maxLeft = angle;
-
-
-  /* =====================================================
-     ACCELERATION LONGITUDINALE
-  ===================================================== */
-
-
-  /*
-     On essaie d'abord l'accélération
-     sans la gravité.
-
-     Certains navigateurs la fournissent,
-     d'autres non.
-  */
+  /* =================================================
+     ACCÉLÉRATION LONGITUDINALE
+  ================================================= */
 
   const a =
     event.acceleration;
@@ -1209,39 +1191,71 @@ function handleMotion(event){
     a.z !== null
   ){
 
-    /*
-       Pour le moment Z.
+    raw.ax =
+      a.x / 9.80665;
 
-       Le diagnostic permettra de confirmer
-       l'axe réel avec ton montage.
+    raw.ay =
+      a.y / 9.80665;
+
+    raw.az =
+      a.z / 9.80665;
+
+
+    /*
+       Pour cette première version,
+       on conserve Z comme axe longitudinal,
+       comme dans ta version fonctionnelle.
+
+       On pourra ensuite déterminer précisément
+       l'axe selon la position réelle du téléphone.
     */
 
     longAccel =
-      (
-        a.z /
-        9.80665
-      )
-      *
+      raw.az *
       LONG_SIGN;
 
 
-    if(longAccel > maxAccel)
-      maxAccel = longAccel;
+    if(longAccel > maxAccel){
+
+      maxAccel =
+        longAccel;
+
+    }
 
 
-    if(longAccel < maxBrake)
-      maxBrake = longAccel;
+    if(longAccel < maxBrake){
+
+      maxBrake =
+        longAccel;
+
+    }
 
   }
 
 
-  /* =====================================================
+  /* =================================================
+     MAX ANGLE
+  ================================================= */
+
+  if(angle > maxRight){
+
+    maxRight =
+      angle;
+
+  }
+
+
+  if(angle < maxLeft){
+
+    maxLeft =
+      angle;
+
+  }
+
+
+  /* =================================================
      FREQUENCE
-  ===================================================== */
-
-  const now =
-    performance.now();
-
+  ================================================= */
 
   hzCount++;
 
@@ -1267,16 +1281,11 @@ function handleMotion(event){
 }
 
 
-/* =========================================================
+/* =====================================================
    CURSEUR
-========================================================= */
+===================================================== */
 
 function updateCursor(){
-
-  /*
-     La barre représente
-     -50° ... +50°.
-  */
 
   const limited =
     Math.max(
@@ -1289,8 +1298,7 @@ function updateCursor(){
 
 
   const position =
-    50 +
-    limited;
+    50 + limited;
 
 
   $('cursor').style.left =
@@ -1323,125 +1331,135 @@ function updateCursor(){
 }
 
 
-/* =========================================================
+/* =====================================================
    AFFICHAGE
-========================================================= */
+===================================================== */
 
 function render(){
 
   $('angle').textContent =
-    signed(angle,0) + '°';
+    signed(
+      angle,
+      0
+    ) + '°';
 
 
   $('maxLeft').textContent =
-    signed(maxLeft,0) + '°';
+    signed(
+      maxLeft,
+      0
+    ) + '°';
 
 
   $('maxRight').textContent =
-    signed(maxRight,0) + '°';
+    signed(
+      maxRight,
+      0
+    ) + '°';
 
 
   $('gLong').textContent =
-    signed(longAccel,2) +
-    ' G';
+    signed(
+      longAccel,
+      2
+    ) + ' G';
 
 
   $('maxAccel').textContent =
-    signed(maxAccel,2);
+    signed(
+      maxAccel,
+      2
+    );
 
 
   $('maxBrake').textContent =
-    signed(maxBrake,2);
+    signed(
+      maxBrake,
+      2
+    );
 
 
   $('gTotal').textContent =
-    fmt(gTotal,2) +
-    ' G';
-
-
-  $('compensation').textContent =
-    signed(compensation,1) +
-    '°';
-
-
-  $('compState').textContent =
-    COMPENSATION_ACTIVE
-      ? (
-          calibrating
-          ? 'calibration'
-          : 'active'
-        )
-      : 'inactive';
+    fmt(
+      gTotal,
+      2
+    ) + ' G';
 
 
   $('hz').textContent =
-    hz +
-    ' Hz';
+    hz + ' Hz';
+
+
+  $('gyroState').textContent =
+    gyroAvailable
+    ? 'Gyroscope actif'
+    : 'Accéléromètre seul';
 
 
   updateCursor();
 
 
-  /*
-     DIAGNOSTIC
-  */
+  const rawAngle =
+    Math.atan2(
+      raw.x,
+      raw.y
+    ) *
+    180 /
+    Math.PI;
+
 
   $('raw').textContent =
 
 `ANGLE BRUT
-${fmt(
-  Math.atan2(raw.x,raw.y)
-  *180/Math.PI,
-  1
-)}°
+${fmt(rawAngle,2)}°
 
-ANGLE APRÈS PASSAGE ±180°
-${fmt(
-  calculateRawAngle(raw.x,raw.y),
-  1
-)}°
-
-OFFSET
-${fmt(angleOffset,1)}°
-
-ANGLE DE BASE
-${fmt(rawAngle,1)}°
-
-CORRECTION
-${fmt(compensation,2)}°
+ANGLE ACCÉLÉROMÈTRE
+${fmt(accelAngle,2)}°
 
 ANGLE FINAL
-${fmt(angle,1)}°
+${fmt(angle,2)}°
 
-ACCÉLÉRATION + GRAVITÉ
+GYRO AXE UTILISÉ
+${GYRO_AXIS}
+
+GYRO α = ${fmt(raw.alpha,1)} °/s
+GYRO β = ${fmt(raw.beta,1)} °/s
+GYRO γ = ${fmt(raw.gamma,1)} °/s
+
+BIAIS GYRO
+${fmt(gyroBias,2)} °/s
+
+
+ACCÉLÉRATION AVEC GRAVITÉ
+
 X = ${fmt(raw.x,3)} G
 Y = ${fmt(raw.y,3)} G
 Z = ${fmt(raw.z,3)} G
 
-G TOTAL
-${fmt(gTotal,3)} G
+G TOTAL = ${fmt(gTotal,3)} G
+
+
+ACCÉLÉRATION PROPRE
+
+X = ${fmt(raw.ax,3)} G
+Y = ${fmt(raw.ay,3)} G
+Z = ${fmt(raw.az,3)} G
+
 
 ACCÉLÉRATION LONGITUDINALE
-${fmt(longAccel,3)} G
 
-FRÉQUENCE
-${hz} Hz`;
+${fmt(longAccel,3)} G`;
 
 }
 
 
-/* =========================================================
-   DEMARRAGE
-========================================================= */
+/* =====================================================
+   DÉMARRAGE
+===================================================== */
 
 async function startSensors(){
 
   try{
-
-    /*
-       iPhone / iPad :
-       demande de permission.
-    */
 
     if(
       typeof DeviceMotionEvent !== 'undefined' &&
@@ -1463,16 +1481,6 @@ async function startSensors(){
     }
 
 
-    /*
-       On évite de créer plusieurs listeners.
-    */
-
-    window.removeEventListener(
-      'devicemotion',
-      handleMotion
-    );
-
-
     window.addEventListener(
       'devicemotion',
       handleMotion,
@@ -1483,6 +1491,12 @@ async function startSensors(){
 
 
     running = true;
+
+    lastTime = null;
+
+    gyroAngle = 0;
+
+    gyroAvailable = false;
 
 
     setStatus(
@@ -1514,7 +1528,7 @@ async function startSensors(){
 
 
     alert(
-      'Impossible d’accéder aux capteurs :\n\n' +
+      'Impossible d’utiliser les capteurs :\n' +
       error.message
     );
 
@@ -1523,15 +1537,9 @@ async function startSensors(){
 }
 
 
-/* =========================================================
-   BOUTONS
-========================================================= */
-
-$('start').addEventListener(
-  'click',
-  startSensors
-);
-
+/* =====================================================
+   BOUTON ZERO
+===================================================== */
 
 $('zero').addEventListener(
   'click',
@@ -1546,6 +1554,10 @@ $('zero').addEventListener(
   }
 );
 
+
+/* =====================================================
+   RESET MAX
+===================================================== */
 
 $('reset').addEventListener(
   'click',
@@ -1562,6 +1574,20 @@ $('reset').addEventListener(
   }
 );
 
+
+/* =====================================================
+   START
+===================================================== */
+
+$('start').addEventListener(
+  'click',
+  startSensors
+);
+
+
+/* =====================================================
+   PLEIN ÉCRAN
+===================================================== */
 
 $('screen').addEventListener(
   'click',
@@ -1582,10 +1608,10 @@ $('screen').addEventListener(
       }
 
     }
-    catch(e){
+    catch(error){
 
       alert(
-        'Plein écran indisponible dans ce navigateur.'
+        'Plein écran indisponible.'
       );
 
     }
@@ -1594,15 +1620,15 @@ $('screen').addEventListener(
 );
 
 
-/* =========================================================
+/* =====================================================
    INITIALISATION
-========================================================= */
+===================================================== */
 
 render();
 
 setInterval(
   render,
-  RENDER_PERIOD
+  50
 );
 
 </script>
