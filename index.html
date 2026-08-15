@@ -1,12 +1,21 @@
 <!doctype html>
 <html lang="fr">
+
 <head>
+
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#080b10">
-<title>Inclinomètre Moto V2</title>
+
+<meta name="viewport"
+      content="width=device-width,initial-scale=1,viewport-fit=cover">
+
+<meta name="theme-color"
+      content="#080b10">
+
+<title>Inclinomètre Moto</title>
+
 
 <style>
+
 :root{
   --bg:#080b10;
   --card:#111720;
@@ -18,7 +27,9 @@
   --line:#25303c;
 }
 
-*{box-sizing:border-box}
+*{
+  box-sizing:border-box;
+}
 
 html,body{
   margin:0;
@@ -29,7 +40,10 @@ html,body{
 
 body{
   min-height:100vh;
-  padding:env(safe-area-inset-top) 14px env(safe-area-inset-bottom);
+  padding:
+    env(safe-area-inset-top)
+    14px
+    env(safe-area-inset-bottom);
 }
 
 .wrap{
@@ -106,7 +120,10 @@ h1{
   color:var(--muted);
 }
 
-/* BARRE */
+
+/* =========================
+   BARRE D'ANGLE
+========================= */
 
 .gauge{
   position:relative;
@@ -124,14 +141,19 @@ h1{
 
   background:linear-gradient(
     to right,
+
     var(--red) 0%,
     var(--red) 5%,
+
     var(--yellow) 5%,
     var(--yellow) 15%,
+
     var(--accent) 15%,
     var(--accent) 85%,
+
     var(--yellow) 85%,
     var(--yellow) 95%,
+
     var(--red) 95%,
     var(--red) 100%
   );
@@ -178,13 +200,18 @@ h1{
   left:0;
   right:0;
   top:58px;
+
   display:flex;
   justify-content:space-between;
+
   font-size:10px;
   color:var(--muted);
 }
 
-/* MAX */
+
+/* =========================
+   MAX
+========================= */
 
 .maxrow{
   display:flex;
@@ -205,7 +232,10 @@ h1{
   margin-top:3px;
 }
 
-/* AUTRES */
+
+/* =========================
+   AUTRES
+========================= */
 
 .reading{
   font-size:29px;
@@ -276,31 +306,56 @@ details{
 }
 
 @media(max-width:420px){
-  .grid{gap:8px}
-  .card{padding:12px}
-  .reading{font-size:25px}
+
+  .grid{
+    gap:8px;
+  }
+
+  .card{
+    padding:12px;
+  }
+
+  .reading{
+    font-size:25px;
+  }
+
 }
+
 </style>
+
 </head>
+
 
 <body>
 
+
 <div class="wrap">
 
+
 <div class="top">
-<h1>🏍️ Inclinomètre Moto V2</h1>
+
+<h1>🏍️ Inclinomètre Moto</h1>
 
 <div class="status">
+
 <span id="dot" class="dot"></span>
-<span id="status">Arrêté</span>
+
+<span id="status">
+Arrêté
+</span>
+
 </div>
+
 </div>
+
 
 
 <div class="grid">
 
 
-<!-- ANGLE -->
+<!-- =========================
+     ANGLE
+========================= -->
 
 <section class="card main">
 
@@ -331,7 +386,9 @@ droite + / gauche −
 
 <div id="cursor" class="cursor"></div>
 
+
 <div class="gaugeLabels">
+
 <span>−50°</span>
 <span>−45°</span>
 <span>−35°</span>
@@ -339,12 +396,14 @@ droite + / gauche −
 <span>+35°</span>
 <span>+45°</span>
 <span>+50°</span>
+
 </div>
 
 </div>
 
 
 <div class="maxrow">
+
 
 <div class="maxbox">
 
@@ -371,12 +430,16 @@ Max droite
 
 </div>
 
+
 </div>
 
 </section>
 
 
-<!-- ACCELERATION -->
+
+<!-- =========================
+     ACCELERATION
+========================= -->
 
 <section class="card main">
 
@@ -394,6 +457,7 @@ Accélération longitudinale
 
 
 <div class="maxrow">
+
 
 <div class="maxbox">
 
@@ -420,31 +484,38 @@ Max accél
 
 </div>
 
+
 </div>
 
 </section>
 
 
-<!-- COMPENSATION -->
+
+<!-- =========================
+     COMPENSATION
+========================= -->
 
 <section class="card">
 
 <div class="label">
-Compensation virage
+Correction virage
 </div>
 
 <div id="compensation" class="reading">
 0.0°
 </div>
 
-<div class="small">
-correction appliquée
+<div id="compState" class="small">
+inactive
 </div>
 
 </section>
 
 
-<!-- G TOTAL -->
+
+<!-- =========================
+     G TOTAL
+========================= -->
 
 <section class="card">
 
@@ -457,13 +528,16 @@ G total
 </div>
 
 <div class="small">
-vecteur accélération
+accélération + gravité
 </div>
 
 </section>
 
 
-<!-- BOUTONS -->
+
+<!-- =========================
+     BOUTONS
+========================= -->
 
 <section
 class="card"
@@ -489,7 +563,8 @@ class="danger">
 RESET MAX
 </button>
 
-<button id="screen">
+<button
+id="screen">
 PLEIN ÉCRAN
 </button>
 
@@ -498,20 +573,23 @@ PLEIN ÉCRAN
 </section>
 
 
-<!-- DIAGNOSTIC -->
+
+<!-- =========================
+     DIAGNOSTIC
+========================= -->
 
 <section
 class="card"
 style="grid-column:1/-1">
 
 <div class="label">
-Diagnostic
+Diagnostic brut
 </div>
 
-<details open>
+<details>
 
 <summary>
-Données capteur
+Afficher les données
 </summary>
 
 <div id="raw" class="raw">
@@ -522,19 +600,22 @@ Aucune donnée.
 
 </section>
 
+
 </div>
 
 
 <div class="note">
 
 ⚠️ Prototype expérimental.
-La compensation de virage est volontairement limitée
-pour éviter qu'une accélération ou une bosse provoque
-une correction excessive.
+Ne manipule pas le téléphone en roulant.
+La compensation est volontairement faible pour
+commencer les essais progressivement.
 
 </div>
 
+
 </div>
+
 
 
 <script>
@@ -542,909 +623,986 @@ une correction excessive.
 'use strict';
 
 
-/* =====================================================
+/* =========================================================
    PARAMÈTRES
-===================================================== */
+========================================================= */
 
 
 /*
-   Sens validé avec ta version précédente :
+   IMPORTANT :
 
-   droite = positif
-   gauche = négatif
+   Si tu veux vérifier que l'angle est exactement
+   celui de la version qui fonctionnait :
+
+       false
+
+   Une fois l'angle validé :
+
+       true
+
+   pour essayer la compensation.
 */
 
-const LEAN_SIGN = -1;
+const COMPENSATION_ACTIVE = true;
 
 
 /*
-   Sens accélération longitudinale.
+   Sens validé avec ta version précédente.
+
+   Si droite/gauche sont à nouveau inversées,
+   changer UNIQUEMENT cette valeur.
+
+   1 ou -1
+*/
+
+const LEAN_SIGN = 1;
+
+
+/*
+   Accélération longitudinale.
+
+   Le téléphone étant entre horizontal et vertical,
+   cette valeur devra être vérifiée dans le diagnostic.
+
+   Pour l'instant on utilise Z.
 */
 
 const LONG_SIGN = 1;
 
 
 /*
-   Intensité maximale de compensation.
+   Compensation volontairement faible.
 
-   On commence volontairement faible.
+   On ne cherche pas à corriger 100 % du phénomène.
 
-   0.35 signifie que seulement 35 %
-   de la correction théorique est utilisée.
+   On veut d'abord vérifier que la direction
+   de la correction est bonne.
 */
 
-const COMPENSATION_GAIN = 0.35;
+const COMPENSATION_GAIN = 0.20;
 
 
 /*
-   Limite absolue de la compensation.
+   Compensation maximale.
 
-   Jamais plus de 8° de correction.
+   Même si le capteur fait quelque chose d'étrange,
+   la correction ne dépassera jamais 5°.
 */
 
-const MAX_COMPENSATION = 8;
-
-
-/*
-   Lorsque le vecteur accélération s'éloigne
-   beaucoup de 1G, on réduit la confiance
-   dans l'accéléromètre.
-
-   Cela évite que freinage/bosse déclenche
-   une énorme correction.
-*/
-
-const G_MIN = 0.80;
-const G_MAX = 1.20;
+const MAX_COMPENSATION = 5;
 
 
 /*
    Lissage de la compensation.
-
-   Plus petit = plus stable.
 */
 
-const COMP_FILTER = 0.12;
+const COMP_FILTER = 0.10;
 
 
 /*
-   Rafraîchissement écran.
+   Si G total est trop différent de 1G,
+   on considère que l'accélération est perturbée.
+
+   Dans ce cas on ne corrige pas.
+*/
+
+const G_MIN = 0.90;
+const G_MAX = 1.10;
+
+
+/*
+   Affichage rapide.
 */
 
 const RENDER_PERIOD = 50;
 
 
-/* =====================================================
+/* =========================================================
    VARIABLES
-===================================================== */
+========================================================= */
 
 let running = false;
 
 
-/* angle */
+/* ANGLE */
 
 let angle = 0;
+
 let rawAngle = 0;
 
 let angleOffset = 0;
 
 
-/* compensation */
+/* COMPENSATION */
 
 let compensation = 0;
+
 let compensationFiltered = 0;
 
 
-/* maximums */
+/* MAX */
 
 let maxRight = 0;
+
 let maxLeft = 0;
 
 
-/* accélération */
+/* ACCELERATION */
 
 let longAccel = 0;
 
 let maxAccel = 0;
+
 let maxBrake = 0;
 
 
-/* G */
+/* G TOTAL */
 
 let gTotal = 1;
 
 
-/* fréquence */
+/* FREQUENCE */
 
 let hz = 0;
+
 let hzCount = 0;
+
 let hzTimer = performance.now();
 
 
-/* calibration */
+/* CALIBRATION */
 
 let calibrating = false;
 
 let calibrationCount = 0;
-let calibrationAngleSum = 0;
+
+let calibrationSum = 0;
 
 
-/* raw */
+/* DONNEES BRUTES */
 
 let raw = {
 
-x:0,
-y:0,
-z:0,
+  x:0,
+  y:0,
+  z:0,
 
-ax:0,
-ay:0,
-az:0
+  ax:0,
+  ay:0,
+  az:0
 
 };
 
 
-/* =====================================================
+/* =========================================================
    OUTILS
-===================================================== */
+========================================================= */
 
-const $ =
-id => document.getElementById(id);
+const $ = id =>
+  document.getElementById(id);
 
 
 function fmt(v,n=1){
 
-if(!Number.isFinite(v))
-return '0';
+  if(!Number.isFinite(v))
+    return '0';
 
-return v.toFixed(n);
+  return v.toFixed(n);
 
 }
 
 
 function signed(v,n=1){
 
-return (
-v >= 0 ? '+' : ''
-) + fmt(v,n);
+  if(!Number.isFinite(v))
+    v = 0;
+
+  return (v >= 0 ? '+' : '') + v.toFixed(n);
 
 }
 
 
-/* =====================================================
+/* =========================================================
    STATUT
-===================================================== */
+========================================================= */
 
 function setStatus(text,on=false){
 
-$('status').textContent = text;
+  $('status').textContent = text;
 
-$('dot').classList.toggle(
-'on',
-on
-);
+  $('dot').classList.toggle(
+    'on',
+    on
+  );
 
 }
 
 
-/* =====================================================
-   CALCUL ANGLE DE BASE
-===================================================== */
+/* =========================================================
+   CALCUL ANGLE
+========================================================= */
 
-function calculateAngle(x,y){
 
 /*
-   C'est EXACTEMENT la méthode de la version
-   que tu viens de valider.
+   C'est le calcul de base.
 
-   Le téléphone droit se trouvait autour
-   de +170/-170°.
+   On traite correctement le passage :
 
-   On transforme cette discontinuité en 0°.
+       +180 / -180
+
+   pour éviter le problème que tu avais
+   autour de la verticale.
 */
 
-let a =
-Math.atan2(x,y)
-* 180
-/ Math.PI;
+function calculateRawAngle(x,y){
+
+  let a =
+    Math.atan2(x,y)
+    * 180
+    / Math.PI;
 
 
-a -= 180;
+  /*
+     Transformation autour de 180°.
+  */
+
+  a -= 180;
 
 
-if(a > 180)
-a -= 360;
+  /*
+     Ramène toujours l'angle
+     dans -180 ... +180.
+  */
 
-if(a < -180)
-a += 360;
+  while(a > 180)
+    a -= 360;
+
+  while(a < -180)
+    a += 360;
 
 
-return a;
+  return a;
 
 }
 
 
-/* =====================================================
+/* =========================================================
    CALIBRATION
-===================================================== */
+========================================================= */
 
 function startCalibration(){
 
-calibrating = true;
+  calibrating = true;
 
-calibrationCount = 0;
+  calibrationCount = 0;
 
-calibrationAngleSum = 0;
+  calibrationSum = 0;
 
-$('raw').textContent =
-'CALIBRATION\n\n' +
-'Ne bouge pas le téléphone.';
+  compensationFiltered = 0;
 
-setTimeout(
-finishCalibration,
-1000
-);
+  compensation = 0;
+
+
+  $('compState').textContent =
+    'calibration';
+
+
+  setTimeout(
+    finishCalibration,
+    1200
+  );
 
 }
 
 
 function finishCalibration(){
 
-if(calibrationCount > 0){
+  if(calibrationCount > 0){
 
-angleOffset =
-calibrationAngleSum /
-calibrationCount;
+    angleOffset =
+      calibrationSum /
+      calibrationCount;
 
-}
+  }
 
-calibrating = false;
 
-angle = 0;
+  calibrating = false;
 
-compensation = 0;
-compensationFiltered = 0;
+  angle = 0;
 
-$('raw').textContent =
-'Calibration terminée.\n' +
-'Offset = ' +
-fmt(angleOffset,2) +
-'°';
+
+  $('compState').textContent =
+    COMPENSATION_ACTIVE
+      ? 'active'
+      : 'inactive';
 
 }
 
 
-/* =====================================================
-   COMPENSATION VIRAGE
-===================================================== */
+/* =========================================================
+   COMPENSATION
+========================================================= */
+
+
+/*
+   Cette fonction est volontairement simple.
+
+   Elle ne remplace PAS la mesure d'angle.
+
+   Elle ajoute seulement une petite correction.
+
+   Si elle donne de mauvais résultats,
+   COMPENSATION_ACTIVE peut être mis à false.
+*/
 
 function calculateCompensation(){
 
-/*
-   Le vecteur mesuré par l'accéléromètre
-   contient gravité + accélération.
-
-   Pour cette première tentative, on utilise
-   l'accélération latérale X.
-
-   Le rapport :
-
-       atan2(accélération latérale, gravité)
-
-   donne une estimation de l'angle apparent.
-
-   MAIS on ne veut surtout pas remplacer
-   notre mesure actuelle par celle-ci.
-
-   On l'utilise seulement comme petite correction.
-*/
+  if(!COMPENSATION_ACTIVE)
+    return 0;
 
 
-const lateral =
-raw.x;
+  /*
+     Si le vecteur total n'est pas proche de 1G,
+     on considère que la mesure est trop perturbée.
+  */
+
+  if(
+    gTotal < G_MIN ||
+    gTotal > G_MAX
+  ){
+
+    return 0;
+
+  }
 
 
-/*
-   Si G total est proche de 1G,
-   les conditions sont favorables.
+  /*
+     Accélération latérale.
 
-   Si G total s'écarte fortement de 1G,
-   on diminue progressivement la correction.
-*/
+     Pour le montage actuel,
+     X correspond à la composante latérale
+     utilisée par notre angle.
+  */
 
-let confidence = 1;
-
-
-if(gTotal < G_MIN ||
-   gTotal > G_MAX){
-
-confidence = 0;
-
-}
+  const lateral =
+    raw.x;
 
 
-/*
-   Correction théorique.
+  /*
+     Estimation très simple
+     de l'angle apparent.
+  */
 
-   atan2 permet d'éviter les problèmes
-   aux grands angles.
-*/
-
-let theoretical =
-Math.atan2(
-lateral,
-1
-)
-* 180
-/ Math.PI;
+  let correction =
+    Math.atan2(
+      lateral,
+      1
+    )
+    * 180
+    / Math.PI;
 
 
-/*
-   On ne prend qu'une petite partie
-   de cette correction.
-*/
+  /*
+     On n'utilise qu'une petite partie.
+  */
 
-let correction =
-theoretical *
-COMPENSATION_GAIN;
+  correction *=
+    COMPENSATION_GAIN;
 
 
-/*
-   Limite de sécurité.
-*/
+  /*
+     Limitation absolue.
+  */
 
-correction =
-Math.max(
--MAX_COMPENSATION,
-Math.min(
-MAX_COMPENSATION,
-correction
-)
-);
-
-
-/*
-   Confiance.
-*/
-
-correction *= confidence;
+  correction =
+    Math.max(
+      -MAX_COMPENSATION,
+      Math.min(
+        MAX_COMPENSATION,
+        correction
+      )
+    );
 
 
-/*
-   Lissage.
-
-   Cela évite les mouvements brusques.
-*/
-
-compensationFiltered +=
-(
-correction -
-compensationFiltered
-)
-* COMP_FILTER;
-
-
-return compensationFiltered;
+  return correction;
 
 }
 
 
-/* =====================================================
+/* =========================================================
    DEVICEMOTION
-===================================================== */
+========================================================= */
 
 function handleMotion(event){
 
-if(!running)
-return;
+  if(!running)
+    return;
 
 
-const g =
-event.accelerationIncludingGravity;
+  /*
+     ACCELERATION + GRAVITÉ
+
+     C'est cette donnée qui sert
+     à calculer l'angle.
+  */
+
+  const g =
+    event.accelerationIncludingGravity;
 
 
-if(!g)
-return;
+  if(!g)
+    return;
 
 
-if(
-g.x === null ||
-g.y === null ||
-g.z === null
-)
-return;
+  if(
+    g.x === null ||
+    g.y === null ||
+    g.z === null
+  ){
+
+    return;
+
+  }
 
 
-/* ===============================
-   ACCELERATION + GRAVITÉ
-================================ */
+  const x =
+    g.x / 9.80665;
 
-const x =
-g.x / 9.80665;
+  const y =
+    g.y / 9.80665;
 
-const y =
-g.y / 9.80665;
-
-const z =
-g.z / 9.80665;
+  const z =
+    g.z / 9.80665;
 
 
-raw.x = x;
-raw.y = y;
-raw.z = z;
+  raw.x = x;
+  raw.y = y;
+  raw.z = z;
 
 
-/* ===============================
-   G TOTAL
-================================ */
+  /*
+     G total.
+  */
 
-gTotal =
-Math.sqrt(
-x*x +
-y*y +
-z*z
-);
-
-
-/* ===============================
-   ANGLE DE BASE
-================================ */
-
-const baseAngle =
-calculateAngle(
-x,
-y
-);
+  gTotal =
+    Math.sqrt(
+      x*x +
+      y*y +
+      z*z
+    );
 
 
-/* ===============================
-   CALIBRATION
-================================ */
+  /*
+     ANGLE BRUT
+  */
 
-if(calibrating){
+  const baseAngle =
+    calculateRawAngle(
+      x,
+      y
+    );
 
-calibrationAngleSum +=
-baseAngle;
 
-calibrationCount++;
+  /*
+     CALIBRATION
+  */
+
+  if(calibrating){
+
+    calibrationSum +=
+      baseAngle;
+
+    calibrationCount++;
+
+  }
+
+
+  /*
+     ANGLE DE BASE
+  */
+
+  rawAngle =
+    (
+      baseAngle -
+      angleOffset
+    )
+    *
+    LEAN_SIGN;
+
+
+  /*
+     COMPENSATION
+  */
+
+  if(!calibrating){
+
+    const target =
+      calculateCompensation();
+
+
+    /*
+       Filtre très lent et stable.
+    */
+
+    compensationFiltered +=
+      (
+        target -
+        compensationFiltered
+      )
+      *
+      COMP_FILTER;
+
+
+    compensation =
+      compensationFiltered;
+
+  }
+  else{
+
+    compensation = 0;
+
+  }
+
+
+  /*
+     ANGLE FINAL
+  */
+
+  angle =
+    rawAngle +
+    compensation;
+
+
+  /*
+     MAX ANGLE
+  */
+
+  if(angle > maxRight)
+    maxRight = angle;
+
+
+  if(angle < maxLeft)
+    maxLeft = angle;
+
+
+  /* =====================================================
+     ACCELERATION LONGITUDINALE
+  ===================================================== */
+
+
+  /*
+     On essaie d'abord l'accélération
+     sans la gravité.
+
+     Certains navigateurs la fournissent,
+     d'autres non.
+  */
+
+  const a =
+    event.acceleration;
+
+
+  if(
+    a &&
+    a.x !== null &&
+    a.y !== null &&
+    a.z !== null
+  ){
+
+    /*
+       Pour le moment Z.
+
+       Le diagnostic permettra de confirmer
+       l'axe réel avec ton montage.
+    */
+
+    longAccel =
+      (
+        a.z /
+        9.80665
+      )
+      *
+      LONG_SIGN;
+
+
+    if(longAccel > maxAccel)
+      maxAccel = longAccel;
+
+
+    if(longAccel < maxBrake)
+      maxBrake = longAccel;
+
+  }
+
+
+  /* =====================================================
+     FREQUENCE
+  ===================================================== */
+
+  const now =
+    performance.now();
+
+
+  hzCount++;
+
+
+  if(
+    now - hzTimer >= 1000
+  ){
+
+    hz =
+      Math.round(
+        hzCount *
+        1000 /
+        (now - hzTimer)
+      );
+
+
+    hzCount = 0;
+
+    hzTimer = now;
+
+  }
 
 }
 
 
-/* ===============================
-   ACCELERATION LONGITUDINALE
-================================ */
-
-const a =
-event.acceleration;
-
-
-if(
-a &&
-a.x !== null &&
-a.y !== null &&
-a.z !== null
-){
-
-raw.ax =
-a.x / 9.80665;
-
-raw.ay =
-a.y / 9.80665;
-
-raw.az =
-a.z / 9.80665;
-
-
-/*
-   Z = longitudinal
-*/
-
-longAccel =
-raw.az *
-LONG_SIGN;
-
-
-if(longAccel > maxAccel)
-maxAccel = longAccel;
-
-
-if(longAccel < maxBrake)
-maxBrake = longAccel;
-
-}
-
-
-/* ===============================
-   COMPENSATION
-================================ */
-
-/*
-   On ne compense pas pendant
-   la calibration.
-*/
-
-if(!calibrating){
-
-compensation =
-calculateCompensation();
-
-}
-else{
-
-compensation = 0;
-
-}
-
-
-/* ===============================
-   ANGLE FINAL
-================================ */
-
-rawAngle =
-(
-baseAngle -
-angleOffset
-)
-*
-LEAN_SIGN;
-
-
-/*
-   La compensation est appliquée
-   progressivement.
-
-   Important :
-   on conserve le calcul de base
-   comme référence.
-*/
-
-angle =
-rawAngle +
-compensation;
-
-
-/* ===============================
-   MAX
-================================ */
-
-if(angle > maxRight)
-maxRight = angle;
-
-
-if(angle < maxLeft)
-maxLeft = angle;
-
-
-/* ===============================
-   FREQUENCE
-================================ */
-
-const now =
-performance.now();
-
-hzCount++;
-
-
-if(
-now - hzTimer >= 1000
-){
-
-hz =
-Math.round(
-hzCount *
-1000 /
-(now - hzTimer)
-);
-
-hzCount = 0;
-
-hzTimer = now;
-
-}
-
-}
-
-
-/* =====================================================
+/* =========================================================
    CURSEUR
-===================================================== */
+========================================================= */
 
 function updateCursor(){
 
-const limited =
-Math.max(
--50,
-Math.min(
-50,
-angle
-)
-);
+  /*
+     La barre représente
+     -50° ... +50°.
+  */
+
+  const limited =
+    Math.max(
+      -50,
+      Math.min(
+        50,
+        angle
+      )
+    );
 
 
-const position =
-50 + limited;
+  const position =
+    50 +
+    limited;
 
 
-$('cursor').style.left =
-position + '%';
+  $('cursor').style.left =
+    position + '%';
 
 
-const abs =
-Math.abs(angle);
+  const abs =
+    Math.abs(angle);
 
 
-if(abs >= 45){
+  if(abs >= 45){
 
-$('cursor').style.background =
-'var(--red)';
+    $('cursor').style.background =
+      'var(--red)';
+
+  }
+  else if(abs >= 35){
+
+    $('cursor').style.background =
+      'var(--yellow)';
+
+  }
+  else{
+
+    $('cursor').style.background =
+      'var(--accent)';
+
+  }
 
 }
-else if(abs >= 35){
-
-$('cursor').style.background =
-'var(--yellow)';
-
-}
-else{
-
-$('cursor').style.background =
-'var(--accent)';
-
-}
-
-}
 
 
-/* =====================================================
+/* =========================================================
    AFFICHAGE
-===================================================== */
+========================================================= */
 
 function render(){
 
-$('angle').textContent =
-signed(angle,0) + '°';
+  $('angle').textContent =
+    signed(angle,0) + '°';
 
 
-$('maxLeft').textContent =
-signed(maxLeft,0) + '°';
+  $('maxLeft').textContent =
+    signed(maxLeft,0) + '°';
 
 
-$('maxRight').textContent =
-signed(maxRight,0) + '°';
+  $('maxRight').textContent =
+    signed(maxRight,0) + '°';
 
 
-$('gLong').textContent =
-signed(longAccel,2) + ' G';
+  $('gLong').textContent =
+    signed(longAccel,2) +
+    ' G';
 
 
-$('maxAccel').textContent =
-signed(maxAccel,2);
+  $('maxAccel').textContent =
+    signed(maxAccel,2);
 
 
-$('maxBrake').textContent =
-signed(maxBrake,2);
+  $('maxBrake').textContent =
+    signed(maxBrake,2);
 
 
-$('gTotal').textContent =
-fmt(gTotal,2) + ' G';
+  $('gTotal').textContent =
+    fmt(gTotal,2) +
+    ' G';
 
 
-$('compensation').textContent =
-signed(compensation,1) + '°';
+  $('compensation').textContent =
+    signed(compensation,1) +
+    '°';
 
 
-$('hz').textContent =
-hz + ' Hz';
+  $('compState').textContent =
+    COMPENSATION_ACTIVE
+      ? (
+          calibrating
+          ? 'calibration'
+          : 'active'
+        )
+      : 'inactive';
 
 
-updateCursor();
+  $('hz').textContent =
+    hz +
+    ' Hz';
 
 
-/* ===============================
-   DIAGNOSTIC
-================================ */
+  updateCursor();
 
-$('raw').textContent =
+
+  /*
+     DIAGNOSTIC
+  */
+
+  $('raw').textContent =
 
 `ANGLE BRUT
-
 ${fmt(
-Math.atan2(raw.x,raw.y)
-*180/Math.PI,
-2
+  Math.atan2(raw.x,raw.y)
+  *180/Math.PI,
+  1
 )}°
 
+ANGLE APRÈS PASSAGE ±180°
+${fmt(
+  calculateRawAngle(raw.x,raw.y),
+  1
+)}°
+
+OFFSET
+${fmt(angleOffset,1)}°
 
 ANGLE DE BASE
+${fmt(rawAngle,1)}°
 
-${fmt(rawAngle,2)}°
-
-
-COMPENSATION
-
+CORRECTION
 ${fmt(compensation,2)}°
 
-
 ANGLE FINAL
+${fmt(angle,1)}°
 
-${fmt(angle,2)}°
-
-
-ACCELERATION AVEC GRAVITÉ
-
+ACCÉLÉRATION + GRAVITÉ
 X = ${fmt(raw.x,3)} G
 Y = ${fmt(raw.y,3)} G
 Z = ${fmt(raw.z,3)} G
 
-
 G TOTAL
-
 ${fmt(gTotal,3)} G
 
+ACCÉLÉRATION LONGITUDINALE
+${fmt(longAccel,3)} G
 
-ACCÉLÉRATION PROPRE
-
-X = ${fmt(raw.ax,3)} G
-Y = ${fmt(raw.ay,3)} G
-Z = ${fmt(raw.az,3)} G
-
-
-LONGITUDINALE
-
-${fmt(longAccel,3)} G`;
+FRÉQUENCE
+${hz} Hz`;
 
 }
 
 
-/* =====================================================
+/* =========================================================
    DEMARRAGE
-===================================================== */
+========================================================= */
 
 async function startSensors(){
 
-try{
+  try{
 
-if(
-typeof DeviceMotionEvent !== 'undefined' &&
-typeof DeviceMotionEvent.requestPermission === 'function'
-){
+    /*
+       iPhone / iPad :
+       demande de permission.
+    */
 
-const permission =
-await DeviceMotionEvent.requestPermission();
+    if(
+      typeof DeviceMotionEvent !== 'undefined' &&
+      typeof DeviceMotionEvent.requestPermission === 'function'
+    ){
+
+      const permission =
+        await DeviceMotionEvent.requestPermission();
 
 
-if(permission !== 'granted'){
+      if(permission !== 'granted'){
 
-throw new Error(
-'Permission des capteurs refusée.'
-);
+        throw new Error(
+          'Permission des capteurs refusée.'
+        );
+
+      }
+
+    }
+
+
+    /*
+       On évite de créer plusieurs listeners.
+    */
+
+    window.removeEventListener(
+      'devicemotion',
+      handleMotion
+    );
+
+
+    window.addEventListener(
+      'devicemotion',
+      handleMotion,
+      {
+        passive:true
+      }
+    );
+
+
+    running = true;
+
+
+    setStatus(
+      'Capteurs actifs',
+      true
+    );
+
+
+    $('start').textContent =
+      'CAPTEURS ACTIFS';
+
+
+    $('start').disabled =
+      true;
+
+
+    /*
+       Zéro automatique.
+    */
+
+    startCalibration();
+
+  }
+  catch(error){
+
+    setStatus(
+      'Erreur'
+    );
+
+
+    alert(
+      'Impossible d’accéder aux capteurs :\n\n' +
+      error.message
+    );
+
+  }
 
 }
 
-}
 
-
-window.addEventListener(
-'devicemotion',
-handleMotion,
-{
-passive:true
-}
-);
-
-
-running = true;
-
-
-setStatus(
-'Capteurs actifs',
-true
-);
-
-
-$('start').textContent =
-'CAPTEURS ACTIFS';
-
-
-$('start').disabled =
-true;
-
-
-startCalibration();
-
-}
-catch(error){
-
-setStatus(
-'Erreur'
-);
-
-alert(
-'Impossible d’utiliser les capteurs :\n' +
-error.message
-);
-
-}
-
-}
-
-
-/* =====================================================
+/* =========================================================
    BOUTONS
-===================================================== */
+========================================================= */
 
 $('start').addEventListener(
-'click',
-startSensors
+  'click',
+  startSensors
 );
 
 
 $('zero').addEventListener(
-'click',
-() => {
+  'click',
+  () => {
 
-if(running)
-startCalibration();
+    if(running){
 
-}
+      startCalibration();
+
+    }
+
+  }
 );
 
 
 $('reset').addEventListener(
-'click',
-() => {
+  'click',
+  () => {
 
-maxRight = 0;
-maxLeft = 0;
+    maxRight = 0;
 
-maxAccel = 0;
-maxBrake = 0;
+    maxLeft = 0;
 
-}
+    maxAccel = 0;
+
+    maxBrake = 0;
+
+  }
 );
 
 
 $('screen').addEventListener(
-'click',
-async () => {
+  'click',
+  async () => {
 
-try{
+    try{
 
-if(!document.fullscreenElement){
+      if(!document.fullscreenElement){
 
-await document.documentElement
-.requestFullscreen();
+        await document.documentElement
+          .requestFullscreen();
 
-}
-else{
+      }
+      else{
 
-await document.exitFullscreen();
+        await document.exitFullscreen();
 
-}
+      }
 
-}
-catch(e){
+    }
+    catch(e){
 
-alert(
-'Plein écran indisponible.'
+      alert(
+        'Plein écran indisponible dans ce navigateur.'
+      );
+
+    }
+
+  }
 );
 
-}
 
-}
-);
-
-
-/* =====================================================
+/* =========================================================
    INITIALISATION
-===================================================== */
+========================================================= */
 
 render();
 
 setInterval(
-render,
-RENDER_PERIOD
+  render,
+  RENDER_PERIOD
 );
 
 </script>
