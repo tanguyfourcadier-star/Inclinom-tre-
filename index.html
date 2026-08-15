@@ -112,6 +112,8 @@ h1{
   font-weight:700;
   margin:12px 0 6px;
   font-variant-numeric:tabular-nums;
+  color:var(--accent);
+  transition:color .05s linear;
 }
 
 .unit{
@@ -631,18 +633,10 @@ details{
 
 
 /*
-   MODIFICATION DEMANDÉE :
+   Sens validé.
 
-   Avant :
-
-      -1
-
-   Maintenant :
-
-      +1
-
-   Le calcul lui-même est inversé.
-   L'affichage n'est pas bricolé séparément.
+   droite = positif
+   gauche = négatif
 */
 
 const LEAN_SIGN = 1;
@@ -651,14 +645,10 @@ const LEAN_SIGN = 1;
 /*
    Sens accélération / freinage.
 
-   On conserve +1 pour le moment.
+   +1 = accélération positive
+   -1 = accélération négative
 
-   Si le test montre :
-
-      accélération = négatif
-      freinage = positif
-
-   il suffira de passer à -1.
+   On conserve +1.
 */
 
 const LONG_SIGN = 1;
@@ -672,7 +662,7 @@ const RENDER_MS = 50;
 
 
 /*
-   Calibration.
+   Durée de calibration.
 */
 
 const CALIBRATION_MS = 1200;
@@ -692,14 +682,14 @@ let calibrating = false;
 let angle = 0;
 
 
-/* Max */
+/* Maximums */
 
 let maxRight = 0;
 
 let maxLeft = 0;
 
 
-/* Accélération longitudinale */
+/* Accélération */
 
 let longAccel = 0;
 
@@ -724,15 +714,12 @@ let hzTimer =
 
 
 /* =====================================================
-   AXES DU TELEPHONE
+   AXES
 ===================================================== */
 
 
 /*
-   Verticale du support.
-
-   Cette valeur est déterminée automatiquement
-   pendant la calibration.
+   Verticale mémorisée au zéro.
 */
 
 let verticalAxis = {
@@ -745,7 +732,8 @@ let verticalAxis = {
 /*
    Axe latéral du téléphone.
 
-   X correspond à gauche / droite.
+   Le support ne penche pas latéralement,
+   donc X correspond à gauche/droite.
 */
 
 let lateralAxis = {
@@ -756,23 +744,9 @@ let lateralAxis = {
 
 
 /*
-   Axe longitudinal.
+   Axe longitudinal avant/arrière.
 
-   IMPORTANT :
-
-   C'est ici que nous avons modifié le calcul.
-
-   On utilise désormais :
-
-       verticale × latéral
-
-   au lieu de :
-
-       latéral × verticale
-
-   Ce vecteur correspond à l'axe avant/arrière
-   du téléphone, avec son sens inversé par rapport
-   à la version précédente.
+   Calculé automatiquement.
 */
 
 let longitudinalAxis = {
@@ -817,7 +791,7 @@ let raw = {
 
 
 /* =====================================================
-   OUTILS VECTORIELS
+   OUTILS
 ===================================================== */
 
 const $ =
@@ -942,13 +916,13 @@ function setStatus(
 
 
 /* =====================================================
-   CALCUL AXES SUPPORT
+   CALCUL AXES DU SUPPORT
 ===================================================== */
 
 function calculateMountAxes(){
 
   /*
-     Verticale moyenne mesurée pendant le zéro.
+     Verticale moyenne.
   */
 
   const g =
@@ -958,10 +932,7 @@ function calculateMountAxes(){
 
 
   /*
-     Axe latéral du téléphone.
-
-     Le support n'étant pas incliné sur le côté,
-     X reste l'axe gauche/droite.
+     Axe gauche/droite.
   */
 
   lateralAxis = {
@@ -972,23 +943,20 @@ function calculateMountAxes(){
 
 
   /*
-     Mémorisation de la verticale.
+     Verticale du montage.
   */
 
   verticalAxis = g;
 
 
   /*
-     =================================================
-     AXE LONGITUDINAL
-     =================================================
+     Axe longitudinal :
 
-     Nouvelle convention :
+       verticale × latéral
 
-         verticale × latéral
-
-     Cela permet d'obtenir le sens avant/arrière
-     correspondant au nouveau test.
+     Cela s'adapte automatiquement
+     à l'inclinaison avant/arrière
+     du téléphone.
   */
 
   let longitudinal =
@@ -1005,7 +973,7 @@ function calculateMountAxes(){
 
 
   /*
-     Vérification de sécurité.
+     Sécurité.
   */
 
   if(
@@ -1079,10 +1047,6 @@ function finishCalibration(){
   }
 
 
-  /*
-     Moyenne de la gravité.
-  */
-
   calibrationGravity.x /=
     calibrationCount;
 
@@ -1092,10 +1056,6 @@ function finishCalibration(){
   calibrationGravity.z /=
     calibrationCount;
 
-
-  /*
-     Calcule les axes du support.
-  */
 
   calculateMountAxes();
 
@@ -1140,10 +1100,6 @@ function calculateAngleFromGravity(
   gravity
 ){
 
-  /*
-     Composante latérale.
-  */
-
   const lateral =
     dot(
       gravity,
@@ -1151,21 +1107,12 @@ function calculateAngleFromGravity(
     );
 
 
-  /*
-     Composante verticale.
-  */
-
   const vertical =
     dot(
       gravity,
       verticalAxis
     );
 
-
-  /*
-     Angle par rapport à la verticale
-     du support.
-  */
 
   const a =
     Math.atan2(
@@ -1177,10 +1124,7 @@ function calculateAngleFromGravity(
 
 
   /*
-     Inversion demandée.
-
-     Cette modification est appliquée
-     directement à la valeur.
+     Sens directement appliqué à la valeur.
   */
 
   return a * LEAN_SIGN;
@@ -1189,7 +1133,7 @@ function calculateAngleFromGravity(
 
 
 /* =====================================================
-   LECTURE CAPTEURS
+   CAPTEUR
 ===================================================== */
 
 function handleMotion(event){
@@ -1200,7 +1144,7 @@ function handleMotion(event){
 
 
   /*
-     ACCELERATION AVEC GRAVITE
+     ACCÉLÉRATION AVEC GRAVITÉ
   */
 
   const total =
@@ -1245,7 +1189,7 @@ function handleMotion(event){
 
 
   /*
-     ACCELERATION DYNAMIQUE
+     ACCÉLÉRATION DYNAMIQUE
   */
 
   const dynamic =
@@ -1302,11 +1246,7 @@ function handleMotion(event){
 
 
   /*
-     GRAVITE ESTIMEE
-
-     total = gravité + accélération
-
-     gravité = total - accélération
+     GRAVITE ESTIMÉE
   */
 
   const gravityVector = {
@@ -1336,16 +1276,11 @@ function handleMotion(event){
     gravityVector.z;
 
 
-  /* =================================================
+  /*
      CALIBRATION
-  ================================================= */
+  */
 
   if(calibrating){
-
-    /*
-       On mémorise la verticale naturelle
-       de la position réelle du téléphone.
-    */
 
     calibrationGravity.x +=
       totalVector.x;
@@ -1363,10 +1298,6 @@ function handleMotion(event){
   }
 
 
-  /*
-     Pas de calcul avant calibration.
-  */
-
   if(
     norm(verticalAxis) < 0.5
   ){
@@ -1376,9 +1307,9 @@ function handleMotion(event){
   }
 
 
-  /* =================================================
+  /*
      ANGLE
-  ================================================= */
+  */
 
   angle =
     calculateAngleFromGravity(
@@ -1388,72 +1319,51 @@ function handleMotion(event){
     );
 
 
-  /* =================================================
-     ACCELERATION LONGITUDINALE
-  ================================================= */
-
   /*
-     IMPORTANT :
+     ACCÉLÉRATION LONGITUDINALE
 
-     On projette maintenant l'accélération
-     sur l'axe longitudinal calculé pendant
-     la calibration.
-
-     Cela ne dépend plus directement
-     de X, Y ou Z.
+     Projection sur l'axe avant/arrière
+     déterminé pendant la calibration.
   */
 
   longAccel =
     dot(
       dynamicVector,
       longitudinalAxis
-    ) *
+    )
+    *
     LONG_SIGN;
 
 
-  /* =================================================
+  /*
      MAX ANGLE
-  ================================================= */
+  */
 
   if(angle > maxRight){
-
-    maxRight =
-      angle;
-
+    maxRight = angle;
   }
-
 
   if(angle < maxLeft){
-
-    maxLeft =
-      angle;
-
+    maxLeft = angle;
   }
 
 
-  /* =================================================
-     MAX ACCEL
-  ================================================= */
+  /*
+     MAX ACCELERATION
+  */
 
   if(longAccel > maxAccel){
-
-    maxAccel =
-      longAccel;
-
+    maxAccel = longAccel;
   }
-
 
   if(longAccel < maxBrake){
-
-    maxBrake =
-      longAccel;
-
+    maxBrake = longAccel;
   }
 
 
-  /* =================================================
+  /*
      FREQUENCE
-  ================================================= */
+  */
 
   const now =
     performance.now();
@@ -1477,6 +1387,38 @@ function handleMotion(event){
     hzCount = 0;
 
     hzTimer = now;
+
+  }
+
+}
+
+
+/* =====================================================
+   COULEUR DE L'ANGLE
+===================================================== */
+
+function updateAngleColor(){
+
+  const absAngle =
+    Math.abs(angle);
+
+
+  if(absAngle >= 45){
+
+    $('angle').style.color =
+      'var(--red)';
+
+  }
+  else if(absAngle >= 35){
+
+    $('angle').style.color =
+      'var(--yellow)';
+
+  }
+  else{
+
+    $('angle').style.color =
+      'var(--accent)';
 
   }
 
@@ -1517,14 +1459,12 @@ function updateCursor(){
       'var(--red)';
 
   }
-
   else if(abs >= 35){
 
     $('cursor').style.background =
       'var(--yellow)';
 
   }
-
   else{
 
     $('cursor').style.background =
@@ -1541,12 +1481,27 @@ function updateCursor(){
 
 function render(){
 
+  /*
+     ANGLE
+  */
+
   $('angle').textContent =
     signed(
       angle,
       0
     ) + '°';
 
+
+  /*
+     COULEUR DU CHIFFRE
+  */
+
+  updateAngleColor();
+
+
+  /*
+     MAX GAUCHE
+  */
 
   $('maxLeft').textContent =
     signed(
@@ -1555,12 +1510,20 @@ function render(){
     ) + '°';
 
 
+  /*
+     MAX DROITE
+  */
+
   $('maxRight').textContent =
     signed(
       maxRight,
       0
     ) + '°';
 
+
+  /*
+     ACCÉLÉRATION
+  */
 
   $('gLong').textContent =
     signed(
@@ -1583,6 +1546,10 @@ function render(){
     );
 
 
+  /*
+     G TOTAL
+  */
+
   $('gTotal').textContent =
     fmt(
       gTotal,
@@ -1590,9 +1557,17 @@ function render(){
     ) + ' G';
 
 
+  /*
+     FREQUENCE
+  */
+
   $('hz').textContent =
     hz + ' Hz';
 
+
+  /*
+     CURSEUR
+  */
 
   updateCursor();
 
@@ -1656,7 +1631,7 @@ Z = ${fmt(longitudinalAxis.z,3)}`;
 
 
 /* =====================================================
-   DEMARRAGE
+   DÉMARRAGE
 ===================================================== */
 
 async function startSensors(){
@@ -1688,7 +1663,7 @@ async function startSensors(){
 
 
     /*
-       Evite les listeners multiples.
+       Évite les listeners multiples.
     */
 
     window.removeEventListener(
@@ -1724,14 +1699,12 @@ async function startSensors(){
 
 
     /*
-       Calibration avec le téléphone
-       dans sa position réelle.
+       Calibration dans la position définitive.
     */
 
     startCalibration();
 
   }
-
   catch(error){
 
     setStatus(
@@ -1813,7 +1786,6 @@ $('screen').addEventListener(
           .requestFullscreen();
 
       }
-
       else{
 
         await document.exitFullscreen();
@@ -1821,7 +1793,6 @@ $('screen').addEventListener(
       }
 
     }
-
     catch(error){
 
       alert(
