@@ -8,7 +8,7 @@
 
 <meta name="theme-color" content="#080b10">
 
-<title>Inclinomètre Moto V2</title>
+<title>Inclinomètre Moto - Test Accéléromètre</title>
 
 <style>
 :root{
@@ -22,7 +22,9 @@
   --line:#25303c;
 }
 
-*{box-sizing:border-box}
+*{
+  box-sizing:border-box;
+}
 
 html,body{
   margin:0;
@@ -33,7 +35,10 @@ html,body{
 
 body{
   min-height:100vh;
-  padding:env(safe-area-inset-top) 14px env(safe-area-inset-bottom);
+  padding:
+    env(safe-area-inset-top)
+    14px
+    env(safe-area-inset-bottom);
   touch-action:manipulation;
 }
 
@@ -193,9 +198,17 @@ details{
 }
 
 @media(max-width:420px){
-  .grid{gap:8px}
-  .card{padding:12px}
-  .reading{font-size:25px}
+  .grid{
+    gap:8px;
+  }
+
+  .card{
+    padding:12px;
+  }
+
+  .reading{
+    font-size:25px;
+  }
 }
 </style>
 </head>
@@ -205,7 +218,7 @@ details{
 <div class="wrap">
 
   <div class="top">
-    <h1>🏍️ Inclinomètre Moto V2</h1>
+    <h1>🏍️ Inclinomètre Moto</h1>
 
     <div class="status">
       <span id="dot" class="dot"></span>
@@ -216,11 +229,11 @@ details{
 
   <div class="grid">
 
-    <!-- INCLINAISON -->
+    <!-- ANGLE -->
     <section class="card main">
 
       <div class="label">
-        Inclinaison
+        Inclinaison latérale
       </div>
 
       <div id="angle" class="angle">
@@ -248,42 +261,6 @@ details{
     </section>
 
 
-    <!-- ACCELERATION LONGITUDINALE -->
-    <section class="card main">
-
-      <div class="label">
-        Accélération longitudinale
-      </div>
-
-      <div id="gLong" class="reading">
-        +0.00 G
-      </div>
-
-      <div class="small">
-        + accélération / − freinage
-      </div>
-
-      <div class="maxrow">
-
-        <div>
-          <div class="label">Max accél.</div>
-          <div id="maxAccel" class="maxv">
-            +0.00
-          </div>
-        </div>
-
-        <div>
-          <div class="label">Max frein</div>
-          <div id="maxBrake" class="maxv">
-            +0.00
-          </div>
-        </div>
-
-      </div>
-
-    </section>
-
-
     <!-- G TOTAL -->
     <section class="card">
 
@@ -296,7 +273,7 @@ details{
       </div>
 
       <div class="small">
-        gravité + accélérations
+        ≈1 G à l'arrêt
       </div>
 
     </section>
@@ -313,7 +290,7 @@ details{
         0 Hz
       </div>
 
-      <div class="small" id="gyroState">
+      <div class="small" id="sensorState">
         En attente
       </div>
 
@@ -321,24 +298,32 @@ details{
 
 
     <!-- COMMANDES -->
-    <section class="card"
-             style="grid-column:1/-1">
+    <section
+      class="card"
+      style="grid-column:1/-1">
 
       <div class="buttons">
 
-        <button id="start" class="primary">
+        <button
+          id="start"
+          class="primary">
           DÉMARRER LES CAPTEURS
         </button>
 
-        <button id="zero" class="warn">
+        <button
+          id="zero"
+          class="warn">
           FAIRE LE ZÉRO
         </button>
 
-        <button id="reset" class="danger">
+        <button
+          id="reset"
+          class="danger">
           RESET MAX
         </button>
 
-        <button id="screen">
+        <button
+          id="screen">
           PLEIN ÉCRAN
         </button>
 
@@ -347,19 +332,25 @@ details{
     </section>
 
 
-    <!-- DIAGNOSTIC -->
-    <section class="card"
-             style="grid-column:1/-1">
+    <!-- CALIBRATION -->
+    <section
+      class="card"
+      style="grid-column:1/-1">
 
       <div class="label">
-        Calibration / diagnostic
+        Calibration
       </div>
 
-      <div id="calibText" class="small">
+      <div
+        id="calibText"
+        class="small">
 
-        Moto droite et immobile pour calibrer.
+        Mets la moto parfaitement droite,
+        téléphone fixé dans sa position définitive,
+        puis lance les capteurs.
 
       </div>
+
 
       <details>
 
@@ -367,8 +358,12 @@ details{
           Diagnostic brut
         </summary>
 
-        <div id="raw" class="raw">
+        <div
+          id="raw"
+          class="raw">
+
           Aucune donnée.
+
         </div>
 
       </details>
@@ -380,15 +375,16 @@ details{
 
   <div class="note">
 
-    ⚠️ Prototype expérimental.
+    ⚠️ Test expérimental basé uniquement sur
+    l'accéléromètre du téléphone.
 
-    Le gyroscope est utilisé pour stabiliser l'inclinaison
-    pendant les accélérations et les virages.
+    Cette version ne possède volontairement
+    aucun gyroscope.
 
-    L'accélération longitudinale est calculée séparément
-    selon l'axe longitudinal de la moto.
-
-    Ne manipule pas le téléphone en roulant.
+    Pendant une accélération, un freinage ou une bosse,
+    l'accéléromètre mesure également les accélérations
+    de la moto. Ces perturbations seront traitées dans
+    la prochaine version avec le gyroscope.
 
   </div>
 
@@ -402,59 +398,64 @@ details{
 
 /*
 ============================================================
- INCLINOMETRE MOTO V2
+ INCLINOMETRE MOTO - VERSION TEST SANS GYROSCOPE
 ============================================================
 
-OBJECTIF
---------
+OBJECTIF :
 
-Le téléphone peut être monté :
+Cette version sert uniquement à vérifier que l'orientation
+latérale fonctionne correctement avec le téléphone dans
+TON montage.
 
-       vertical
-          |
-          |
-          |
+Le téléphone peut être :
 
-ou :
+    vertical
+       |
+       |
+       |
 
-       /
+ou incliné vers l'avant :
+
       /
      /
     /
 
-mais il ne doit PAS être incliné latéralement
-dans son support.
-
-Le programme détermine automatiquement, pendant
-la calibration, la direction verticale et donc
-l'axe longitudinal du téléphone.
+Il n'est donc PAS nécessaire que le téléphone soit
+parfaitement vertical.
 
 ------------------------------------------------------------
 
-PRINCIPE
---------
+AXES UTILISES
+------------------------------------------------------------
 
-ACCELEROMETRE :
+On considère :
 
-    sert à connaître la direction de la gravité.
+    X = largeur du téléphone
+        -> côté gauche / côté droit de la moto
 
-GYROSCOPE :
+    Y = autre axe du téléphone
 
-    sert à connaître la rotation instantanée.
+    Z = autre axe du téléphone
 
-FILTRE COMPLEMENTAIRE :
+Pour calculer l'inclinaison latérale, on utilise :
 
-    gyro = rapide et précis pendant les mouvements
+    atan2(
+        X,
+        sqrt(Y² + Z²)
+    )
 
-    accéléromètre = référence lente
+Ainsi, la composante de gravité située dans Y/Z
+est regroupée.
 
-Lorsqu'une accélération importante est détectée,
-on réduit fortement la correction provenant de
-l'accéléromètre afin qu'une accélération ou un
-freinage ne fasse pas croire au programme que
-la moto est en train de changer d'inclinaison.
+Cela permet de ne pas dépendre directement de la
+position verticale/horizontale du téléphone.
 
-============================================================
+IMPORTANT :
+
+L'axe X du téléphone doit être approximativement
+aligné avec l'axe gauche/droite de la moto.
+
+------------------------------------------------------------
 */
 
 
@@ -464,54 +465,25 @@ la moto est en train de changer d'inclinaison.
 
 
 /*
-   Inverse droite/gauche si nécessaire.
+   Mets -1 si l'affichage droite/gauche est inversé.
 
-   Commence avec +1.
+   Pour commencer :
 */
 const LEAN_SIGN = 1;
 
 
 /*
-   Inverse accélération/freinage si nécessaire.
+   Filtre de l'accéléromètre.
 
-   Commence avec +1.
+   Plus proche de 1 :
+      -> plus stable
+      -> plus lent
+
+   Plus faible :
+      -> plus réactif
+      -> plus sensible aux vibrations
 */
-const LONG_SIGN = 1;
-
-
-/*
-   Poids du gyroscope.
-
-   0.995 = beaucoup de gyro
-   0.98  = compromis
-   0.95  = plus d'accéléromètre
-
-   On commence avec 0.995 car le téléphone
-   est utilisé sur une moto.
-*/
-const GYRO_ALPHA = 0.995;
-
-
-/*
-   Correction maximale de l'accéléromètre.
-
-   Plus petit = moins sensible aux perturbations.
-*/
-const ACCEL_CORRECTION = 0.005;
-
-
-/*
-   Au-dessus de cette différence par rapport
-   à 1G, on considère que le téléphone subit
-   une accélération dynamique importante.
-
-   Exemple :
-
-       1.00 G = quasi uniquement gravité
-       1.05 G = légère accélération
-       1.20 G = forte accélération / virage
-*/
-const DYNAMIC_THRESHOLD = 0.05;
+const FILTER_ALPHA = 0.90;
 
 
 /*
@@ -521,7 +493,7 @@ const CALIB_DURATION_MS = 1500;
 
 
 /*
-   Affichage.
+   Fréquence d'affichage.
 */
 const RENDER_PERIOD_MS = 100;
 
@@ -532,117 +504,39 @@ const RENDER_PERIOD_MS = 100;
 
 let running = false;
 
-let gyroAvailable = false;
-
-
-/*
-   Angle actuel.
-*/
 let leanAngle = 0;
 
-
-/*
-   Décalage du zéro.
-*/
 let angleOffset = 0;
 
-
-/*
-   Max.
-*/
 let maxRight = 0;
 let maxLeft = 0;
 
-
-/*
-   Accélération longitudinale.
-*/
-let longAccel = 0;
-
-let longOffset = 0;
-
-let maxAccel = 0;
-let maxBrake = 0;
-
-
-/*
-   Temps.
-*/
-let lastT = null;
-
-
-/*
-   G total.
-*/
 let gTotal = 1;
 
-
-/*
-   Calibration.
-*/
 let calibrating = false;
 
 let calibSum = {
   angle: 0,
-  gx: 0,
-  gy: 0,
-  gz: 0,
-  ax: 0,
-  ay: 0,
-  az: 0,
   n: 0
 };
 
-
-/*
-   Axe longitudinal du téléphone.
-
-   Il sera déterminé automatiquement
-   pendant la calibration.
-*/
-let longitudinalAxis = {
-  x: 0,
-  y: 1,
-  z: 0
-};
-
-
-/*
-   Offset du gyro autour de l'axe longitudinal.
-*/
-let gyroRollOffset = 0;
-
-
-/*
-   Fréquence.
-*/
 let hzCount = 0;
 let hzTimer = performance.now();
 let hz = 0;
 
 
 /*
-   Données brutes.
+   Données brutes
 */
 let raw = {
   ax: 0,
   ay: 0,
-  az: 0,
-
-  linAx: 0,
-  linAy: 0,
-  linAz: 0,
-
-  alpha: 0,
-  beta: 0,
-  gamma: 0,
-
-  rollRate: 0
+  az: 0
 };
 
 
 /*
-   Wake Lock.
+   Wake Lock
 */
 let wakeLock = null;
 
@@ -654,7 +548,7 @@ let wakeLock = null;
 const $ = id => document.getElementById(id);
 
 
-function fmt(v,n=1){
+function fmt(v, n = 1){
 
   return Number.isFinite(v)
     ? v.toFixed(n)
@@ -663,7 +557,7 @@ function fmt(v,n=1){
 }
 
 
-function signed(v,n=1){
+function signed(v, n = 1){
 
   return (v >= 0 ? '+' : '') + fmt(v,n);
 
@@ -696,28 +590,15 @@ function startCalibration(){
     return;
   }
 
-
   calibrating = true;
-
 
   calibSum = {
     angle:0,
-
-    gx:0,
-    gy:0,
-    gz:0,
-
-    ax:0,
-    ay:0,
-    az:0,
-
     n:0
   };
 
-
   $('calibText').textContent =
-    'Calibration... moto droite et immobile. Ne touche plus au téléphone pendant 1,5 seconde.';
-
+    'Calibration... garde la moto parfaitement droite et immobile pendant 1,5 seconde.';
 
   setTimeout(
     finishCalibration,
@@ -727,152 +608,27 @@ function startCalibration(){
 }
 
 
-/*
-   Fin de calibration.
-*/
 function finishCalibration(){
 
-  if(calibSum.n < 10){
+  if(calibSum.n > 0){
 
-    calibrating = false;
-
-    $('calibText').textContent =
-      'Calibration impossible : pas assez de données capteur.';
-
-    return;
-  }
-
-
-  /*
-     Moyenne de la gravité.
-  */
-
-  const gx =
-    calibSum.gx / calibSum.n;
-
-  const gy =
-    calibSum.gy / calibSum.n;
-
-  const gz =
-    calibSum.gz / calibSum.n;
-
-
-  /*
-     Norme.
-  */
-
-  const gn =
-    Math.sqrt(
-      gx*gx +
-      gy*gy +
-      gz*gz
-    );
-
-
-  /*
-     Vecteur gravité normalisé.
-  */
-
-  const ux = gx / gn;
-  const uy = gy / gn;
-  const uz = gz / gn;
-
-
-  /*
-     L'axe X du téléphone correspond à la largeur
-     gauche/droite de la moto.
-
-     Le téléphone n'est pas incliné latéralement.
-
-     L'axe longitudinal de la moto se trouve donc
-     dans le plan Y/Z.
-
-     On construit un vecteur perpendiculaire
-     à la gravité dans ce plan.
-  */
-
-  let lx = 0;
-  let ly = -uz;
-  let lz = uy;
-
-
-  const ln =
-    Math.sqrt(
-      lx*lx +
-      ly*ly +
-      lz*lz
-    );
-
-
-  if(ln > 0.0001){
-
-    lx /= ln;
-    ly /= ln;
-    lz /= ln;
+    angleOffset =
+      calibSum.angle / calibSum.n;
 
   }
-
-
-  longitudinalAxis = {
-    x: lx,
-    y: ly,
-    z: lz
-  };
-
-
-  /*
-     Angle zéro.
-  */
-
-  angleOffset =
-    calibSum.angle / calibSum.n;
-
-
-  /*
-     Gyro zéro.
-
-     On calcule la vitesse de rotation autour
-     de l'axe longitudinal de la moto.
-  */
-
-  gyroRollOffset =
-    calibSum.gx * lx +
-    calibSum.gy * ly +
-    calibSum.gz * lz;
-
-
-  /*
-     Accélération longitudinale zéro.
-
-     A l'arrêt elle doit être proche de zéro
-     puisque acceleration n'inclut normalement
-     pas la gravité.
-  */
-
-  longOffset =
-    (
-      calibSum.ax * lx +
-      calibSum.ay * ly +
-      calibSum.az * lz
-    ) / calibSum.n;
-
-
-  leanAngle = 0;
-
-  lastT = null;
 
   calibrating = false;
 
+  leanAngle = 0;
 
   $('calibText').textContent =
-    'Calibration terminée. Le gyro et l’axe longitudinal sont calibrés.';
-
+    'Calibration terminée. Le zéro correspond à la position actuelle du téléphone.';
 
 }
 
 
 /* ========================================================
-   CAPTEUR
+   CAPTEUR DE MOUVEMENT
 ======================================================== */
 
 function handleMotion(e){
@@ -882,44 +638,13 @@ function handleMotion(e){
   }
 
 
-  const now =
-    performance.now();
-
-
-  /*
-     Delta temps.
-  */
-
-  let dt;
-
-  if(lastT === null){
-
-    dt = 0.01;
-
-  }else{
-
-    dt =
-      Math.min(
-        Math.max(
-          (now-lastT)/1000,
-          0.001
-        ),
-        0.1
-      );
-
-  }
-
-
-  lastT = now;
-
-
-  /* ======================================================
-     ACCELERATION AVEC GRAVITE
-  ====================================================== */
-
   const g =
     e.accelerationIncludingGravity;
 
+
+  /*
+     Pas encore de donnée valide.
+  */
 
   if(
     !g ||
@@ -927,313 +652,121 @@ function handleMotion(e){
     g.y === null ||
     g.z === null
   ){
-
     return;
-
   }
 
 
-  const gx =
+  /*
+     Conversion m/s² -> G
+  */
+
+  const ax =
     (g.x || 0) / 9.80665;
 
-  const gy =
+  const ay =
     (g.y || 0) / 9.80665;
 
-  const gz =
+  const az =
     (g.z || 0) / 9.80665;
 
 
-  raw.ax = gx;
-  raw.ay = gy;
-  raw.az = gz;
+  raw.ax = ax;
+  raw.ay = ay;
+  raw.az = az;
 
 
   /*
-     G total.
+     Norme totale de l'accélération.
+
+     A l'arrêt :
+
+         sqrt(X² + Y² + Z²) ≈ 1 G
   */
 
   gTotal =
     Math.sqrt(
-      gx*gx +
-      gy*gy +
-      gz*gz
+      ax*ax +
+      ay*ay +
+      az*az
     );
 
 
   /* ======================================================
-     ACCELERATION LINEAIRE
-  ====================================================== */
-
-  const a =
-    e.acceleration;
-
-
-  let ax = 0;
-  let ay = 0;
-  let az = 0;
-
-
-  if(
-    a &&
-    a.x !== null &&
-    a.y !== null &&
-    a.z !== null
-  ){
-
-    ax =
-      (a.x || 0) / 9.80665;
-
-    ay =
-      (a.y || 0) / 9.80665;
-
-    az =
-      (a.z || 0) / 9.80665;
-
-  }else{
-
-    /*
-       Certains téléphones/navigateurs ne fournissent
-       pas acceleration sans gravité.
-
-       Dans ce cas, on ne peut pas calculer proprement
-       l'accélération linéaire sans retirer la gravité.
-    */
-
-    ax = 0;
-    ay = 0;
-    az = 0;
-
-  }
-
-
-  raw.linAx = ax;
-  raw.linAy = ay;
-  raw.linAz = az;
-
-
-  /* ======================================================
-     ANGLE ACCELEROMETRE
+     CALCUL DE L'ANGLE
   ====================================================== */
 
 
-  const lateralGravity =
-    gx;
+  /*
+     ANCIENNE FORMULE :
 
+        atan2(ax, ay)
 
-  const verticalGravity =
+     Elle supposait que Y était toujours vertical.
+
+     Ce n'est plus le cas.
+
+     NOUVELLE FORMULE :
+
+        atan2(
+            ax,
+            sqrt(ay² + az²)
+        )
+
+     Elle fonctionne avec un téléphone incliné
+     vers l'avant ou vers l'arrière.
+  */
+
+  const horizontalGravity =
     Math.sqrt(
-      gy*gy +
-      gz*gz
+      ay*ay +
+      az*az
     );
 
 
-  const accelAngle =
+  let accelAngle =
     Math.atan2(
-      lateralGravity,
-      verticalGravity
+      ax,
+      horizontalGravity
     )
     * 180 / Math.PI;
 
 
-  /* ======================================================
-     GYROSCOPE
-  ====================================================== */
-
-  const rr =
-    e.rotationRate;
-
-
-  let rollRate = null;
-
-
-  if(
-    rr &&
-    rr.alpha !== null &&
-    rr.beta !== null &&
-    rr.gamma !== null
-  ){
-
-    /*
-       Projection du vecteur de rotation
-       sur l'axe longitudinal.
-
-       Cela évite de supposer que gamma
-       est forcément notre axe de roulis.
-    */
-
-    rollRate =
-      (rr.alpha || 0) * longitudinalAxis.x +
-      (rr.beta || 0)  * longitudinalAxis.y +
-      (rr.gamma || 0) * longitudinalAxis.z;
-
-
-    gyroAvailable = true;
-
-
-    raw.alpha = rr.alpha || 0;
-    raw.beta = rr.beta || 0;
-    raw.gamma = rr.gamma || 0;
-    raw.rollRate = rollRate;
-
-  }
-
-
-  /* ======================================================
-     CALIBRATION
-  ====================================================== */
+  /*
+     Calibration
+  */
 
   if(calibrating){
 
     calibSum.angle += accelAngle;
-
-    calibSum.gx += rr?.alpha || 0;
-    calibSum.gy += rr?.beta || 0;
-    calibSum.gz += rr?.gamma || 0;
-
-    calibSum.ax += ax;
-    calibSum.ay += ay;
-    calibSum.az += az;
-
     calibSum.n++;
 
   }
 
 
-  /* ======================================================
-     FILTRE COMPLEMENTAIRE
-  ====================================================== */
+  /*
+     Application du zéro
+  */
 
-
-  const accelAngleCorrected =
+  const correctedAngle =
     (
       accelAngle -
       angleOffset
     ) * LEAN_SIGN;
 
 
-  if(
-    gyroAvailable &&
-    rollRate !== null
-  ){
+  /*
+     Filtre simple.
 
-    /*
-       Gyroscope.
+     PAS DE GYROSCOPE.
+  */
 
-       On retire le biais mesuré pendant
-       la calibration.
-    */
-
-    const correctedRate =
-      (
-        rollRate -
-        gyroRollOffset
-      ) * LEAN_SIGN;
-
-
-    /*
-       Intégration du gyro.
-    */
-
-    const gyroAngle =
-      leanAngle +
-      correctedRate * dt;
-
-
-    /*
-       On détermine si l'accéléromètre est
-       actuellement perturbé.
-
-       Si G total est très différent de 1G,
-       la moto subit probablement une accélération
-       dynamique ou une forte sollicitation.
-    */
-
-    const dynamicError =
-      Math.abs(gTotal - 1);
-
-
-    let accelWeight =
-      ACCEL_CORRECTION;
-
-
-    /*
-       Réduction progressive de la confiance
-       dans l'accéléromètre.
-
-       Exemple :
-
-       1.00G -> correction normale
-
-       1.05G -> correction réduite
-
-       1.20G -> presque uniquement gyro
-    */
-
-    if(dynamicError > DYNAMIC_THRESHOLD){
-
-      accelWeight *=
-        Math.max(
-          0,
-          1 -
-          (dynamicError - DYNAMIC_THRESHOLD) /
-          0.30
-        );
-
-    }
-
-
-    /*
-       Filtre.
-
-       Le gyro fait le mouvement rapide.
-
-       L'accéléromètre recale lentement
-       l'éventuelle dérive.
-    */
-
-    leanAngle =
-      GYRO_ALPHA * gyroAngle +
-      (1 - GYRO_ALPHA) *
-      (
-        leanAngle +
-        (accelAngleCorrected - leanAngle) *
-        accelWeight
-      );
-
-  }else{
-
-    /*
-       Sécurité si le gyroscope n'est pas disponible.
-    */
-
-    leanAngle =
-      0.90 * leanAngle +
-      0.10 * accelAngleCorrected;
-
-  }
-
-
-  /* ======================================================
-     ACCELERATION LONGITUDINALE
-  ====================================================== */
-
-
-  const longitudinalAcceleration =
-
-    ax * longitudinalAxis.x +
-    ay * longitudinalAxis.y +
-    az * longitudinalAxis.z;
-
-
-  longAccel =
-    (
-      longitudinalAcceleration -
-      longOffset
-    ) * LONG_SIGN;
+  leanAngle =
+    FILTER_ALPHA * leanAngle +
+    (1 - FILTER_ALPHA) * correctedAngle;
 
 
   /*
-     MAX
+     Max droite/gauche
   */
 
   if(leanAngle > maxRight){
@@ -1245,29 +778,21 @@ function handleMotion(e){
   }
 
 
-  if(longAccel > maxAccel){
-    maxAccel = longAccel;
-  }
-
-  if(longAccel < maxBrake){
-    maxBrake = longAccel;
-  }
-
-
-  /* ======================================================
-     FREQUENCE
-  ====================================================== */
+  /*
+     Fréquence
+  */
 
   hzCount++;
 
+  const now =
+    performance.now();
 
-  if(now-hzTimer >= 1000){
+  if(now - hzTimer >= 1000){
 
     hz =
       Math.round(
-        hzCount *
-        1000 /
-        (now-hzTimer)
+        hzCount * 1000 /
+        (now - hzTimer)
       );
 
     hzCount = 0;
@@ -1286,105 +811,59 @@ function handleMotion(e){
 function render(){
 
   $('angle').textContent =
-    signed(
-      leanAngle,
-      1
-    ) + '°';
+    signed(leanAngle,1) + '°';
 
 
   $('maxRight').textContent =
-    signed(
-      maxRight,
-      1
-    ) + '°';
+    signed(maxRight,1) + '°';
 
 
   $('maxLeft').textContent =
-    signed(
-      maxLeft,
-      1
-    ) + '°';
-
-
-  $('gLong').textContent =
-    signed(
-      longAccel,
-      2
-    ) + ' G';
-
-
-  $('maxAccel').textContent =
-    signed(
-      maxAccel,
-      2
-    );
-
-
-  $('maxBrake').textContent =
-    signed(
-      maxBrake,
-      2
-    );
+    signed(maxLeft,1) + '°';
 
 
   $('gTotal').textContent =
-    fmt(
-      gTotal,
-      2
-    ) + ' G';
+    fmt(gTotal,2) + ' G';
 
 
   $('hz').textContent =
     hz + ' Hz';
 
 
-  $('gyroState').textContent =
-
-    !running
-      ? 'En attente'
-
-      :
-
-    gyroAvailable
-      ? 'Gyroscope actif + filtre'
-      : 'Gyroscope non disponible';
+  $('sensorState').textContent =
+    running
+      ? 'Accéléromètre actif — gyro désactivé'
+      : 'En attente';
 
 
   $('raw').textContent =
 
-`ACCELERATION AVEC GRAVITE
-X = ${fmt(raw.ax,3)} G
-Y = ${fmt(raw.ay,3)} G
-Z = ${fmt(raw.az,3)} G
+    `accélération (G)
 
-G TOTAL = ${fmt(gTotal,3)} G
+X = ${fmt(raw.ax,3)}
+Y = ${fmt(raw.ay,3)}
+Z = ${fmt(raw.az,3)}
 
-ACCELERATION LINEAIRE
-X = ${fmt(raw.linAx,3)} G
-Y = ${fmt(raw.linAy,3)} G
-Z = ${fmt(raw.linAz,3)} G
+G total = ${fmt(gTotal,3)}
 
-ROTATION
-alpha = ${fmt(raw.alpha,1)} °/s
-beta  = ${fmt(raw.beta,1)} °/s
-gamma = ${fmt(raw.gamma,1)} °/s
+angle brut = ${
+  fmt(
+    Math.atan2(
+      raw.ax,
+      Math.sqrt(
+        raw.ay*raw.ay +
+        raw.az*raw.az
+      )
+    ) * 180 / Math.PI,
+    2
+  )
+}°
 
-ROLL RATE PROJETE
-${fmt(raw.rollRate,2)} °/s
+offset zéro = ${fmt(angleOffset,2)}°
+angle filtré = ${fmt(leanAngle,2)}°
 
-INCLINAISON
-angle = ${fmt(leanAngle,2)}°
-
-AXE LONGITUDINAL
-X = ${fmt(longitudinalAxis.x,3)}
-Y = ${fmt(longitudinalAxis.y,3)}
-Z = ${fmt(longitudinalAxis.z,3)}
-
-OFFSET GYRO
-${fmt(gyroRollOffset,2)} °/s
-
-OFFSET LONGITUDINAL
-${fmt(longOffset,3)} G`;
+Formule :
+atan2(X, sqrt(Y² + Z²))`;
 
 }
 
@@ -1409,7 +888,8 @@ async function requestWakeLock(){
   }catch(e){
 
     console.log(
-      'Wake Lock indisponible'
+      'Wake Lock indisponible',
+      e
     );
 
   }
@@ -1442,6 +922,11 @@ async function startSensors(){
 
   try{
 
+    /*
+       Certains navigateurs, notamment iOS,
+       demandent une permission explicite.
+    */
+
     if(
       typeof DeviceMotionEvent !== 'undefined' &&
       typeof DeviceMotionEvent.requestPermission === 'function'
@@ -1462,6 +947,10 @@ async function startSensors(){
     }
 
 
+    /*
+       Evite d'ajouter plusieurs fois le listener.
+    */
+
     window.addEventListener(
       'devicemotion',
       handleMotion,
@@ -1473,8 +962,6 @@ async function startSensors(){
 
     running = true;
 
-    lastT = null;
-
     setStatus(
       'Capteurs actifs',
       true
@@ -1484,11 +971,13 @@ async function startSensors(){
     $('start').textContent =
       'CAPTEURS ACTIFS';
 
+
     $('start').disabled = true;
 
 
     /*
-       Calibration automatique.
+       On attend que les données arrivent
+       avant de calibrer.
     */
 
     startCalibration();
@@ -1518,6 +1007,28 @@ async function startSensors(){
    BOUTONS
 ======================================================== */
 
+function doZero(){
+
+  if(!running){
+    alert(
+      'Démarre d’abord les capteurs.'
+    );
+    return;
+  }
+
+  startCalibration();
+
+}
+
+
+function resetMax(){
+
+  maxRight = 0;
+  maxLeft = 0;
+
+}
+
+
 $('start').addEventListener(
   'click',
   startSensors
@@ -1526,35 +1037,13 @@ $('start').addEventListener(
 
 $('zero').addEventListener(
   'click',
-  () => {
-
-    if(!running){
-
-      alert(
-        'Démarre d’abord les capteurs.'
-      );
-
-      return;
-
-    }
-
-    startCalibration();
-
-  }
+  doZero
 );
 
 
 $('reset').addEventListener(
   'click',
-  () => {
-
-    maxRight = 0;
-    maxLeft = 0;
-
-    maxAccel = 0;
-    maxBrake = 0;
-
-  }
+  resetMax
 );
 
 
