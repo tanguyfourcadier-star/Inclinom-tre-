@@ -605,11 +605,11 @@ details{
 
   ⚠️ Prototype expérimental.
 
-  Le zéro mémorise maintenant l'orientation réelle
-  du téléphone dans son support.
+  Le zéro mémorise la position réelle
+  du téléphone sur son support.
 
-  L'inclinaison du support vers l'avant ou l'arrière
-  n'est donc plus supposée nulle.
+  L'axe longitudinal est recalculé
+  automatiquement en fonction de cette position.
 
   Ne manipule pas le téléphone en roulant.
 
@@ -631,32 +631,41 @@ details{
 
 
 /*
-   Sens validé avec ta version précédente.
+   MODIFICATION DEMANDÉE :
 
-   droite = positif
-   gauche = négatif
+   Avant :
+
+      -1
+
+   Maintenant :
+
+      +1
+
+   Le calcul lui-même est inversé.
+   L'affichage n'est pas bricolé séparément.
 */
 
-const LEAN_SIGN = -1;
+const LEAN_SIGN = 1;
 
 
 /*
-   Sens de l'accélération longitudinale.
+   Sens accélération / freinage.
 
-   Si accélération et freinage sont inversés,
-   passer à -1.
+   On conserve +1 pour le moment.
+
+   Si le test montre :
+
+      accélération = négatif
+      freinage = positif
+
+   il suffira de passer à -1.
 */
 
 const LONG_SIGN = 1;
 
 
 /*
-   Rafraîchissement rapide.
-
-   50 ms = 20 affichages / seconde.
-
-   Les capteurs continuent évidemment
-   à fonctionner à leur fréquence propre.
+   Rafraîchissement.
 */
 
 const RENDER_MS = 50;
@@ -664,12 +673,6 @@ const RENDER_MS = 50;
 
 /*
    Calibration.
-
-   Pendant cette période :
-
-   - moto immobile
-   - téléphone dans sa position définitive
-   - moto droite
 */
 
 const CALIBRATION_MS = 1200;
@@ -679,51 +682,38 @@ const CALIBRATION_MS = 1200;
    VARIABLES
 ===================================================== */
 
-
-/*
-   Etat.
-*/
-
 let running = false;
 
 let calibrating = false;
 
 
-/*
-   Angle.
-*/
+/* Angle */
 
 let angle = 0;
 
 
-/*
-   Maximums.
-*/
+/* Max */
 
 let maxRight = 0;
+
 let maxLeft = 0;
 
 
-/*
-   Accélération longitudinale.
-*/
+/* Accélération longitudinale */
 
 let longAccel = 0;
 
 let maxAccel = 0;
+
 let maxBrake = 0;
 
 
-/*
-   G total.
-*/
+/* G total */
 
 let gTotal = 1;
 
 
-/*
-   Fréquence.
-*/
+/* Fréquence */
 
 let hz = 0;
 
@@ -734,27 +724,15 @@ let hzTimer =
 
 
 /* =====================================================
-   AXES DU TELEPHONE APRES CALIBRATION
+   AXES DU TELEPHONE
 ===================================================== */
 
 
 /*
-   verticalAxis :
+   Verticale du support.
 
-   direction de la gravité lorsque la moto
-   est droite.
-
-   Exemple téléphone vertical :
-
-       X = 0
-       Y = 1
-       Z = 0
-
-   Exemple téléphone presque à plat :
-
-       X = 0
-       Y = 0
-       Z = 1
+   Cette valeur est déterminée automatiquement
+   pendant la calibration.
 */
 
 let verticalAxis = {
@@ -765,14 +743,9 @@ let verticalAxis = {
 
 
 /*
-   lateralAxis :
+   Axe latéral du téléphone.
 
-   axe X du téléphone.
-
-   On suppose que le téléphone n'est pas
-   incliné latéralement dans son support.
-
-   C'est l'axe gauche/droite de la moto.
+   X correspond à gauche / droite.
 */
 
 let lateralAxis = {
@@ -783,19 +756,23 @@ let lateralAxis = {
 
 
 /*
-   longitudinalAxis :
+   Axe longitudinal.
 
-   axe avant/arrière de la moto.
+   IMPORTANT :
 
-   Il sera calculé automatiquement.
+   C'est ici que nous avons modifié le calcul.
 
-   C'est particulièrement important :
+   On utilise désormais :
 
-   téléphone vertical :
-       longitudinal ≈ Z
+       verticale × latéral
 
-   téléphone à plat :
-       longitudinal ≈ Y
+   au lieu de :
+
+       latéral × verticale
+
+   Ce vecteur correspond à l'axe avant/arrière
+   du téléphone, avec son sens inversé par rapport
+   à la version précédente.
 */
 
 let longitudinalAxis = {
@@ -840,7 +817,7 @@ let raw = {
 
 
 /* =====================================================
-   OUTILS
+   OUTILS VECTORIELS
 ===================================================== */
 
 const $ =
@@ -869,9 +846,6 @@ function signed(value, decimals){
 
 /*
    Produit scalaire.
-
-   Permet de connaître combien d'un vecteur
-   se trouve dans une direction donnée.
 */
 
 function dot(a,b){
@@ -886,7 +860,7 @@ function dot(a,b){
 
 
 /*
-   Norme d'un vecteur.
+   Norme.
 */
 
 function norm(v){
@@ -902,9 +876,6 @@ function norm(v){
 
 /*
    Normalisation.
-
-   Transforme un vecteur quelconque
-   en vecteur de longueur 1.
 */
 
 function normalize(v){
@@ -933,8 +904,6 @@ function normalize(v){
 
 /*
    Produit vectoriel.
-
-   a × b
 */
 
 function cross(a,b){
@@ -973,15 +942,13 @@ function setStatus(
 
 
 /* =====================================================
-   CALCUL DES AXES DU SUPPORT
+   CALCUL AXES SUPPORT
 ===================================================== */
 
 function calculateMountAxes(){
 
   /*
-     La gravité moyenne pendant le zéro
-     représente la verticale de la moto
-     dans le repère du téléphone.
+     Verticale moyenne mesurée pendant le zéro.
   */
 
   const g =
@@ -991,10 +958,10 @@ function calculateMountAxes(){
 
 
   /*
-     L'axe X du téléphone représente
-     le côté gauche/droite.
+     Axe latéral du téléphone.
 
-     On le normalise.
+     Le support n'étant pas incliné sur le côté,
+     X reste l'axe gauche/droite.
   */
 
   lateralAxis = {
@@ -1005,42 +972,29 @@ function calculateMountAxes(){
 
 
   /*
-     Verticale mémorisée.
+     Mémorisation de la verticale.
   */
 
   verticalAxis = g;
 
 
   /*
-     Axe longitudinal :
+     =================================================
+     AXE LONGITUDINAL
+     =================================================
 
-        X × verticale
+     Nouvelle convention :
 
-     Exemple téléphone vertical :
+         verticale × latéral
 
-        X = (1,0,0)
-        vertical = (0,1,0)
-
-        X × vertical = (0,0,1)
-
-     => Z = avant/arrière.
-
-     Exemple téléphone à plat :
-
-        X = (1,0,0)
-        vertical = (0,0,1)
-
-        X × vertical = (0,-1,0)
-
-     => Y = avant/arrière.
-
-     C'est exactement ce qu'on recherche.
+     Cela permet d'obtenir le sens avant/arrière
+     correspondant au nouveau test.
   */
 
   let longitudinal =
     cross(
-      lateralAxis,
-      verticalAxis
+      verticalAxis,
+      lateralAxis
     );
 
 
@@ -1051,23 +1005,11 @@ function calculateMountAxes(){
 
 
   /*
-     Pour conserver le même sens que
-     l'ancienne mesure, on utilise le signe
-     du résultat Z lorsque le téléphone
-     est dans sa position verticale habituelle.
-
-     Dans la configuration portrait verticale,
-     l'axe longitudinal attendu est +Z.
-
-     Si le support est à plat, cela donne
-     automatiquement l'autre axe.
+     Vérification de sécurité.
   */
 
   if(
-    Math.abs(longitudinal.x) +
-    Math.abs(longitudinal.y) +
-    Math.abs(longitudinal.z)
-    < 0.5
+    norm(longitudinal) < 0.5
   ){
 
     longitudinalAxis = {
@@ -1138,7 +1080,7 @@ function finishCalibration(){
 
 
   /*
-     On calcule la moyenne de la gravité.
+     Moyenne de la gravité.
   */
 
   calibrationGravity.x /=
@@ -1152,19 +1094,13 @@ function finishCalibration(){
 
 
   /*
-     Construction automatique des axes
-     du support.
+     Calcule les axes du support.
   */
 
   calculateMountAxes();
 
 
   calibrating = false;
-
-
-  /*
-     Angle zéro.
-  */
 
   angle = 0;
 
@@ -1174,23 +1110,24 @@ function finishCalibration(){
 
 
   $('raw').textContent =
-    'Calibration terminée.\n\n' +
 
-    'AXE VERTICAL\n' +
-    'X = ' +
-    fmt(verticalAxis.x,3) +
-    '\nY = ' +
-    fmt(verticalAxis.y,3) +
-    '\nZ = ' +
-    fmt(verticalAxis.z,3) +
+'Calibration terminée.\n\n' +
 
-    '\n\nAXE LONGITUDINAL\n' +
-    'X = ' +
-    fmt(longitudinalAxis.x,3) +
-    '\nY = ' +
-    fmt(longitudinalAxis.y,3) +
-    '\nZ = ' +
-    fmt(longitudinalAxis.z,3);
+'AXE VERTICAL\n' +
+'X = ' +
+fmt(verticalAxis.x,3) +
+'\nY = ' +
+fmt(verticalAxis.y,3) +
+'\nZ = ' +
+fmt(verticalAxis.z,3) +
+
+'\n\nAXE LONGITUDINAL\n' +
+'X = ' +
+fmt(longitudinalAxis.x,3) +
+'\nY = ' +
+fmt(longitudinalAxis.y,3) +
+'\nZ = ' +
+fmt(longitudinalAxis.z,3);
 
 }
 
@@ -1205,9 +1142,6 @@ function calculateAngleFromGravity(
 
   /*
      Composante latérale.
-
-     C'est la composante du vecteur gravité
-     sur l'axe gauche/droite du téléphone.
   */
 
   const lateral =
@@ -1219,9 +1153,6 @@ function calculateAngleFromGravity(
 
   /*
      Composante verticale.
-
-     C'est la composante vers la verticale
-     mémorisée lorsque la moto était droite.
   */
 
   const vertical =
@@ -1232,14 +1163,8 @@ function calculateAngleFromGravity(
 
 
   /*
-     atan2 permet de conserver une bonne
-     mesure jusqu'aux grands angles.
-
-     Ici :
-
-       0°  = moto droite
-       +   = rotation suivant LEAN_SIGN
-       -   = rotation opposée
+     Angle par rapport à la verticale
+     du support.
   */
 
   const a =
@@ -1251,13 +1176,20 @@ function calculateAngleFromGravity(
     Math.PI;
 
 
+  /*
+     Inversion demandée.
+
+     Cette modification est appliquée
+     directement à la valeur.
+  */
+
   return a * LEAN_SIGN;
 
 }
 
 
 /* =====================================================
-   CAPTEUR
+   LECTURE CAPTEURS
 ===================================================== */
 
 function handleMotion(event){
@@ -1268,9 +1200,7 @@ function handleMotion(event){
 
 
   /*
-     -------------------------------------------------
      ACCELERATION AVEC GRAVITE
-     -------------------------------------------------
   */
 
   const total =
@@ -1296,7 +1226,9 @@ function handleMotion(event){
   const totalVector = {
 
     x:total.x / 9.80665,
+
     y:total.y / 9.80665,
+
     z:total.z / 9.80665
 
   };
@@ -1313,12 +1245,7 @@ function handleMotion(event){
 
 
   /*
-     -------------------------------------------------
      ACCELERATION DYNAMIQUE
-     -------------------------------------------------
-
-     C'est l'accélération sans la gravité
-     lorsqu'elle est fournie par le navigateur.
   */
 
   const dynamic =
@@ -1365,9 +1292,7 @@ function handleMotion(event){
 
 
   /*
-     -------------------------------------------------
      G TOTAL
-     -------------------------------------------------
   */
 
   gTotal =
@@ -1377,13 +1302,9 @@ function handleMotion(event){
 
 
   /*
-     -------------------------------------------------
      GRAVITE ESTIMEE
-     -------------------------------------------------
 
-     Total = gravité + accélération
-
-     Donc :
+     total = gravité + accélération
 
      gravité = total - accélération
   */
@@ -1422,9 +1343,8 @@ function handleMotion(event){
   if(calibrating){
 
     /*
-       Pendant la calibration, la moto est
-       immobile : on mesure donc directement
-       la gravité dans la position du support.
+       On mémorise la verticale naturelle
+       de la position réelle du téléphone.
     */
 
     calibrationGravity.x +=
@@ -1444,8 +1364,7 @@ function handleMotion(event){
 
 
   /*
-     Si le téléphone a démarré sans calibration,
-     on ne calcule pas d'angle.
+     Pas de calcul avant calibration.
   */
 
   if(
@@ -1461,7 +1380,6 @@ function handleMotion(event){
      ANGLE
   ================================================= */
 
-
   angle =
     calculateAngleFromGravity(
       normalize(
@@ -1470,34 +1388,31 @@ function handleMotion(event){
     );
 
 
-  /*
-     =================================================
+  /* =================================================
      ACCELERATION LONGITUDINALE
-     =================================================
+  ================================================= */
 
-     Maintenant on ne prend PLUS Z.
+  /*
+     IMPORTANT :
 
-     On projette le vecteur d'accélération
-     sur l'axe avant/arrière calculé pendant
-     le zéro.
+     On projette maintenant l'accélération
+     sur l'axe longitudinal calculé pendant
+     la calibration.
 
-     Donc cela fonctionne avec :
-
-       téléphone vertical
-       téléphone incliné
-       téléphone presque à plat
+     Cela ne dépend plus directement
+     de X, Y ou Z.
   */
 
   longAccel =
     dot(
       dynamicVector,
       longitudinalAxis
-    )
-    * LONG_SIGN;
+    ) *
+    LONG_SIGN;
 
 
   /* =================================================
-     MAX
+     MAX ANGLE
   ================================================= */
 
   if(angle > maxRight){
@@ -1515,6 +1430,10 @@ function handleMotion(event){
 
   }
 
+
+  /* =================================================
+     MAX ACCEL
+  ================================================= */
 
   if(longAccel > maxAccel){
 
@@ -1598,12 +1517,14 @@ function updateCursor(){
       'var(--red)';
 
   }
+
   else if(abs >= 35){
 
     $('cursor').style.background =
       'var(--yellow)';
 
   }
+
   else{
 
     $('cursor').style.background =
@@ -1767,8 +1688,7 @@ async function startSensors(){
 
 
     /*
-       Supprime un éventuel ancien listener
-       avant d'en installer un nouveau.
+       Evite les listeners multiples.
     */
 
     window.removeEventListener(
@@ -1804,15 +1724,14 @@ async function startSensors(){
 
 
     /*
-       Calibration obligatoire :
-
-       téléphone exactement dans sa position
-       définitive sur le support.
+       Calibration avec le téléphone
+       dans sa position réelle.
     */
 
     startCalibration();
 
   }
+
   catch(error){
 
     setStatus(
@@ -1879,7 +1798,7 @@ $('start').addEventListener(
 
 
 /* =====================================================
-   PLEIN ECRAN
+   PLEIN ÉCRAN
 ===================================================== */
 
 $('screen').addEventListener(
@@ -1894,6 +1813,7 @@ $('screen').addEventListener(
           .requestFullscreen();
 
       }
+
       else{
 
         await document.exitFullscreen();
@@ -1901,6 +1821,7 @@ $('screen').addEventListener(
       }
 
     }
+
     catch(error){
 
       alert(
