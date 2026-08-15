@@ -106,8 +106,11 @@ h1{
   letter-spacing:.08em;
 }
 
+
+/* ================= ANGLE ================= */
+
 .angle{
-  font-size:clamp(60px,18vw,105px);
+  font-size:clamp(75px,22vw,125px);
   line-height:1;
   font-weight:700;
   margin:12px 0 6px;
@@ -142,12 +145,16 @@ h1{
     to right,
     var(--red) 0%,
     var(--red) 5%,
+
     var(--yellow) 5%,
     var(--yellow) 15%,
+
     var(--accent) 15%,
     var(--accent) 85%,
+
     var(--yellow) 85%,
     var(--yellow) 95%,
+
     var(--red) 95%,
     var(--red) 100%
   );
@@ -353,7 +360,8 @@ details{
     Inclinaison
   </div>
 
-  <div id="angle" class="angle">
+  <div id="angle"
+       class="angle">
     +0°
   </div>
 
@@ -419,61 +427,6 @@ details{
       <div id="maxRight"
            class="maxv">
         0°
-      </div>
-
-    </div>
-
-  </div>
-
-</section>
-
-
-
-<!-- =====================================================
-     ACCELERATION LONGITUDINALE
-===================================================== -->
-
-<section class="card main">
-
-  <div class="label">
-    Accélération longitudinale
-  </div>
-
-  <div id="gLong"
-       class="reading">
-    +0.00 G
-  </div>
-
-  <div class="small">
-    + accélération / − freinage
-  </div>
-
-
-  <div class="maxrow">
-
-    <div class="maxbox">
-
-      <div class="label">
-        Max frein
-      </div>
-
-      <div id="maxBrake"
-           class="maxv">
-        0.00
-      </div>
-
-    </div>
-
-
-    <div class="maxbox">
-
-      <div class="label">
-        Max accél
-      </div>
-
-      <div id="maxAccel"
-           class="maxv">
-        0.00
       </div>
 
     </div>
@@ -610,8 +563,11 @@ details{
   Le zéro mémorise la position réelle
   du téléphone sur son support.
 
-  L'axe longitudinal est recalculé
-  automatiquement en fonction de cette position.
+  L'axe longitudinal est toujours calculé
+  automatiquement pour la compensation.
+
+  L'affichage de l'accélération longitudinale
+  a été retiré volontairement.
 
   Ne manipule pas le téléphone en roulant.
 
@@ -633,29 +589,27 @@ details{
 
 
 /*
-   Sens validé.
-
    droite = positif
    gauche = négatif
+
+   Cette valeur fait partie du calcul réel.
 */
 
 const LEAN_SIGN = 1;
 
 
 /*
-   Sens accélération / freinage.
+   Axe longitudinal conservé dans le calcul
+   interne pour la géométrie du support.
 
-   +1 = accélération positive
-   -1 = accélération négative
-
-   On conserve +1.
+   Il n'est simplement plus affiché.
 */
 
 const LONG_SIGN = 1;
 
 
 /*
-   Rafraîchissement.
+   Rafraîchissement rapide.
 */
 
 const RENDER_MS = 50;
@@ -687,15 +641,6 @@ let angle = 0;
 let maxRight = 0;
 
 let maxLeft = 0;
-
-
-/* Accélération */
-
-let longAccel = 0;
-
-let maxAccel = 0;
-
-let maxBrake = 0;
 
 
 /* G total */
@@ -731,9 +676,6 @@ let verticalAxis = {
 
 /*
    Axe latéral du téléphone.
-
-   Le support ne penche pas latéralement,
-   donc X correspond à gauche/droite.
 */
 
 let lateralAxis = {
@@ -744,9 +686,11 @@ let lateralAxis = {
 
 
 /*
-   Axe longitudinal avant/arrière.
+   Axe longitudinal du support.
 
-   Calculé automatiquement.
+   Il est toujours calculé car il est utile
+   pour conserver la géométrie et pourra servir
+   pour une évolution ultérieure.
 */
 
 let longitudinalAxis = {
@@ -932,7 +876,7 @@ function calculateMountAxes(){
 
 
   /*
-     Axe gauche/droite.
+     Axe latéral.
   */
 
   lateralAxis = {
@@ -943,7 +887,7 @@ function calculateMountAxes(){
 
 
   /*
-     Verticale du montage.
+     Verticale réelle du support.
   */
 
   verticalAxis = g;
@@ -953,10 +897,6 @@ function calculateMountAxes(){
      Axe longitudinal :
 
        verticale × latéral
-
-     Cela s'adapte automatiquement
-     à l'inclinaison avant/arrière
-     du téléphone.
   */
 
   let longitudinal =
@@ -971,10 +911,6 @@ function calculateMountAxes(){
       longitudinal
     );
 
-
-  /*
-     Sécurité.
-  */
 
   if(
     norm(longitudinal) < 0.5
@@ -1123,17 +1059,13 @@ function calculateAngleFromGravity(
     Math.PI;
 
 
-  /*
-     Sens directement appliqué à la valeur.
-  */
-
   return a * LEAN_SIGN;
 
 }
 
 
 /* =====================================================
-   CAPTEUR
+   CAPTEURS
 ===================================================== */
 
 function handleMotion(event){
@@ -1190,6 +1122,9 @@ function handleMotion(event){
 
   /*
      ACCÉLÉRATION DYNAMIQUE
+
+     Elle reste utilisée par le coeur du calcul
+     pour corriger la mesure en virage.
   */
 
   const dynamic =
@@ -1246,7 +1181,7 @@ function handleMotion(event){
 
 
   /*
-     GRAVITE ESTIMÉE
+     GRAVITÉ ESTIMÉE
   */
 
   const gravityVector = {
@@ -1308,7 +1243,7 @@ function handleMotion(event){
 
 
   /*
-     ANGLE
+     ANGLE COMPENSÉ
   */
 
   angle =
@@ -1317,22 +1252,6 @@ function handleMotion(event){
         gravityVector
       )
     );
-
-
-  /*
-     ACCÉLÉRATION LONGITUDINALE
-
-     Projection sur l'axe avant/arrière
-     déterminé pendant la calibration.
-  */
-
-  longAccel =
-    dot(
-      dynamicVector,
-      longitudinalAxis
-    )
-    *
-    LONG_SIGN;
 
 
   /*
@@ -1349,20 +1268,7 @@ function handleMotion(event){
 
 
   /*
-     MAX ACCELERATION
-  */
-
-  if(longAccel > maxAccel){
-    maxAccel = longAccel;
-  }
-
-  if(longAccel < maxBrake){
-    maxBrake = longAccel;
-  }
-
-
-  /*
-     FREQUENCE
+     FRÉQUENCE
   */
 
   const now =
@@ -1459,12 +1365,14 @@ function updateCursor(){
       'var(--red)';
 
   }
+
   else if(abs >= 35){
 
     $('cursor').style.background =
       'var(--yellow)';
 
   }
+
   else{
 
     $('cursor').style.background =
@@ -1522,31 +1430,6 @@ function render(){
 
 
   /*
-     ACCÉLÉRATION
-  */
-
-  $('gLong').textContent =
-    signed(
-      longAccel,
-      2
-    ) + ' G';
-
-
-  $('maxAccel').textContent =
-    signed(
-      maxAccel,
-      2
-    );
-
-
-  $('maxBrake').textContent =
-    signed(
-      maxBrake,
-      2
-    );
-
-
-  /*
      G TOTAL
   */
 
@@ -1558,7 +1441,7 @@ function render(){
 
 
   /*
-     FREQUENCE
+     FRÉQUENCE
   */
 
   $('hz').textContent =
@@ -1574,6 +1457,10 @@ function render(){
 
   /*
      DIAGNOSTIC
+
+     Les valeurs dynamiques restent visibles ici
+     parce qu'elles sont utiles pour contrôler le
+     fonctionnement de la compensation.
   */
 
   $('raw').textContent =
@@ -1607,11 +1494,6 @@ ${fmt(gTotal,3)} G
 ANGLE
 
 ${fmt(angle,2)}°
-
-
-ACCÉLÉRATION LONGITUDINALE
-
-${fmt(longAccel,3)} G
 
 
 AXE VERTICAL DU SUPPORT
@@ -1699,7 +1581,8 @@ async function startSensors(){
 
 
     /*
-       Calibration dans la position définitive.
+       Calibration avec le téléphone
+       dans sa position définitive.
     */
 
     startCalibration();
@@ -1751,10 +1634,6 @@ $('reset').addEventListener(
     maxRight = 0;
 
     maxLeft = 0;
-
-    maxAccel = 0;
-
-    maxBrake = 0;
 
   }
 );
@@ -1810,6 +1689,7 @@ $('screen').addEventListener(
 ===================================================== */
 
 render();
+
 
 setInterval(
   render,
