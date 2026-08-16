@@ -3284,6 +3284,37 @@ function drawChart(){
 
 
 /* =====================================================
+   COULEUR SELON ANGLE
+   (memes seuils que updateAngleColor / le gauge :
+   vert < 35°, orange 35-45°, rouge >= 45°)
+===================================================== */
+
+function colorForAngle(a){
+
+  const abs =
+    Math.abs(a);
+
+
+  if(abs >= 45){
+
+    return '#ff4d4d';
+
+  }
+
+
+  if(abs >= 35){
+
+    return '#ffcc33';
+
+  }
+
+
+  return '#43d17a';
+
+}
+
+
+/* =====================================================
    MINI CARTE GPS
 ===================================================== */
 
@@ -3509,11 +3540,12 @@ function drawGPSMap(){
 
 
   /*
-     Tracé principal.
+     Tracé principal, colore segment par
+     segment selon l'angle d'inclinaison au
+     point de depart du segment (meme code
+     couleur que l'angle : vert < 35°,
+     orange 35-45°, rouge >= 45°).
   */
-
-  ctx.strokeStyle =
-    '#5aa9ff';
 
   ctx.lineWidth = 3;
 
@@ -3523,38 +3555,45 @@ function drawGPSMap(){
   ctx.lineCap =
     'round';
 
-  ctx.beginPath();
+
+  for(
+    let i=0;
+    i<points.length-1;
+    i++
+  ){
+
+    const p1 =
+      drawPoint(
+        points[i]
+      );
+
+    const p2 =
+      drawPoint(
+        points[i+1]
+      );
 
 
-  points.forEach(
-    (p,i) => {
-
-      const q =
-        drawPoint(p);
-
-
-      if(i===0){
-
-        ctx.moveTo(
-          q.x,
-          q.y
-        );
-
-      }
-      else{
-
-        ctx.lineTo(
-          q.x,
-          q.y
-        );
-
-      }
-
-    }
-  );
+    ctx.strokeStyle =
+      colorForAngle(
+        points[i].angle
+      );
 
 
-  ctx.stroke();
+    ctx.beginPath();
+
+    ctx.moveTo(
+      p1.x,
+      p1.y
+    );
+
+    ctx.lineTo(
+      p2.x,
+      p2.y
+    );
+
+    ctx.stroke();
+
+  }
 
 
   /*
