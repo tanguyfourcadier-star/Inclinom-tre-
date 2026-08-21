@@ -357,6 +357,41 @@ canvas{
   color:var(--text);
 }
 
+.speedScale{
+  margin-top:10px;
+  padding:9px 10px 7px;
+  background:#0b1017;
+  border-radius:10px;
+}
+
+.speedScaleTitle{
+  font-size:11px;
+  color:var(--muted);
+  text-align:center;
+  margin-bottom:6px;
+}
+
+.speedScaleBar{
+  height:9px;
+  border-radius:9px;
+  background:linear-gradient(
+    to right,
+    #2f80ff 0%,
+    #2f80ff 16.666%,
+    #27c96f 41.666%,
+    #ffcc33 66.666%,
+    #8b0000 100%
+  );
+}
+
+.speedScaleLabels{
+  display:flex;
+  justify-content:space-between;
+  margin-top:4px;
+  font-size:9px;
+  color:var(--muted);
+}
+
 .chartHint{
   font-size:11px;
   color:var(--muted);
@@ -803,7 +838,7 @@ details{
   </div>
 
   <div class="small">
-    Angle = vert | Vitesse = bleu
+    Angle = vert / jaune / rouge | Vitesse = bleu → vert → jaune → rouge foncé
   </div>
 
 
@@ -822,6 +857,23 @@ details{
 
   </div>
 
+
+  <div class="speedScale" aria-label="Échelle de couleur de vitesse">
+
+    <div class="speedScaleTitle">Échelle vitesse</div>
+
+    <div class="speedScaleBar"></div>
+
+    <div class="speedScaleLabels">
+      <span>0</span>
+      <span>30</span>
+      <span>75</span>
+      <span>120</span>
+      <span>180+</span>
+      <span>km/h</span>
+    </div>
+
+  </div>
 
   <div class="chartHint">
 
@@ -2803,6 +2855,115 @@ window.addEventListener(
    GRAPHIQUE
 ===================================================== */
 
+/*
+   COULEUR SELON VITESSE
+
+   < 30 km/h  : bleu
+   30 -> 75    : bleu -> vert
+   75 -> 120   : vert -> jaune
+   120 -> 180  : jaune -> rouge foncé
+   >= 180      : rouge foncé
+*/
+function colorForSpeed(speed){
+
+  const BLUE = {
+    r:47,
+    g:128,
+    b:255
+  };
+
+  const GREEN = {
+    r:39,
+    g:201,
+    b:111
+  };
+
+  const YELLOW = {
+    r:255,
+    g:204,
+    b:51
+  };
+
+  const DARK_RED = {
+    r:139,
+    g:0,
+    b:0
+  };
+
+  function mix(a,b,t){
+
+    return {
+      r:Math.round(a.r + (b.r-a.r)*t),
+      g:Math.round(a.g + (b.g-a.g)*t),
+      b:Math.round(a.b + (b.b-a.b)*t)
+    };
+
+  }
+
+  function rgb(c){
+
+    return (
+      'rgb(' +
+      c.r + ',' +
+      c.g + ',' +
+      c.b +
+      ')'
+    );
+
+  }
+
+  const v =
+    Number.isFinite(speed)
+    ? Math.max(0,speed)
+    : 0;
+
+  if(v < 30){
+
+    return rgb(BLUE);
+
+  }
+
+  if(v < 75){
+
+    return rgb(
+      mix(
+        BLUE,
+        GREEN,
+        (v-30)/(75-30)
+      )
+    );
+
+  }
+
+  if(v < 120){
+
+    return rgb(
+      mix(
+        GREEN,
+        YELLOW,
+        (v-75)/(120-75)
+      )
+    );
+
+  }
+
+  if(v < 180){
+
+    return rgb(
+      mix(
+        YELLOW,
+        DARK_RED,
+        (v-120)/(180-120)
+      )
+    );
+
+  }
+
+  return rgb(DARK_RED);
+
+}
+
+
 function drawChart(){
 
   const canvas =
@@ -3097,53 +3258,67 @@ function drawChart(){
 
   /*
      Courbe vitesse.
+
+     Chaque segment prend la couleur correspondant
+     à la vitesse du point de départ du segment.
+     Les seuils de couleur sont fixes et indépendants
+     de l'échelle verticale du graphique.
   */
 
-  ctx.strokeStyle =
-    '#5aa9ff';
+  ctx.lineWidth = 2.5;
+  ctx.lineJoin = 'round';
+  ctx.lineCap = 'round';
 
-  ctx.lineWidth = 2;
+  for(
+    let i=0;
+    i<sessionData.length-1;
+    i++
+  ){
 
-  ctx.beginPath();
+    const p1 =
+      sessionData[i];
 
+    const p2 =
+      sessionData[i+1];
 
-  sessionData.forEach(
-    (p,i) => {
+    const x1 =
+      left +
+      p1.time/maxTime *
+      plotW;
 
-      const x =
-        left +
-        p.time/maxTime *
-        plotW;
+    const y1 =
+      H-bottom -
+      p1.speed/maxSpeedScale *
+      plotH;
 
+    const x2 =
+      left +
+      p2.time/maxTime *
+      plotW;
 
-      const y =
-        H-bottom -
-        p.speed/maxSpeedScale *
-        plotH;
+    const y2 =
+      H-bottom -
+      p2.speed/maxSpeedScale *
+      plotH;
 
+    ctx.strokeStyle =
+      colorForSpeed(p1.speed);
 
-      if(i===0){
+    ctx.beginPath();
 
-        ctx.moveTo(
-          x,
-          y
-        );
+    ctx.moveTo(
+      x1,
+      y1
+    );
 
-      }
-      else{
+    ctx.lineTo(
+      x2,
+      y2
+    );
 
-        ctx.lineTo(
-          x,
-          y
-        );
+    ctx.stroke();
 
-      }
-
-    }
-  );
-
-
-  ctx.stroke();
+  }
 
 
   /*
@@ -3251,7 +3426,9 @@ function drawChart(){
 
 
   ctx.fillStyle =
-    '#5aa9ff';
+    colorForSpeed(
+      sessionData[0].speed
+    );
 
   ctx.fillText(
     '● Vitesse',
