@@ -21,7 +21,7 @@
       content="0">
 
 <meta name="build-id"
-      content="2026-09-11T12:34:46Z">
+      content="2026-09-11T13:07:46Z">
 
 <title>Inclinomètre Moto</title>
 
@@ -144,7 +144,7 @@ h1{
 
 
 /* =====================================================
-   BARRE f
+   BARRE
 ===================================================== */
 
 .gauge{
@@ -7430,64 +7430,100 @@ function renderTurnMarkers(){
   }
 
   /*
-     La carte a pu etre initialisee alors que son conteneur
-     etait cache (onglet non actif) : Leaflet a besoin qu'on
-     lui dise de recalculer sa taille une fois visible.
+     Le conteneur de la carte vient tout juste de redevenir
+     visible (l'onglet peut etre affiche par un autre gestionnaire
+     de clic sur ce meme bouton, execute juste avant ou apres
+     celui-ci) : tant que le navigateur n'a pas fini de recalculer
+     la mise en page, Leaflet peut avoir une taille de conteneur
+     perimee. Si on place les reperes et qu'on cadre la carte
+     pendant cette fenetre, ils se retrouvent positionnes au
+     mauvais endroit (invisibles) meme si le fond de carte, lui,
+     se corrige tout seul un peu plus tard (les tuiles se
+     redemandent automatiquement au redimensionnement). On
+     regroupe donc invalidateSize() ET la pose des reperes dans le
+     meme callback different, apres que la mise en page soit
+     certainement stabilisee.
   */
 
   setTimeout(() => {
 
-    if(sharedMapInstance){
-      sharedMapInstance.invalidateSize();
+    if(!sharedMapInstance){
+      return;
     }
 
-  }, 60);
+    sharedMapInstance.invalidateSize();
 
-  sharedMapMarkersLayer.clearLayers();
+    sharedMapMarkersLayer.clearLayers();
 
-  const bounds = [];
+    const bounds = [];
 
-  turnsToShow.forEach(turn => {
+    turnsToShow.forEach(turn => {
 
-    const mine =
-      !!user &&
-      (
-        turn.bestAngleUid === user.uid ||
-        turn.bestSpeedUid === user.uid
-      );
+      const mine =
+        !!user &&
+        (
+          turn.bestAngleUid === user.uid ||
+          turn.bestSpeedUid === user.uid
+        );
 
-    const marker =
-      L.circleMarker(
-        [turn.centerLat, turn.centerLon],
-        {
-          radius:8,
-          weight:2,
-          color:'#ffffff',
-          fillColor:mine ? '#ffcc33' : '#43d17a',
-          fillOpacity:0.9
-        }
-      );
+      const marker =
+        L.circleMarker(
+          [turn.centerLat, turn.centerLon],
+          {
+            radius:9,
+            weight:3,
+            color:'#ffffff',
+            fillColor:mine ? '#ffcc33' : '#43d17a',
+            fillOpacity:1
+          }
+        );
 
-    marker.bindTooltip(buildTurnLabel(turn));
+      marker.bindTooltip(buildTurnLabel(turn));
 
-    marker.on('click', () => openTurnDetail(turn));
+      marker.on('click', () => openTurnDetail(turn));
 
-    marker.addTo(sharedMapMarkersLayer);
+      marker.addTo(sharedMapMarkersLayer);
 
-    bounds.push([turn.centerLat, turn.centerLon]);
+      bounds.push([turn.centerLat, turn.centerLon]);
 
-  });
+    });
 
-  if(bounds.length === 1){
+    if(bounds.length === 1){
 
-    sharedMapInstance.setView(bounds[0], 14);
+      sharedMapInstance.setView(bounds[0], 14);
 
-  }
-  else{
+    }
+    else{
 
-    sharedMapInstance.fitBounds(bounds, { padding:[30, 30] });
+      sharedMapInstance.fitBounds(bounds, { padding:[30, 30] });
 
-  }
+    }
+
+    /*
+       Filet de securite supplementaire : un deuxieme
+       invalidateSize() + re-cadrage un peu plus tard, au cas ou
+       la mise en page bougerait encore (transition d'onglet en
+       cours, clavier virtuel, etc.).
+    */
+
+    setTimeout(() => {
+
+      if(!sharedMapInstance){
+        return;
+      }
+
+      sharedMapInstance.invalidateSize();
+
+      if(bounds.length === 1){
+        sharedMapInstance.setView(bounds[0], 14);
+      }
+      else if(bounds.length > 1){
+        sharedMapInstance.fitBounds(bounds, { padding:[30, 30] });
+      }
+
+    }, 300);
+
+  }, 80);
 
   turnsMapCountEl.textContent =
     turnsToShow.length +
@@ -8691,12 +8727,81 @@ function drawHistoryMapSpeed(track){
 
 
 /*
+   Retrouve une position GPS pour un virage, meme quand le champ
+   lat/lon enregistre sur le virage (calcule au moment de la
+   sauvegarde) est absent - cas des sessions enregistrees avant
+   la mise en place de cette fonctionnalite, ou d'un virage dont
+   le sommet exact n'avait pas de position a l'epoque.
+
+   Methode identique dans l'esprit a celle du curseur du
+   graphique (qui retrouve toujours un point sur le trace) :
+   on part du tableau COMPLET de la session (deja charge ici,
+   pas besoin d'aller le rechercher), on situe l'instant du
+   sommet d'angle du virage a l'interieur de sa fenetre
+   [startTime, endTime], puis on prend, parmi les points qui ONT
+   une position GPS valide (`points`, deja filtre par l'appelant),
+   celui dont l'instant est le plus proche. Comme `points` n'est
+   jamais vide a cet endroit (verifie plus haut dans
+   drawHistoryMapTurns), une position est toujours retrouvee des
+   qu'il existe ne serait-ce qu'un seul point GPS valide dans
+   toute la session.
+*/
+
+function locateTurnPosition(track, points, turn){
+
+  if(
+    Number.isFinite(turn.lat) &&
+    Number.isFinite(turn.lon)
+  ){
+    return { lat:turn.lat, lon:turn.lon };
+  }
+
+  let apexTime = (turn.startTime + turn.endTime) / 2;
+
+  let bestAbsAngle = -1;
+
+  for(const p of track){
+
+    if(
+      Number.isFinite(p.time) &&
+      p.time >= turn.startTime &&
+      p.time <= turn.endTime &&
+      Math.abs(p.angle) > bestAbsAngle
+    ){
+      bestAbsAngle = Math.abs(p.angle);
+      apexTime = p.time;
+    }
+
+  }
+
+  let nearest = points[0];
+
+  let bestDiff = Math.abs(points[0].time - apexTime);
+
+  for(const p of points){
+
+    const diff =
+      Math.abs(p.time - apexTime);
+
+    if(diff < bestDiff){
+      bestDiff = diff;
+      nearest = p;
+    }
+
+  }
+
+  return { lat:nearest.lat, lon:nearest.lon };
+
+}
+
+
+/*
    Carte de reperage : trace neutre (pas de degrade de couleur,
    juste pour situer la route) + un repere numerote a la position
-   de chaque virage du tableau ci-dessous (meme numerotation).
-   Les virages enregistres avant cette mise a jour (ou sans
-   position GPS valide au moment du virage) sont ignores ici,
-   mais restent visibles dans le tableau.
+   de chaque virage du tableau ci-dessous (meme numerotation),
+   retrouvee via locateTurnPosition ci-dessus (fonctionne meme
+   pour les virages enregistres avant la mise en place du calcul
+   de position au moment de la sauvegarde).
 */
 
 function drawHistoryMapTurns(track, turns){
@@ -8858,7 +8963,19 @@ function drawHistoryMapTurns(track, turns){
 
   const numberedTurns =
     (turns || [])
-      .map((t, i) => ({ ...t, num:i + 1 }))
+      .map((t, i) => {
+
+        const pos =
+          locateTurnPosition(track, points, t);
+
+        return {
+          ...t,
+          num:i + 1,
+          lat:pos.lat,
+          lon:pos.lon
+        };
+
+      })
       .filter(t =>
         Number.isFinite(t.lat) &&
         Number.isFinite(t.lon)
@@ -8900,7 +9017,7 @@ function drawHistoryMapTurns(track, turns){
 
     infoEl.textContent =
       (turns && turns.length > 0)
-      ? 'Position GPS des virages indisponible pour cette session (enregistrée avant cette mise à jour, ou sans signal GPS au moment des virages).'
+      ? 'Aucune position GPS disponible sur toute cette session : impossible de situer les virages sur la carte.'
       : 'Aucun virage détecté sur cette session.';
 
   }
