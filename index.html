@@ -11,6 +11,18 @@
 <meta name="theme-color"
       content="#080b10">
 
+<meta http-equiv="Cache-Control"
+      content="no-cache, no-store, must-revalidate">
+
+<meta http-equiv="Pragma"
+      content="no-cache">
+
+<meta http-equiv="Expires"
+      content="0">
+
+<meta name="build-id"
+      content="2026-09-11T09:08:39Z">
+
 <title>Inclinomètre Moto</title>
 
 <style>
@@ -537,6 +549,40 @@ details{
 
 
 /* =====================================================
+   BANDEAU NOUVELLE VERSION
+===================================================== */
+
+.updateBanner{
+  position:fixed;
+  left:0;
+  right:0;
+  top:0;
+  z-index:2000;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-wrap:wrap;
+  gap:10px;
+  padding:10px 14px;
+  background:var(--accent);
+  color:#07100b;
+  font-size:13px;
+  font-weight:700;
+}
+
+.updateBanner button{
+  border:0;
+  border-radius:8px;
+  padding:6px 12px;
+  font-size:12px;
+  font-weight:700;
+  background:#07100b;
+  color:var(--accent);
+  width:auto;
+}
+
+
+/* =====================================================
    ECRAN D'AUTHENTIFICATION
 ===================================================== */
 
@@ -910,6 +956,21 @@ details{
 
 
 <body>
+
+
+<!-- =====================================================
+     BANDEAU NOUVELLE VERSION
+===================================================== -->
+
+<div id="updateBanner" class="updateBanner hidden">
+
+  <span>🔄 Nouvelle version disponible</span>
+
+  <button id="updateBannerBtn" type="button">
+    Mettre à jour
+  </button>
+
+</div>
 
 
 <!-- =====================================================
@@ -5208,6 +5269,82 @@ setInterval(
 
 
 <!-- =====================================================
+     DETECTION DE NOUVELLE VERSION
+     (utile pour les icones ajoutees a l'ecran d'accueil
+     du telephone, qui se rafraichissent mal toutes seules)
+===================================================== -->
+
+<script>
+
+'use strict';
+
+const CURRENT_BUILD_ID =
+  document.querySelector('meta[name="build-id"]').content;
+
+const updateBanner =
+  document.getElementById('updateBanner');
+
+
+async function checkForUpdate(){
+
+  try{
+
+    const response =
+      await fetch(
+        location.pathname + '?_=' + Date.now(),
+        { cache:'no-store' }
+      );
+
+    const html =
+      await response.text();
+
+    const match =
+      html.match(/name="build-id"\s+content="([^"]+)"/);
+
+    if(match && match[1] !== CURRENT_BUILD_ID){
+
+      updateBanner.classList.remove('hidden');
+
+    }
+
+  }
+  catch(error){
+
+    /*
+       Pas grave si la verification echoue (hors-ligne
+       par exemple) : l'appli continue de fonctionner
+       normalement avec la version deja chargee.
+    */
+
+  }
+
+}
+
+
+document.getElementById('updateBannerBtn').addEventListener('click', () => {
+
+  location.reload();
+
+});
+
+
+checkForUpdate();
+
+
+document.addEventListener('visibilitychange', () => {
+
+  if(document.visibilityState === 'visible'){
+
+    checkForUpdate();
+
+  }
+
+});
+
+</script>
+
+
+<!-- =====================================================
      NAVIGATION - MENU PRINCIPAL
      (script indépendant, ne touche pas au moteur ci-dessus)
 ===================================================== -->
@@ -5770,6 +5907,13 @@ const MAX_TRACK_POINTS = 2000;
 
 function compressTrack(data){
 
+  /*
+     Firestore interdit les tableaux imbriques (un
+     tableau contenant directement d'autres tableaux) :
+     on stocke donc chaque point comme un petit objet a
+     cles courtes plutot qu'un tableau de tableaux.
+  */
+
   const step =
     data.length > MAX_TRACK_POINTS
     ? Math.ceil(data.length / MAX_TRACK_POINTS)
@@ -5781,19 +5925,19 @@ function compressTrack(data){
 
     const p = data[i];
 
-    compressed.push([
+    compressed.push({
 
-      Math.round(p.time * 10) / 10,
+      t:Math.round(p.time * 10) / 10,
 
-      Math.round(p.angle * 10) / 10,
+      a:Math.round(p.angle * 10) / 10,
 
-      Math.round(p.speed * 10) / 10,
+      s:Math.round(p.speed * 10) / 10,
 
-      Number.isFinite(p.lat) ? Math.round(p.lat * 1e6) / 1e6 : null,
+      y:Number.isFinite(p.lat) ? Math.round(p.lat * 1e6) / 1e6 : null,
 
-      Number.isFinite(p.lon) ? Math.round(p.lon * 1e6) / 1e6 : null
+      x:Number.isFinite(p.lon) ? Math.round(p.lon * 1e6) / 1e6 : null
 
-    ]);
+    });
 
   }
 
@@ -5806,11 +5950,11 @@ function decompressTrack(track){
 
   return track.map(p => ({
 
-    time:p[0],
-    angle:p[1],
-    speed:p[2],
-    lat:p[3],
-    lon:p[4]
+    time:p.t,
+    angle:p.a,
+    speed:p.s,
+    lat:p.y,
+    lon:p.x
 
   }));
 
