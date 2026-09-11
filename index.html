@@ -671,6 +671,136 @@ details{
 
 
 /* =====================================================
+   MENU PRINCIPAL
+===================================================== */
+
+.menuScreen{
+  padding:18px 2px 30px;
+}
+
+.menuIntro{
+  text-align:center;
+  color:var(--muted);
+  font-size:13px;
+  margin:0 0 16px;
+}
+
+.menuGrid{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+
+.menuCard{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  width:100%;
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:18px;
+  text-align:left;
+  color:var(--text);
+}
+
+.menuCard:active{
+  border-color:var(--accent);
+}
+
+.menuIcon{
+  font-size:28px;
+  line-height:1;
+}
+
+.menuText{
+  display:flex;
+  flex-direction:column;
+  gap:3px;
+}
+
+.menuLabel{
+  font-size:16px;
+  font-weight:700;
+}
+
+.menuDesc{
+  font-size:12px;
+  color:var(--muted);
+  font-weight:400;
+}
+
+
+/* =====================================================
+   ENTETE DE VUE (retour au menu)
+===================================================== */
+
+.viewHeader{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin:16px 2px 12px;
+}
+
+.backBtn{
+  border:0;
+  border-radius:10px;
+  padding:8px 12px;
+  font-size:12px;
+  font-weight:700;
+  background:#202a35;
+  color:var(--muted);
+  width:auto;
+}
+
+.viewTitle{
+  font-size:15px;
+  font-weight:700;
+}
+
+
+/* =====================================================
+   VUE CONSEILS
+===================================================== */
+
+.tipsCard{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:16px;
+  margin-bottom:12px;
+}
+
+.tipsCard h3{
+  margin:0 0 6px;
+  font-size:14px;
+}
+
+.tipsCard p{
+  margin:0;
+  font-size:13px;
+  line-height:1.5;
+  color:var(--muted);
+}
+
+
+/* =====================================================
+   PLACEHOLDER (historique a venir)
+===================================================== */
+
+.placeholderCard{
+  background:var(--card);
+  border:1px dashed var(--line);
+  border-radius:16px;
+  padding:34px 18px;
+  text-align:center;
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.6;
+}
+
+
+/* =====================================================
    UTILITAIRE
 ===================================================== */
 
@@ -823,6 +953,83 @@ details{
   </div>
 
 </div>
+
+
+<!-- =====================================================
+     MENU PRINCIPAL
+===================================================== -->
+
+<div id="menuScreen" class="menuScreen">
+
+  <div class="menuIntro">
+    Que veux-tu faire ?
+  </div>
+
+  <div class="menuGrid">
+
+    <button id="navInclinometre"
+            class="menuCard"
+            type="button">
+
+      <span class="menuIcon">🏍️</span>
+
+      <span class="menuText">
+        <span class="menuLabel">Inclinomètre</span>
+        <span class="menuDesc">Lancer une session et suivre ton inclinaison en direct</span>
+      </span>
+
+    </button>
+
+    <button id="navHistorique"
+            class="menuCard"
+            type="button">
+
+      <span class="menuIcon">📜</span>
+
+      <span class="menuText">
+        <span class="menuLabel">Historique</span>
+        <span class="menuDesc">Retrouver tes sessions et tes virages</span>
+      </span>
+
+    </button>
+
+    <button id="navConseils"
+            class="menuCard"
+            type="button">
+
+      <span class="menuIcon">💡</span>
+
+      <span class="menuText">
+        <span class="menuLabel">Conseils d'utilisation</span>
+        <span class="menuDesc">Bien fixer ton téléphone, calibrer, lire l'appli</span>
+      </span>
+
+    </button>
+
+  </div>
+
+</div>
+
+
+<!-- =====================================================
+     VUE INCLINOMETRE
+===================================================== -->
+
+<div id="inclinometerView" class="hidden">
+
+  <div class="viewHeader">
+
+    <button class="backBtn"
+            data-back
+            type="button">
+      ← Menu
+    </button>
+
+    <div class="viewTitle">
+      Inclinomètre
+    </div>
+
+  </div>
 
 
 <div class="grid">
@@ -1294,6 +1501,97 @@ analyse indicative et ne constitue pas une mesure
 homologuée.
 
 Ne manipule pas le téléphone en roulant.
+
+</div>
+
+
+</div>
+
+
+<!-- =====================================================
+     VUE HISTORIQUE (bientôt disponible)
+===================================================== -->
+
+<div id="historyView" class="hidden">
+
+  <div class="viewHeader">
+
+    <button class="backBtn"
+            data-back
+            type="button">
+      ← Menu
+    </button>
+
+    <div class="viewTitle">
+      Historique
+    </div>
+
+  </div>
+
+  <div class="placeholderCard">
+
+    🚧 Bientôt disponible.
+
+    <br><br>
+
+    Tes sessions et tes virages seront bientôt enregistrés
+    automatiquement et consultables ici, avec un classement
+    par virage entre riders.
+
+  </div>
+
+</div>
+
+
+<!-- =====================================================
+     VUE CONSEILS D'UTILISATION
+===================================================== -->
+
+<div id="tipsView" class="hidden">
+
+  <div class="viewHeader">
+
+    <button class="backBtn"
+            data-back
+            type="button">
+      ← Menu
+    </button>
+
+    <div class="viewTitle">
+      Conseils d'utilisation
+    </div>
+
+  </div>
+
+  <div class="tipsCard">
+    <h3>📌 Fixe le téléphone rigidement</h3>
+    <p>Utilise un support rigide sur le guidon ou le réservoir, orienté écran vers toi. Un téléphone qui vibre ou qui bouge dans une poche fausse complètement la mesure d'inclinaison.</p>
+  </div>
+
+  <div class="tipsCard">
+    <h3>🎯 Calibre avant de partir</h3>
+    <p>Appuie sur "FAIRE LE ZÉRO" une fois le téléphone fixé, moto à la verticale et à l'arrêt (ou en ligne droite stabilisée). Recommence si tu changes la position du support.</p>
+  </div>
+
+  <div class="tipsCard">
+    <h3>📡 Laisse le GPS s'initialiser</h3>
+    <p>La vitesse GPS met quelques secondes à devenir précise après le démarrage. Attends un signal stable avant de lancer une session si tu veux des statistiques fiables.</p>
+  </div>
+
+  <div class="tipsCard">
+    <h3>🎨 Lis les couleurs</h3>
+    <p>Vert : zone normale. Jaune : au-delà de 35°. Rouge : au-delà de 45°. Ces seuils sont indicatifs, pas une limite mécanique de ta moto.</p>
+  </div>
+
+  <div class="tipsCard">
+    <h3>💾 Exporte tes sessions</h3>
+    <p>Le bouton "EXPORTER CSV" te permet de garder une trace de chaque sortie (angle, vitesse, position, G) même avant que l'historique en ligne soit disponible.</p>
+  </div>
+
+  <div class="tipsCard">
+    <h3>⚠️ Reste prudent</h3>
+    <p>C'est un prototype expérimental. Ne manipule jamais le téléphone en roulant, et ne prends pas les mesures affichées comme une limite de sécurité absolue.</p>
+  </div>
 
 </div>
 
@@ -4719,6 +5017,90 @@ setInterval(
 
 
 <!-- =====================================================
+     NAVIGATION - MENU PRINCIPAL
+     (script indépendant, ne touche pas au moteur ci-dessus)
+===================================================== -->
+
+<script>
+
+'use strict';
+
+const menuScreen =
+  document.getElementById('menuScreen');
+
+const inclinometerView =
+  document.getElementById('inclinometerView');
+
+const historyView =
+  document.getElementById('historyView');
+
+const tipsView =
+  document.getElementById('tipsView');
+
+const allNavViews = [
+
+  inclinometerView,
+  historyView,
+  tipsView
+
+];
+
+
+function showMenu(){
+
+  menuScreen.classList.remove('hidden');
+
+  allNavViews.forEach(view => {
+    view.classList.add('hidden');
+  });
+
+}
+
+
+function showNavView(view){
+
+  menuScreen.classList.add('hidden');
+
+  allNavViews.forEach(v => {
+    v.classList.toggle('hidden', v !== view);
+  });
+
+}
+
+
+document.getElementById('navInclinometre').addEventListener(
+  'click',
+  () => showNavView(inclinometerView)
+);
+
+document.getElementById('navHistorique').addEventListener(
+  'click',
+  () => showNavView(historyView)
+);
+
+document.getElementById('navConseils').addEventListener(
+  'click',
+  () => showNavView(tipsView)
+);
+
+document.querySelectorAll('[data-back]').forEach(btn => {
+
+  btn.addEventListener('click', showMenu);
+
+});
+
+
+/*
+   Revenir au menu a chaque nouvelle connexion,
+   evite de rester coince sur une vue precedente.
+*/
+
+window.addEventListener('firebase-user-ready', showMenu);
+
+</script>
+
+
+<!-- =====================================================
      FIREBASE - AUTHENTIFICATION
      (module indépendant, ne touche pas au moteur ci-dessus)
 ===================================================== -->
@@ -5003,8 +5385,13 @@ signupForm.addEventListener('submit', async event => {
 
     const validCode =
       codeSnap.exists()
-      ? String(codeSnap.data().value || '')
+      ? String(codeSnap.data().value || '').trim()
       : '';
+
+    console.info(
+      '[Auth] Document config/signupCode trouvé :',
+      codeSnap.exists()
+    );
 
     if(
       validCode === '' ||
