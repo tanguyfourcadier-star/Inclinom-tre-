@@ -1372,7 +1372,17 @@ details{
     </button>
 
 
-    <button id="screen">
+    <button id="saveSessionBtn"
+            class="blue"
+            type="button"
+            disabled>
+
+      💾 ENREGISTRER
+
+    </button>
+
+
+    <button id="screen" class="hidden">
 
       PLEIN ÉCRAN
 
@@ -5944,6 +5954,8 @@ async function saveCurrentSessionToFirestore(){
 
     showSaveStatus('Session enregistrée ✅', false);
 
+    saveSessionBtn.disabled = true;
+
   }
   catch(error){
 
@@ -5953,13 +5965,58 @@ async function saveCurrentSessionToFirestore(){
     );
 
     showSaveStatus(
-      'Échec de l\'enregistrement (pas de réseau ?)',
+      describeSaveError(error),
       true
     );
 
   }
 
 }
+
+
+/*
+   Message d'erreur explicite selon le code renvoye par
+   Firestore, pour diagnostiquer sans avoir a ouvrir la
+   console developpeur.
+*/
+
+function describeSaveError(error){
+
+  const code =
+    error && error.code
+    ? error.code
+    : '';
+
+  if(code === 'permission-denied'){
+
+    return 'Enregistrement refusé par les règles Firestore (vérifie qu\'elles sont bien publiées).';
+
+  }
+
+  if(code === 'unavailable'){
+
+    return 'Pas de connexion réseau, réessaie plus tard.';
+
+  }
+
+  return (
+    'Échec de l\'enregistrement' +
+    (code ? ' (' + code + ')' : '') +
+    '.'
+  );
+
+}
+
+
+const saveSessionBtn =
+  document.getElementById('saveSessionBtn');
+
+
+saveSessionBtn.addEventListener('click', () => {
+
+  saveCurrentSessionToFirestore();
+
+});
 
 
 document.getElementById('session').addEventListener('click', () => {
@@ -5969,12 +6026,22 @@ document.getElementById('session').addEventListener('click', () => {
      (attache plus haut dans le document), donc les
      variables globales refletent deja le nouvel etat
      au moment ou ce code s'execute : sessionActive
-     est a false uniquement juste apres un arret.
+     est a false uniquement juste apres un arret, true
+     uniquement juste apres un depart.
+
+     On active/desactive le bouton ENREGISTRER en miroir
+     du bouton EXPORTER CSV du moteur, sans jamais toucher
+     au moteur lui-meme.
   */
 
   if(sessionActive === false && sessionData.length > 0){
 
-    saveCurrentSessionToFirestore();
+    saveSessionBtn.disabled = false;
+
+  }
+  else if(sessionActive === true){
+
+    saveSessionBtn.disabled = true;
 
   }
 
