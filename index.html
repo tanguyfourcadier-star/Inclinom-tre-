@@ -21,7 +21,7 @@
       content="0">
 
 <meta name="build-id"
-      content="2026-09-11T09:55:24Z">
+      content="2026-09-11T12:20:48Z">
 
 <title>Inclinomètre Moto</title>
 
@@ -734,6 +734,18 @@ details{
   margin:0 0 16px;
 }
 
+.menuDisclaimer{
+  margin-top:18px;
+  padding:12px 14px;
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:12px;
+  font-size:11px;
+  line-height:1.5;
+  color:var(--muted);
+  text-align:center;
+}
+
 .menuGrid{
   display:flex;
   flex-direction:column;
@@ -932,6 +944,10 @@ details{
   height:230px;
 }
 
+#historyMapTurns{
+  height:230px;
+}
+
 
 /* =====================================================
    CARTE PARTAGEE DES VIRAGES
@@ -964,6 +980,18 @@ details{
   overflow:hidden;
   border:1px solid var(--line);
   margin-bottom:12px;
+  background:#0b1017;
+}
+
+/*
+   Rendu sombre des tuiles OpenStreetMap standard (claires a
+   l'origine) par filtre CSS, pour rester coherent avec le theme
+   de l'appli sans dependre d'un fournisseur de tuiles "dark"
+   specifique (qui peut exiger une cle API du jour au lendemain).
+*/
+
+#sharedMap .leaflet-tile-pane{
+  filter:invert(1) hue-rotate(180deg) brightness(0.92) contrast(0.9) saturate(0.75);
 }
 
 .turnsMapCount{
@@ -1300,6 +1328,12 @@ details{
 
     </button>
 
+  </div>
+
+  <div class="menuDisclaimer">
+    ⚠️ Les mesures affichées sont indicatives : leur précision dépend de ton
+    téléphone (capteurs, GPS) et de la qualité de sa fixation. Reste dans
+    tous les cas prudent sur la route, quelles que soient les valeurs affichées.
   </div>
 
 </div>
@@ -1887,11 +1921,13 @@ Ne manipule pas le téléphone en roulant.
 
       <div class="speedScale" aria-label="Échelle de couleur de vitesse">
 
-        <div class="speedScaleTitle">Échelle vitesse</div>
+        <div class="speedScaleTitle">
+          Échelle vitesse (adaptée au min/max de cette session)
+        </div>
 
         <div class="speedScaleBar"></div>
 
-        <div class="speedScaleLabels">
+        <div class="speedScaleLabels" id="historySpeedScaleLabels">
           <span>0</span>
           <span>30</span>
           <span>75</span>
@@ -1925,6 +1961,16 @@ Ne manipule pas le téléphone en roulant.
       </div>
 
       <div id="historyMapSpeedInfo" class="mapInfo"></div>
+
+      <div class="label" style="margin-top:16px;">
+        Repères des virages (n° du tableau ci-dessous)
+      </div>
+
+      <div class="mapWrap">
+        <canvas id="historyMapTurns"></canvas>
+      </div>
+
+      <div id="historyMapTurnsInfo" class="mapInfo"></div>
 
       <div class="tableWrap">
 
@@ -6385,23 +6431,53 @@ async function saveCurrentSessionToFirestore(){
   try{
 
     const turnsForDoc =
-      snapshot.turns.map(t => ({
+      snapshot.turns.map(t => {
 
-        side:t.side,
+        /*
+           Position GPS au sommet du virage (point d'angle max),
+           retrouvee via l'index deja fourni par le moteur sur
+           chaque virage. Sert a placer des reperes numerotes sur
+           la carte de la session (voir drawHistoryTurnMarkers).
+           Peut etre absente si le GPS n'avait pas de position
+           valide a cet instant precis : geree comme telle partout.
+        */
 
-        angle:Math.round(t.angle * 10) / 10,
+        const apexPoint =
+          snapshot.track[t.index];
 
-        speedAtMax:Math.round(t.speedAtMax * 10) / 10,
+        const lat =
+          apexPoint && Number.isFinite(apexPoint.lat)
+          ? Math.round(apexPoint.lat * 1e6) / 1e6
+          : null;
 
-        averageSpeed:Math.round(t.averageSpeed * 10) / 10,
+        const lon =
+          apexPoint && Number.isFinite(apexPoint.lon)
+          ? Math.round(apexPoint.lon * 1e6) / 1e6
+          : null;
 
-        duration:Math.round(t.duration * 10) / 10,
+        return {
 
-        startTime:Math.round(t.startTime * 10) / 10,
+          side:t.side,
 
-        endTime:Math.round(t.endTime * 10) / 10
+          angle:Math.round(t.angle * 10) / 10,
 
-      }));
+          speedAtMax:Math.round(t.speedAtMax * 10) / 10,
+
+          averageSpeed:Math.round(t.averageSpeed * 10) / 10,
+
+          duration:Math.round(t.duration * 10) / 10,
+
+          startTime:Math.round(t.startTime * 10) / 10,
+
+          endTime:Math.round(t.endTime * 10) / 10,
+
+          lat:lat,
+
+          lon:lon
+
+        };
+
+      });
 
     const sessionRef =
       await addDoc(
@@ -6453,14 +6529,35 @@ async function saveCurrentSessionToFirestore(){
     */
 
     syncTurnsToSharedMap(snapshot, sessionRef.id)
-      .then(recordedCount => {
+      .then(result => {
 
-        if(recordedCount > 0){
+        if(result.recorded > 0){
 
           showSaveStatus(
             'Session enregistrée ✅ · ' +
-            recordedCount +
+            result.recorded +
             ' virage(s) ajoutés à la carte partagée',
+            false
+          );
+
+        }
+        else if(result.eligible > 0 && result.loadFailed){
+
+          showSaveStatus(
+            'Session enregistrée ✅ (carte partagée indisponible pour le moment, ' +
+            'réessaie au prochain enregistrement — vérifie que les règles ' +
+            'Firestore incluent bien "turns")',
+            false
+          );
+
+        }
+        else if(result.eligible > 0 && result.withoutGps === result.eligible){
+
+          showSaveStatus(
+            'Session enregistrée ✅ (virage(s) à plus de ' +
+            MIN_TURN_ANGLE_FOR_MAP +
+            '° détecté(s), mais sans position GPS valide au bon moment ' +
+            '— pas ajouté(s) à la carte partagée)',
             false
           );
 
@@ -6636,13 +6733,22 @@ async function syncTurnsToSharedMap(snapshot, sessionId){
   const user =
     window.FirebaseBridge.currentUser;
 
+  const eligibleTurns =
+    snapshot.turns.filter(t => t.angleAbs >= MIN_TURN_ANGLE_FOR_MAP);
+
+  const result = {
+    recorded:0,
+    eligible:eligibleTurns.length,
+    withoutGps:0,
+    loadFailed:false
+  };
+
   if(!user){
-    return 0;
+    return result;
   }
 
   const candidates =
-    snapshot.turns
-      .filter(t => t.angleAbs >= MIN_TURN_ANGLE_FOR_MAP)
+    eligibleTurns
       .map(t => {
 
         const p =
@@ -6667,8 +6773,11 @@ async function syncTurnsToSharedMap(snapshot, sessionId){
         Number.isFinite(c.lon)
       );
 
+  result.withoutGps =
+    eligibleTurns.length - candidates.length;
+
   if(candidates.length === 0){
-    return 0;
+    return result;
   }
 
   let existingTurns;
@@ -6694,11 +6803,11 @@ async function syncTurnsToSharedMap(snapshot, sessionId){
       err
     );
 
-    return 0;
+    result.loadFailed = true;
+
+    return result;
 
   }
-
-  let recordedCount = 0;
 
   for(const candidate of candidates){
 
@@ -6711,7 +6820,7 @@ async function syncTurnsToSharedMap(snapshot, sessionId){
         sessionId
       );
 
-      recordedCount++;
+      result.recorded++;
 
     }
     catch(err){
@@ -6730,7 +6839,7 @@ async function syncTurnsToSharedMap(snapshot, sessionId){
 
   }
 
-  return recordedCount;
+  return result;
 
 }
 
@@ -7220,11 +7329,22 @@ function renderTurnMarkers(){
     sharedMapInstance =
       L.map('sharedMap', { attributionControl:true });
 
+    /*
+       Tuiles officielles OpenStreetMap : gratuites, sans cle API,
+       simplement soumises a une politique d'usage raisonnable
+       (largement suffisante pour une appli perso entre amis).
+       Le rendu sombre est obtenu par un filtre CSS applique
+       uniquement a ces tuiles (voir #sharedMap .leaflet-tile-pane
+       dans le CSS), pas par un fournisseur de tuiles specifique,
+       pour eviter de redependre d'un service qui pourrait un jour
+       exiger une cle lui aussi.
+    */
+
     L.tileLayer(
-      'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+      'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
       {
         maxZoom:19,
-        attribution:'&copy; OpenStreetMap contributors &copy; CARTO'
+        attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
       }
     ).addTo(sharedMapInstance);
 
@@ -7695,6 +7815,8 @@ function openSessionDetail(data){
   drawHistoryMap(track);
 
   drawHistoryMapSpeed(track);
+
+  drawHistoryMapTurns(track, data.turns || []);
 
   renderHistoryTurns(data.turns || []);
 
@@ -8395,14 +8517,324 @@ function drawHistoryMap(track){
 }
 
 
+/*
+   Reutilise le degrade de couleurs du moteur (colorForSpeed,
+   calibre sur 0-180 km/h) mais en le reechelonnant sur le
+   min/max reel de vitesse de LA SESSION affichee. Le moteur
+   lui-meme n'est pas touche : ceci n'est qu'un appel en lecture
+   avec une valeur reechelonnee.
+
+   N'est utilise que pour l'historique : en direct, la vitesse
+   finale de la session n'est pas encore connue, donc l'echelle
+   fixe du moteur reste plus logique la-bas.
+*/
+
+function colorForSpeedRange(speed, minV, maxV){
+
+  if(!Number.isFinite(speed)){
+    return colorForSpeed(0);
+  }
+
+  if(!(maxV > minV)){
+
+    /*
+       Vitesse quasi constante sur toute la session : une seule
+       couleur neutre plutot qu'une echelle qui n'aurait pas de sens.
+    */
+
+    return colorForSpeed(75);
+
+  }
+
+  const scaled =
+    ((speed - minV) / (maxV - minV)) * 180;
+
+  return colorForSpeed(scaled);
+
+}
+
+
+function updateHistorySpeedScaleLabels(minV, maxV){
+
+  const labelsEl =
+    document.getElementById('historySpeedScaleLabels');
+
+  if(!labelsEl){
+    return;
+  }
+
+  if(!(maxV > minV)){
+
+    labelsEl.innerHTML =
+      '<span>' + fmt(minV, 0) + ' km/h (vitesse quasi constante)</span>';
+
+    return;
+
+  }
+
+  const range = maxV - minV;
+
+  const stepLabel = t =>
+    fmt(minV + range * t, 0);
+
+  labelsEl.innerHTML =
+
+    '<span>' + stepLabel(0) + '</span>' +
+    '<span>' + stepLabel(30 / 180) + '</span>' +
+    '<span>' + stepLabel(75 / 180) + '</span>' +
+    '<span>' + stepLabel(120 / 180) + '</span>' +
+    '<span>' + stepLabel(1) + '</span>' +
+    '<span>km/h</span>';
+
+}
+
+
 function drawHistoryMapSpeed(track){
+
+  const validSpeeds =
+    track
+      .map(p => p.speed)
+      .filter(s => Number.isFinite(s));
+
+  const minV =
+    validSpeeds.length ? Math.min(...validSpeeds) : 0;
+
+  const maxV =
+    validSpeeds.length ? Math.max(...validSpeeds) : 0;
+
+  updateHistorySpeedScaleLabels(minV, maxV);
 
   drawHistoryMapGeneric(
     'historyMapSpeed',
     'historyMapSpeedInfo',
     track,
-    p => colorForSpeed(p.speed)
+    p => colorForSpeedRange(p.speed, minV, maxV)
   );
+
+}
+
+
+/*
+   Carte de reperage : trace neutre (pas de degrade de couleur,
+   juste pour situer la route) + un repere numerote a la position
+   de chaque virage du tableau ci-dessous (meme numerotation).
+   Les virages enregistres avant cette mise a jour (ou sans
+   position GPS valide au moment du virage) sont ignores ici,
+   mais restent visibles dans le tableau.
+*/
+
+function drawHistoryMapTurns(track, turns){
+
+  const canvas =
+    document.getElementById('historyMapTurns');
+
+  const rect =
+    canvas.getBoundingClientRect();
+
+  const dpr =
+    window.devicePixelRatio || 1;
+
+  canvas.width = rect.width * dpr;
+
+  canvas.height = rect.height * dpr;
+
+  const ctx =
+    canvas.getContext('2d');
+
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+  const W = rect.width;
+
+  const H = rect.height;
+
+  ctx.clearRect(0, 0, W, H);
+
+  const infoEl =
+    document.getElementById('historyMapTurnsInfo');
+
+  const points =
+    track.filter(p =>
+      Number.isFinite(p.lat) &&
+      Number.isFinite(p.lon)
+    );
+
+  if(points.length < 2){
+
+    ctx.fillStyle = '#9ba8b7';
+
+    ctx.font = '13px system-ui';
+
+    ctx.textAlign = 'center';
+
+    ctx.fillText(
+      'Pas de tracé GPS pour cette session.',
+      W / 2,
+      H / 2
+    );
+
+    infoEl.textContent =
+      'Pas de tracé GPS pour cette session.';
+
+    return;
+
+  }
+
+  let minLat = Infinity;
+
+  let maxLat = -Infinity;
+
+  let minLon = Infinity;
+
+  let maxLon = -Infinity;
+
+  points.forEach(p => {
+
+    minLat = Math.min(minLat, p.lat);
+
+    maxLat = Math.max(maxLat, p.lat);
+
+    minLon = Math.min(minLon, p.lon);
+
+    maxLon = Math.max(maxLon, p.lon);
+
+  });
+
+  if(Math.abs(maxLat - minLat) < 0.000001){
+
+    maxLat += 0.00001;
+
+    minLat -= 0.00001;
+
+  }
+
+  if(Math.abs(maxLon - minLon) < 0.000001){
+
+    maxLon += 0.00001;
+
+    minLon -= 0.00001;
+
+  }
+
+  const padding = 20;
+
+  const midLat =
+    (minLat + maxLat) / 2;
+
+  const lonScale =
+    Math.cos(midLat * Math.PI / 180);
+
+  const geoW =
+    (maxLon - minLon) * lonScale;
+
+  const geoH =
+    maxLat - minLat;
+
+  const scale =
+    Math.min(
+      (W - padding * 2) / geoW,
+      (H - padding * 2) / geoH
+    );
+
+  const drawPoint = p => ({
+
+    x:
+      W / 2 +
+      (
+        (p.lon - (minLon + maxLon) / 2) *
+        lonScale *
+        scale
+      ),
+
+    y:
+      H / 2 -
+      (
+        (p.lat - (minLat + maxLat) / 2) *
+        scale
+      )
+
+  });
+
+  /*
+     Trace neutre, juste pour se reperer (pas de degrade de
+     couleur ici, ce n'est pas le propos de cette carte).
+  */
+
+  ctx.lineWidth = 2;
+
+  ctx.strokeStyle = '#3a4756';
+
+  ctx.beginPath();
+
+  points.forEach((p, i) => {
+
+    const q = drawPoint(p);
+
+    if(i === 0){
+      ctx.moveTo(q.x, q.y);
+    }
+    else{
+      ctx.lineTo(q.x, q.y);
+    }
+
+  });
+
+  ctx.stroke();
+
+  const numberedTurns =
+    (turns || [])
+      .map((t, i) => ({ ...t, num:i + 1 }))
+      .filter(t =>
+        Number.isFinite(t.lat) &&
+        Number.isFinite(t.lon)
+      );
+
+  numberedTurns.forEach(t => {
+
+    const q =
+      drawPoint(t);
+
+    ctx.beginPath();
+
+    ctx.arc(q.x, q.y, 10, 0, Math.PI * 2);
+
+    ctx.fillStyle =
+      t.side > 0 ? '#ffcc33' : '#5aa9ff';
+
+    ctx.fill();
+
+    ctx.lineWidth = 2;
+
+    ctx.strokeStyle = '#ffffff';
+
+    ctx.stroke();
+
+    ctx.fillStyle = '#07100b';
+
+    ctx.font = 'bold 11px system-ui';
+
+    ctx.textAlign = 'center';
+
+    ctx.textBaseline = 'middle';
+
+    ctx.fillText(String(t.num), q.x, q.y + 0.5);
+
+  });
+
+  if(numberedTurns.length === 0){
+
+    infoEl.textContent =
+      (turns && turns.length > 0)
+      ? 'Position GPS des virages indisponible pour cette session (enregistrée avant cette mise à jour, ou sans signal GPS au moment des virages).'
+      : 'Aucun virage détecté sur cette session.';
+
+  }
+  else{
+
+    infoEl.textContent =
+      numberedTurns.length +
+      ' virage(s) repéré(s) sur la carte.';
+
+  }
 
 }
 
