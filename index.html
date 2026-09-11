@@ -21,7 +21,7 @@
       content="0">
 
 <meta name="build-id"
-      content="2026-09-11T13:07:46Z">
+      content="2026-09-11T13:18:03Z">
 
 <title>Inclinomètre Moto</title>
 
@@ -1077,6 +1077,116 @@ details{
 
 
 /* =====================================================
+   VUE COMMENTAIRES
+===================================================== */
+
+.feedbackForm{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+
+.feedbackTextarea{
+  width:100%;
+  min-height:120px;
+  border:1px solid var(--line);
+  border-radius:10px;
+  padding:11px 12px;
+  font-size:14px;
+  font-family:inherit;
+  background:#0b1017;
+  color:var(--text);
+  resize:vertical;
+}
+
+.feedbackTextarea:focus{
+  outline:2px solid var(--accent);
+  outline-offset:1px;
+}
+
+.feedbackCharCount{
+  font-size:11px;
+  color:var(--muted);
+  text-align:right;
+}
+
+.feedbackSuccess{
+  font-size:12px;
+  color:var(--accent);
+  text-align:center;
+  min-height:14px;
+}
+
+.feedbackError{
+  font-size:12px;
+  color:var(--red);
+  text-align:center;
+  min-height:14px;
+}
+
+.feedbackInboxTitle{
+  font-size:14px;
+  font-weight:700;
+  margin:22px 0 4px;
+}
+
+.feedbackInboxHint{
+  font-size:11px;
+  color:var(--muted);
+  margin-bottom:12px;
+}
+
+.feedbackInboxEmpty{
+  text-align:center;
+  color:var(--muted);
+  font-size:13px;
+  padding:18px 0;
+}
+
+.feedbackItem{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-left:3px solid var(--line);
+  border-radius:12px;
+  padding:12px 14px;
+  margin-bottom:10px;
+}
+
+.feedbackItem.feedbackItemUnread{
+  border-left-color:var(--accent);
+}
+
+.feedbackItemMeta{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  font-size:11px;
+  color:var(--muted);
+  margin-bottom:6px;
+}
+
+.feedbackItemText{
+  font-size:13px;
+  line-height:1.5;
+  white-space:pre-wrap;
+  margin:0 0 10px;
+}
+
+.feedbackItemActions{
+  display:flex;
+  gap:8px;
+}
+
+.feedbackItemActions button{
+  width:auto;
+  flex:none;
+  padding:8px 12px;
+  font-size:12px;
+  border-radius:8px;
+}
+
+
+/* =====================================================
    PLACEHOLDER (historique a venir)
 ===================================================== */
 
@@ -1324,6 +1434,19 @@ details{
       <span class="menuText">
         <span class="menuLabel">À propos</span>
         <span class="menuDesc">L'histoire de l'appli et soutenir le projet</span>
+      </span>
+
+    </button>
+
+    <button id="navFeedback"
+            class="menuCard"
+            type="button">
+
+      <span class="menuIcon">💬</span>
+
+      <span class="menuText">
+        <span class="menuLabel">Commentaires</span>
+        <span class="menuDesc">Un bug, une idée ? Laisse-moi un message</span>
       </span>
 
     </button>
@@ -2186,6 +2309,63 @@ Ne manipule pas le téléphone en roulant.
     <p id="supportBtnHint" class="supportBtnHint hidden">
       La cagnotte n'est pas encore ouverte, reviens un peu plus tard 🙂
     </p>
+  </div>
+
+</div>
+
+
+<!-- =====================================================
+     VUE COMMENTAIRES
+===================================================== -->
+
+<div id="feedbackView" class="hidden">
+
+  <div class="viewHeader">
+
+    <button class="backBtn"
+            data-back
+            type="button">
+      ← Menu
+    </button>
+
+    <div class="viewTitle">
+      Commentaires
+    </div>
+
+  </div>
+
+  <div class="tipsCard">
+    <h3>💬 Une remarque, un bug, une idée ?</h3>
+    <p>Ce message m'est envoyé directement, il n'est pas visible par les autres utilisateurs de l'appli. N'hésite pas, tout retour m'aide à l'améliorer.</p>
+  </div>
+
+  <form id="feedbackForm" class="feedbackForm">
+
+    <textarea id="feedbackText"
+              class="feedbackTextarea"
+              maxlength="1000"
+              placeholder="Écris ton message ici..."
+              required></textarea>
+
+    <div id="feedbackCharCount" class="feedbackCharCount">0 / 1000</div>
+
+    <button class="primary"
+            type="submit">
+      Envoyer
+    </button>
+
+    <div id="feedbackSuccess" class="feedbackSuccess"></div>
+    <div id="feedbackError" class="feedbackError"></div>
+
+  </form>
+
+  <div id="feedbackInboxSection" class="hidden">
+
+    <div class="feedbackInboxTitle">📥 Commentaires reçus</div>
+    <div class="feedbackInboxHint">Visible uniquement par toi (connecté en tant qu'administrateur).</div>
+
+    <div id="feedbackInboxList"></div>
+
   </div>
 
 </div>
@@ -5746,12 +5926,16 @@ const tipsView =
 const aboutView =
   document.getElementById('aboutView');
 
+const feedbackView =
+  document.getElementById('feedbackView');
+
 const allNavViews = [
 
   inclinometerView,
   historyView,
   tipsView,
-  aboutView
+  aboutView,
+  feedbackView
 
 ];
 
@@ -5796,6 +5980,11 @@ document.getElementById('navConseils').addEventListener(
 document.getElementById('navAbout').addEventListener(
   'click',
   () => showNavView(aboutView)
+);
+
+document.getElementById('navFeedback').addEventListener(
+  'click',
+  () => showNavView(feedbackView)
 );
 
 document.querySelectorAll('[data-back]').forEach(btn => {
@@ -5908,6 +6097,7 @@ import {
   orderBy,
   limit,
   getDocs,
+  deleteDoc,
   serverTimestamp
 } from 'https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js';
 
@@ -9028,6 +9218,262 @@ function drawHistoryMapTurns(track, turns){
       ' virage(s) repéré(s) sur la carte.';
 
   }
+
+}
+
+
+/* =====================================================
+   COMMENTAIRES (retours utilisateurs)
+
+   Espace simple pour que n'importe quel utilisateur
+   connecte puisse laisser un message. Les messages sont
+   prives : seul le compte dont l'email correspond a
+   ADMIN_EMAIL ci-dessous peut les lire, les marquer comme
+   lus ou les supprimer - les autres utilisateurs peuvent
+   seulement en envoyer (voir les regles Firestore a
+   ajouter, indiquees a part).
+===================================================== */
+
+const ADMIN_EMAIL = 'tanguyfourcadier@gmail.com';
+
+const feedbackForm =
+  document.getElementById('feedbackForm');
+
+const feedbackTextEl =
+  document.getElementById('feedbackText');
+
+const feedbackCharCount =
+  document.getElementById('feedbackCharCount');
+
+const feedbackSuccessEl =
+  document.getElementById('feedbackSuccess');
+
+const feedbackErrorEl =
+  document.getElementById('feedbackError');
+
+const feedbackInboxSection =
+  document.getElementById('feedbackInboxSection');
+
+const feedbackInboxList =
+  document.getElementById('feedbackInboxList');
+
+
+function escapeHtml(str){
+
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+
+}
+
+
+feedbackTextEl.addEventListener('input', () => {
+
+  feedbackCharCount.textContent =
+    feedbackTextEl.value.length + ' / 1000';
+
+});
+
+
+feedbackForm.addEventListener('submit', async (e) => {
+
+  e.preventDefault();
+
+  feedbackSuccessEl.textContent = '';
+  feedbackErrorEl.textContent = '';
+
+  const user =
+    window.FirebaseBridge.currentUser;
+
+  const text =
+    feedbackTextEl.value.trim();
+
+  if(!user || !text){
+    return;
+  }
+
+  const pseudo =
+    user.displayName || user.email;
+
+  try{
+
+    await addDoc(collection(db, 'feedback'), {
+
+      uid:user.uid,
+      pseudo:pseudo,
+      text:text,
+      read:false,
+      createdAt:serverTimestamp()
+
+    });
+
+    feedbackForm.reset();
+
+    feedbackCharCount.textContent = '0 / 1000';
+
+    feedbackSuccessEl.textContent =
+      'Merci, ton message a bien été envoyé ✅';
+
+  }
+  catch(err){
+
+    console.error('[Commentaires] Envoi impossible :', err);
+
+    feedbackErrorEl.textContent =
+      'Impossible d\'envoyer ton message pour le moment (vérifie ta connexion).';
+
+  }
+
+});
+
+
+/*
+   Le bouton d'onglet "Commentaires" a deja un gestionnaire
+   dans le script de navigation (affichage/masquage du
+   panneau). On y ajoute simplement celui-ci, sans toucher a
+   l'existant, pour afficher (et charger) la boite de
+   reception uniquement au compte administrateur.
+*/
+
+document.getElementById('navFeedback').addEventListener('click', () => {
+
+  const user =
+    window.FirebaseBridge.currentUser;
+
+  if(user && user.email === ADMIN_EMAIL){
+
+    feedbackInboxSection.classList.remove('hidden');
+
+    loadFeedbackInbox();
+
+  }
+  else{
+
+    feedbackInboxSection.classList.add('hidden');
+
+  }
+
+});
+
+
+async function loadFeedbackInbox(){
+
+  feedbackInboxList.innerHTML =
+    '<div class="feedbackInboxEmpty">Chargement...</div>';
+
+  try{
+
+    const snap =
+      await getDocs(
+        query(
+          collection(db, 'feedback'),
+          orderBy('createdAt', 'desc'),
+          limit(100)
+        )
+      );
+
+    const items =
+      snap.docs.map(d => ({ id:d.id, ...d.data() }));
+
+    renderFeedbackInbox(items);
+
+  }
+  catch(err){
+
+    console.error('[Commentaires] Chargement impossible :', err);
+
+    feedbackInboxList.innerHTML =
+      '<div class="feedbackInboxEmpty">Impossible de charger les commentaires pour le moment ' +
+      '(vérifie que les règles Firestore pour la collection "feedback" sont bien publiées).</div>';
+
+  }
+
+}
+
+
+function renderFeedbackInbox(items){
+
+  if(items.length === 0){
+
+    feedbackInboxList.innerHTML =
+      '<div class="feedbackInboxEmpty">Aucun commentaire pour le moment.</div>';
+
+    return;
+
+  }
+
+  feedbackInboxList.innerHTML = '';
+
+  items.forEach(item => {
+
+    const dateText =
+      item.createdAt && item.createdAt.toDate
+      ? item.createdAt.toDate().toLocaleString('fr-FR')
+      : 'Date inconnue';
+
+    const div =
+      document.createElement('div');
+
+    div.className =
+      'feedbackItem' + (item.read ? '' : ' feedbackItemUnread');
+
+    div.innerHTML =
+
+      '<div class="feedbackItemMeta">' +
+        '<span>' + escapeHtml(item.pseudo || 'Anonyme') + ' · ' + dateText + '</span>' +
+      '</div>' +
+      '<p class="feedbackItemText">' + escapeHtml(item.text || '') + '</p>' +
+      '<div class="feedbackItemActions">' +
+        '<button type="button" class="blue" data-toggle-read>' +
+          (item.read ? 'Marquer non lu' : 'Marquer lu') +
+        '</button>' +
+        '<button type="button" class="danger" data-delete>Supprimer</button>' +
+      '</div>';
+
+    div.querySelector('[data-toggle-read]').addEventListener('click', async () => {
+
+      try{
+
+        await updateDoc(doc(db, 'feedback', item.id), { read:!item.read });
+
+        loadFeedbackInbox();
+
+      }
+      catch(err){
+
+        console.error('[Commentaires] Mise à jour impossible :', err);
+
+      }
+
+    });
+
+    div.querySelector('[data-delete]').addEventListener('click', async () => {
+
+      if(!confirm('Supprimer ce commentaire ?')){
+        return;
+      }
+
+      try{
+
+        await deleteDoc(doc(db, 'feedback', item.id));
+
+        loadFeedbackInbox();
+
+      }
+      catch(err){
+
+        console.error('[Commentaires] Suppression impossible :', err);
+
+      }
+
+    });
+
+    feedbackInboxList.appendChild(div);
+
+  });
 
 }
 
