@@ -21,7 +21,7 @@
       content="0">
 
 <meta name="build-id"
-      content="2026-09-11T12:20:48Z">
+      content="2026-09-11T12:34:46Z">
 
 <title>Inclinomètre Moto</title>
 
@@ -6438,12 +6438,19 @@ async function saveCurrentSessionToFirestore(){
            retrouvee via l'index deja fourni par le moteur sur
            chaque virage. Sert a placer des reperes numerotes sur
            la carte de la session (voir drawHistoryTurnMarkers).
-           Peut etre absente si le GPS n'avait pas de position
-           valide a cet instant precis : geree comme telle partout.
+           Si le point exact du sommet n'a pas de position GPS
+           valide (GPS pas encore accroche, coupure momentanee...),
+           on prend le point valide le plus proche dans le temps
+           plutot que d'abandonner : reste absent seulement si
+           vraiment aucune position n'existe a proximite.
         */
 
         const apexPoint =
-          snapshot.track[t.index];
+          findNearestValidGps(
+            snapshot.track,
+            t.index,
+            GPS_LOOKUP_WINDOW
+          );
 
         const lat =
           apexPoint && Number.isFinite(apexPoint.lat)
@@ -6691,6 +6698,71 @@ const MIN_TURN_ANGLE_FOR_MAP = 30;
 
 const TURN_MATCH_RADIUS_M = 30;
 
+/*
+   Nombre de points (echantillonnes toutes les RECORD_INTERVAL_MS,
+   soit 100ms) que l'on accepte de chercher de part et d'autre du
+   sommet d'un virage pour trouver une position GPS valide. 30
+   points = environ 3 secondes. Utile car le GPS peut manquer
+   pile a l'instant de l'angle max (debut de trajet avant que le
+   GPS ait accroche, coupure momentanee sous des arbres/un pont...)
+   sans que le reste du trajet soit affecte.
+*/
+
+const GPS_LOOKUP_WINDOW = 30;
+
+
+/*
+   Cherche la position GPS valide la plus proche (en nombre de
+   points, donc en temps) de l'index donne. Retourne le point du
+   tableau (avec .lat/.lon valides) ou null si rien de valide n'a
+   ete trouve dans la fenetre. Utilisee pour situer un virage sur
+   la carte meme quand le point exact du sommet d'angle n'a pas
+   de position GPS.
+*/
+
+function findNearestValidGps(track, index, maxOffset){
+
+  if(!track || !track[index]){
+    return null;
+  }
+
+  if(
+    Number.isFinite(track[index].lat) &&
+    Number.isFinite(track[index].lon)
+  ){
+    return track[index];
+  }
+
+  for(let offset = 1; offset <= maxOffset; offset++){
+
+    const before =
+      track[index - offset];
+
+    if(
+      before &&
+      Number.isFinite(before.lat) &&
+      Number.isFinite(before.lon)
+    ){
+      return before;
+    }
+
+    const after =
+      track[index + offset];
+
+    if(
+      after &&
+      Number.isFinite(after.lat) &&
+      Number.isFinite(after.lon)
+    ){
+      return after;
+    }
+
+  }
+
+  return null;
+
+}
+
 
 function haversineMeters(lat1, lon1, lat2, lon2){
 
@@ -6752,7 +6824,11 @@ async function syncTurnsToSharedMap(snapshot, sessionId){
       .map(t => {
 
         const p =
-          snapshot.track[t.index];
+          findNearestValidGps(
+            snapshot.track,
+            t.index,
+            GPS_LOOKUP_WINDOW
+          );
 
         return {
 
