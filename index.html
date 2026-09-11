@@ -535,6 +535,149 @@ details{
 
 }
 
+
+/* =====================================================
+   ECRAN D'AUTHENTIFICATION
+===================================================== */
+
+.authScreen{
+  position:fixed;
+  inset:0;
+  z-index:1000;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  background:var(--bg);
+}
+
+.authCard{
+  width:100%;
+  max-width:360px;
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:22px;
+}
+
+.authTitle{
+  text-align:center;
+  font-size:20px;
+  font-weight:700;
+  margin:0 0 4px;
+}
+
+.authSubtitle{
+  text-align:center;
+  font-size:12px;
+  color:var(--muted);
+  margin:0 0 18px;
+}
+
+.authTabs{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+  margin-bottom:16px;
+}
+
+.authTab{
+  border:0;
+  border-radius:10px;
+  padding:10px;
+  font-size:13px;
+  font-weight:700;
+  background:#202a35;
+  color:var(--muted);
+}
+
+.authTab.active{
+  background:var(--accent);
+  color:#07100b;
+}
+
+.authForm{
+  display:none;
+  flex-direction:column;
+  gap:10px;
+}
+
+.authForm.active{
+  display:flex;
+}
+
+.authForm input{
+  width:100%;
+  border:1px solid var(--line);
+  border-radius:10px;
+  padding:11px 12px;
+  font-size:14px;
+  background:#0b1017;
+  color:var(--text);
+}
+
+.authForm input:focus{
+  outline:2px solid var(--accent);
+  outline-offset:1px;
+}
+
+.authError{
+  font-size:12px;
+  color:var(--red);
+  min-height:14px;
+  text-align:center;
+}
+
+.authHint{
+  font-size:11px;
+  color:var(--muted);
+  text-align:center;
+  margin-top:10px;
+}
+
+
+/* =====================================================
+   BARRE UTILISATEUR
+===================================================== */
+
+.topRight{
+  display:flex;
+  flex-direction:column;
+  align-items:flex-end;
+  gap:5px;
+}
+
+.userBar{
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+
+.userPseudo{
+  font-size:12px;
+  color:var(--muted);
+}
+
+.logoutBtn{
+  border:0;
+  border-radius:8px;
+  padding:5px 10px;
+  font-size:11px;
+  font-weight:700;
+  background:#202a35;
+  color:var(--muted);
+  width:auto;
+}
+
+
+/* =====================================================
+   UTILITAIRE
+===================================================== */
+
+.hidden{
+  display:none !important;
+}
+
 </style>
 
 </head>
@@ -542,20 +685,140 @@ details{
 
 <body>
 
-<div class="wrap">
+
+<!-- =====================================================
+     ECRAN D'AUTHENTIFICATION
+===================================================== -->
+
+<div id="authScreen" class="authScreen">
+
+  <div class="authCard">
+
+    <div class="authTitle">
+      🏍️ Inclinomètre Moto
+    </div>
+
+    <div class="authSubtitle">
+      Connecte-toi pour accéder à tes sessions
+    </div>
+
+    <div class="authTabs">
+
+      <button id="tabLogin"
+              class="authTab active"
+              type="button">
+        Connexion
+      </button>
+
+      <button id="tabSignup"
+              class="authTab"
+              type="button">
+        Créer un compte
+      </button>
+
+    </div>
+
+    <form id="loginForm"
+          class="authForm active">
+
+      <input id="loginEmail"
+             type="email"
+             placeholder="Email"
+             autocomplete="email"
+             required>
+
+      <input id="loginPassword"
+             type="password"
+             placeholder="Mot de passe"
+             autocomplete="current-password"
+             required>
+
+      <button class="primary"
+              type="submit">
+        SE CONNECTER
+      </button>
+
+      <div id="loginError" class="authError"></div>
+
+    </form>
+
+    <form id="signupForm"
+          class="authForm">
+
+      <input id="signupAccessCode"
+             type="text"
+             placeholder="Code d'accès (fourni par l'administrateur)"
+             autocomplete="off"
+             required>
+
+      <input id="signupPseudo"
+             type="text"
+             placeholder="Pseudo (affiché sur le classement)"
+             autocomplete="nickname"
+             maxlength="24"
+             required>
+
+      <input id="signupEmail"
+             type="email"
+             placeholder="Email"
+             autocomplete="email"
+             required>
+
+      <input id="signupPassword"
+             type="password"
+             placeholder="Mot de passe (6 caractères min.)"
+             autocomplete="new-password"
+             minlength="6"
+             required>
+
+      <button class="primary"
+              type="submit">
+        CRÉER MON COMPTE
+      </button>
+
+      <div id="signupError" class="authError"></div>
+
+    </form>
+
+    <div class="authHint">
+      Prototype partagé entre riders — reste prudent sur route.
+    </div>
+
+  </div>
+
+</div>
+
+
+<div class="wrap hidden" id="app">
 
 
 <div class="top">
 
   <h1>🏍️ Inclinomètre Moto</h1>
 
-  <div class="status">
+  <div class="topRight">
 
-    <span id="dot" class="dot"></span>
+    <div class="status">
 
-    <span id="status">
-      Arrêté
-    </span>
+      <span id="dot" class="dot"></span>
+
+      <span id="status">
+        Arrêté
+      </span>
+
+    </div>
+
+    <div class="userBar" id="userBar">
+
+      <span id="userPseudo" class="userPseudo"></span>
+
+      <button id="logoutBtn"
+              class="logoutBtn"
+              type="button">
+        Déconnexion
+      </button>
+
+    </div>
 
   </div>
 
@@ -4451,6 +4714,407 @@ setInterval(
   render,
   RENDER_MS
 );
+
+</script>
+
+
+<!-- =====================================================
+     FIREBASE - AUTHENTIFICATION
+     (module indépendant, ne touche pas au moteur ci-dessus)
+===================================================== -->
+
+<script type="module">
+
+import {
+  initializeApp
+} from 'https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js';
+
+import {
+  getAuth,
+  onAuthStateChanged,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  updateProfile,
+  signOut
+} from 'https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js';
+
+import {
+  getFirestore,
+  doc,
+  getDoc,
+  setDoc,
+  serverTimestamp
+} from 'https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js';
+
+
+/* =====================================================
+   CONFIGURATION FIREBASE
+===================================================== */
+
+const firebaseConfig = {
+
+  apiKey:"AIzaSyDziypDGRLGDzMtjglB87YgzvjQ5wh-isI",
+
+  authDomain:"inclinometre-moto.firebaseapp.com",
+
+  projectId:"inclinometre-moto",
+
+  storageBucket:"inclinometre-moto.firebasestorage.app",
+
+  messagingSenderId:"1056875442212",
+
+  appId:"1:1056875442212:web:6d95762e6b31cb3fbba8b1"
+
+};
+
+
+const firebaseApp =
+  initializeApp(firebaseConfig);
+
+const auth =
+  getAuth(firebaseApp);
+
+const db =
+  getFirestore(firebaseApp);
+
+
+/*
+   Pont accessible au reste de l'application.
+   Utilisé plus tard pour enregistrer sessions et
+   virages dans Firestore, sans modifier le moteur
+   d'inclinaison existant.
+*/
+
+window.FirebaseBridge = {
+
+  app:firebaseApp,
+
+  auth:auth,
+
+  db:db,
+
+  currentUser:null
+
+};
+
+
+/* =====================================================
+   ELEMENTS
+===================================================== */
+
+const authScreen =
+  document.getElementById('authScreen');
+
+const appRoot =
+  document.getElementById('app');
+
+const tabLogin =
+  document.getElementById('tabLogin');
+
+const tabSignup =
+  document.getElementById('tabSignup');
+
+const loginForm =
+  document.getElementById('loginForm');
+
+const signupForm =
+  document.getElementById('signupForm');
+
+const loginError =
+  document.getElementById('loginError');
+
+const signupError =
+  document.getElementById('signupError');
+
+const userPseudo =
+  document.getElementById('userPseudo');
+
+const logoutBtn =
+  document.getElementById('logoutBtn');
+
+
+/* =====================================================
+   MESSAGES D'ERREUR FIREBASE EN FRANCAIS
+===================================================== */
+
+function translateAuthError(error){
+
+  const code =
+    error && error.code
+    ? error.code
+    : '';
+
+  const messages = {
+
+    'auth/invalid-email':
+      'Adresse email invalide.',
+
+    'auth/user-not-found':
+      'Aucun compte avec cet email.',
+
+    'auth/wrong-password':
+      'Mot de passe incorrect.',
+
+    'auth/invalid-credential':
+      'Email ou mot de passe incorrect.',
+
+    'auth/email-already-in-use':
+      'Un compte existe déjà avec cet email.',
+
+    'auth/weak-password':
+      'Mot de passe trop court (6 caractères minimum).',
+
+    'auth/too-many-requests':
+      'Trop de tentatives, réessaie dans un instant.',
+
+    'auth/network-request-failed':
+      'Connexion réseau impossible.'
+
+  };
+
+  return (
+    messages[code] ||
+    'Une erreur est survenue, réessaie.'
+  );
+
+}
+
+
+/* =====================================================
+   BASCULEMENT DES ONGLETS
+===================================================== */
+
+function showLoginTab(){
+
+  tabLogin.classList.add('active');
+  tabSignup.classList.remove('active');
+
+  loginForm.classList.add('active');
+  signupForm.classList.remove('active');
+
+  loginError.textContent = '';
+  signupError.textContent = '';
+
+}
+
+
+function showSignupTab(){
+
+  tabSignup.classList.add('active');
+  tabLogin.classList.remove('active');
+
+  signupForm.classList.add('active');
+  loginForm.classList.remove('active');
+
+  loginError.textContent = '';
+  signupError.textContent = '';
+
+}
+
+
+tabLogin.addEventListener('click', showLoginTab);
+
+tabSignup.addEventListener('click', showSignupTab);
+
+
+/* =====================================================
+   CONNEXION
+===================================================== */
+
+loginForm.addEventListener('submit', async event => {
+
+  event.preventDefault();
+
+  loginError.textContent = '';
+
+  const email =
+    document.getElementById('loginEmail').value.trim();
+
+  const password =
+    document.getElementById('loginPassword').value;
+
+  try{
+
+    await signInWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
+
+  }
+  catch(error){
+
+    loginError.textContent =
+      translateAuthError(error);
+
+  }
+
+});
+
+
+/* =====================================================
+   CREATION DE COMPTE
+===================================================== */
+
+signupForm.addEventListener('submit', async event => {
+
+  event.preventDefault();
+
+  signupError.textContent = '';
+
+  const accessCode =
+    document.getElementById('signupAccessCode').value.trim();
+
+  const pseudo =
+    document.getElementById('signupPseudo').value.trim();
+
+  const email =
+    document.getElementById('signupEmail').value.trim();
+
+  const password =
+    document.getElementById('signupPassword').value;
+
+  if(pseudo.length < 2){
+
+    signupError.textContent =
+      'Choisis un pseudo un peu plus long.';
+
+    return;
+
+  }
+
+  try{
+
+    /*
+       Verification du code d'acces AVANT toute creation
+       de compte. Le code de reference vit uniquement dans
+       Firestore (config/signupCode), jamais dans le code
+       source de la page.
+    */
+
+    const codeSnap =
+      await getDoc(
+        doc(
+          db,
+          'config',
+          'signupCode'
+        )
+      );
+
+    const validCode =
+      codeSnap.exists()
+      ? String(codeSnap.data().value || '')
+      : '';
+
+    if(
+      validCode === '' ||
+      accessCode.toLowerCase() !==
+      validCode.toLowerCase()
+    ){
+
+      signupError.textContent =
+        'Code d\'accès incorrect.';
+
+      return;
+
+    }
+
+
+    const credential =
+      await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+
+    await updateProfile(
+      credential.user,
+      {
+        displayName:pseudo
+      }
+    );
+
+    await setDoc(
+
+      doc(
+        db,
+        'users',
+        credential.user.uid
+      ),
+
+      {
+
+        displayName:pseudo,
+
+        email:email,
+
+        createdAt:serverTimestamp()
+
+      }
+
+    );
+
+  }
+  catch(error){
+
+    signupError.textContent =
+      translateAuthError(error);
+
+  }
+
+});
+
+
+/* =====================================================
+   DECONNEXION
+===================================================== */
+
+logoutBtn.addEventListener('click', () => {
+
+  signOut(auth);
+
+});
+
+
+/* =====================================================
+   ETAT DE CONNEXION
+===================================================== */
+
+onAuthStateChanged(auth, user => {
+
+  window.FirebaseBridge.currentUser = user;
+
+  if(user){
+
+    authScreen.classList.add('hidden');
+
+    appRoot.classList.remove('hidden');
+
+    userPseudo.textContent =
+      user.displayName || user.email;
+
+    window.dispatchEvent(
+      new CustomEvent('firebase-user-ready', {
+        detail:{ user:user }
+      })
+    );
+
+  }
+  else{
+
+    appRoot.classList.add('hidden');
+
+    authScreen.classList.remove('hidden');
+
+    showLoginTab();
+
+    loginForm.reset();
+
+    signupForm.reset();
+
+  }
+
+});
 
 </script>
 
