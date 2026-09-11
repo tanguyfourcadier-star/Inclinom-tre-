@@ -21,9 +21,12 @@
       content="0">
 
 <meta name="build-id"
-      content="2026-09-11T09:28:27Z">
+      content="2026-09-11T09:55:24Z">
 
 <title>Inclinomètre Moto</title>
+
+<link rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 
 <style>
 
@@ -931,6 +934,121 @@ details{
 
 
 /* =====================================================
+   CARTE PARTAGEE DES VIRAGES
+===================================================== */
+
+.turnsMapIntro{
+  font-size:12px;
+  line-height:1.5;
+  color:var(--muted);
+  margin-bottom:12px;
+}
+
+.turnsMapFilter{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  font-size:12px;
+  color:var(--muted);
+  margin-bottom:12px;
+}
+
+.turnsMapFilter input{
+  width:16px;
+  height:16px;
+}
+
+.sharedMapWrap{
+  height:360px;
+  border-radius:16px;
+  overflow:hidden;
+  border:1px solid var(--line);
+  margin-bottom:12px;
+}
+
+.turnsMapCount{
+  font-size:12px;
+  color:var(--muted);
+  text-align:center;
+}
+
+.turnMarkerMine{
+  filter:drop-shadow(0 0 4px var(--yellow));
+}
+
+.leaflet-popup-content-wrapper,
+.leaflet-popup-tip{
+  background:var(--card);
+  color:var(--text);
+}
+
+.leaflet-popup-content{
+  font-size:12px;
+  line-height:1.5;
+}
+
+.turnPopupBtn{
+  display:inline-block;
+  margin-top:6px;
+  border:0;
+  border-radius:8px;
+  padding:6px 10px;
+  font-size:11px;
+  font-weight:700;
+  background:var(--accent);
+  color:#07100b;
+  width:auto;
+}
+
+.turnDetailTitle{
+  font-size:17px;
+  font-weight:700;
+  margin-top:14px;
+}
+
+.turnDetailMeta{
+  font-size:12px;
+  color:var(--muted);
+  margin-top:4px;
+  line-height:1.5;
+}
+
+
+/* =====================================================
+   VUE A PROPOS / SOUTIEN
+===================================================== */
+
+.supportCard{
+  text-align:center;
+}
+
+.supportBtn{
+  display:inline-block;
+  margin-top:10px;
+  border:0;
+  border-radius:10px;
+  padding:12px 22px;
+  font-size:13px;
+  font-weight:700;
+  background:var(--accent);
+  color:#07100b;
+  text-decoration:none;
+}
+
+.supportBtn.disabled{
+  background:#202a35;
+  color:var(--muted);
+  pointer-events:none;
+}
+
+.supportBtnHint{
+  font-size:11px;
+  color:var(--muted);
+  margin-top:8px;
+}
+
+
+/* =====================================================
    PLACEHOLDER (historique a venir)
 ===================================================== */
 
@@ -955,6 +1073,8 @@ details{
 }
 
 </style>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 </head>
 
@@ -1163,6 +1283,19 @@ details{
       <span class="menuText">
         <span class="menuLabel">Conseils d'utilisation</span>
         <span class="menuDesc">Bien fixer ton téléphone, calibrer, lire l'appli</span>
+      </span>
+
+    </button>
+
+    <button id="navAbout"
+            class="menuCard"
+            type="button">
+
+      <span class="menuIcon">ℹ️</span>
+
+      <span class="menuText">
+        <span class="menuLabel">À propos</span>
+        <span class="menuDesc">L'histoire de l'appli et soutenir le projet</span>
       </span>
 
     </button>
@@ -1819,19 +1952,85 @@ Ne manipule pas le téléphone en roulant.
   </div>
 
 
-  <!-- ===== Panneau : carte des virages (a venir) ===== -->
+  <!-- ===== Panneau : carte des virages ===== -->
 
   <div id="turnsMapPanel" class="hidden">
 
-    <div class="placeholderCard">
+    <div id="turnsMapListPanel">
 
-      🚧 Bientôt disponible.
+      <div class="turnsMapIntro">
+        Tous les virages pris à plus de <span id="turnsMapThreshold">30</span>° par
+        les pilotes de l'appli, avec le classement de chaque virage.
+      </div>
 
-      <br><br>
+      <label class="turnsMapFilter">
+        <input type="checkbox" id="turnsMapMineOnly">
+        Afficher uniquement les virages où j'ai un passage
+      </label>
 
-      Le classement partagé par virage (qui est passé le plus
-      vite, qui a mis le plus d'angle) arrive dans une prochaine
-      étape.
+      <div id="turnsMapStatus" class="placeholderCard">
+        Chargement de la carte des virages...
+      </div>
+
+      <div id="sharedMap" class="sharedMapWrap hidden"></div>
+
+      <div id="turnsMapCount" class="turnsMapCount"></div>
+
+    </div>
+
+
+    <div id="turnDetailPanel" class="hidden">
+
+      <button id="closeTurnDetail"
+              class="backBtn"
+              type="button">
+        ← Carte des virages
+      </button>
+
+      <div class="turnDetailTitle" id="turnDetailTitle"></div>
+      <div class="turnDetailMeta" id="turnDetailMeta"></div>
+
+      <div class="sessionStatsGrid" id="turnDetailStats"></div>
+
+      <div class="label" style="margin-top:16px;">
+        🏆 Classement angle
+      </div>
+
+      <div class="tableWrap">
+        <table class="turnTable">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Pilote</th>
+              <th>Angle</th>
+              <th>Vitesse</th>
+              <th>Sens</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody id="turnLeaderboardAngle"></tbody>
+        </table>
+      </div>
+
+      <div class="label" style="margin-top:16px;">
+        🏆 Classement vitesse
+      </div>
+
+      <div class="tableWrap">
+        <table class="turnTable">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Pilote</th>
+              <th>Vitesse</th>
+              <th>Angle</th>
+              <th>Sens</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody id="turnLeaderboardSpeed"></tbody>
+        </table>
+      </div>
 
     </div>
 
@@ -1888,6 +2087,59 @@ Ne manipule pas le téléphone en roulant.
   <div class="tipsCard">
     <h3>⚠️ Reste prudent</h3>
     <p>C'est un prototype expérimental. Ne manipule jamais le téléphone en roulant, et ne prends pas les mesures affichées comme une limite de sécurité absolue.</p>
+  </div>
+
+</div>
+
+
+<!-- =====================================================
+     VUE A PROPOS
+===================================================== -->
+
+<div id="aboutView" class="hidden">
+
+  <div class="viewHeader">
+
+    <button class="backBtn"
+            data-back
+            type="button">
+      ← Menu
+    </button>
+
+    <div class="viewTitle">
+      À propos
+    </div>
+
+  </div>
+
+  <div class="tipsCard">
+    <h3>🏍️ Pourquoi cette appli ?</h3>
+    <p>Je fais de la moto et j'ai toujours été curieux de savoir à quel point je penchais réellement en virage, plutôt que de l'estimer à l'œil. Les applis existantes ne me convenaient pas (précision, pub, abonnement), alors j'ai décidé de créer la mienne, sur-mesure, et de la partager avec ceux que ça intéresse.</p>
+  </div>
+
+  <div class="tipsCard">
+    <h3>🛠️ Comment elle a été construite</h3>
+    <p>L'appli s'appuie uniquement sur les capteurs de mouvement et le GPS de ton téléphone, directement dans le navigateur : pas d'application à installer depuis un store. Elle a été développée petit à petit avec l'aide d'assistants IA (le calcul d'inclinaison de base, puis toutes les évolutions ensuite), hébergée gratuitement sur GitHub Pages, avec les comptes et les données stockés sur Firebase (offre gratuite).</p>
+  </div>
+
+  <div class="tipsCard">
+    <h3>🚀 Ce qui a évolué depuis le début</h3>
+    <p>Parti d'un simple inclinomètre en direct, l'appli a ensuite reçu : la vitesse et la distance GPS, le relevé des angles max, un compte protégé par un code d'accès, l'enregistrement des sessions dans le cloud, un historique consultable avec courbes et cartes GPS colorées, la détection automatique des virages, et maintenant une carte partagée des virages avec classement entre pilotes.</p>
+  </div>
+
+  <div class="tipsCard supportCard">
+    <h3>☕ Soutenir le projet</h3>
+    <p>Cette appli restera toujours gratuite et sans publicité. Si tu l'apprécies et que tu as envie de donner un coup de pouce (hébergement, temps de développement, futures évolutions), une cagnotte est ouverte — totalement libre, sans obligation.</p>
+    <a id="supportBtn"
+       class="supportBtn"
+       href="#"
+       target="_blank"
+       rel="noopener">
+      Voir la cagnotte
+    </a>
+    <p id="supportBtnHint" class="supportBtnHint hidden">
+      La cagnotte n'est pas encore ouverte, reviens un peu plus tard 🙂
+    </p>
   </div>
 
 </div>
@@ -5398,6 +5650,41 @@ document.addEventListener('visibilitychange', () => {
 
 'use strict';
 
+/*
+   =====================================================
+   CAGNOTTE - A REMPLIR UNE FOIS LA CAGNOTTE LEETCHI CREEE
+
+   Colle ici l'URL complete de la cagnotte
+   (ex: "https://www.leetchi.com/fr/c/mon-projet-xxxxxx").
+   Tant que c'est vide, le bouton "Voir la cagnotte" reste
+   desactive et affiche un message d'attente a la place.
+   =====================================================
+*/
+
+const LEETCHI_URL = '';
+
+const supportBtn =
+  document.getElementById('supportBtn');
+
+const supportBtnHint =
+  document.getElementById('supportBtnHint');
+
+if(LEETCHI_URL){
+
+  supportBtn.href = LEETCHI_URL;
+
+}
+else{
+
+  supportBtn.classList.add('disabled');
+  supportBtn.removeAttribute('href');
+  supportBtn.setAttribute('aria-disabled', 'true');
+
+  supportBtnHint.classList.remove('hidden');
+
+}
+
+
 const menuScreen =
   document.getElementById('menuScreen');
 
@@ -5410,11 +5697,15 @@ const historyView =
 const tipsView =
   document.getElementById('tipsView');
 
+const aboutView =
+  document.getElementById('aboutView');
+
 const allNavViews = [
 
   inclinometerView,
   historyView,
-  tipsView
+  tipsView,
+  aboutView
 
 ];
 
@@ -5454,6 +5745,11 @@ document.getElementById('navHistorique').addEventListener(
 document.getElementById('navConseils').addEventListener(
   'click',
   () => showNavView(tipsView)
+);
+
+document.getElementById('navAbout').addEventListener(
+  'click',
+  () => showNavView(aboutView)
 );
 
 document.querySelectorAll('[data-back]').forEach(btn => {
@@ -5558,6 +5854,9 @@ import {
   getDoc,
   setDoc,
   addDoc,
+  updateDoc,
+  runTransaction,
+  arrayUnion,
   collection,
   query,
   orderBy,
@@ -6104,46 +6403,78 @@ async function saveCurrentSessionToFirestore(){
 
       }));
 
-    await addDoc(
+    const sessionRef =
+      await addDoc(
 
-      collection(
-        db,
-        'users',
-        user.uid,
-        'sessions'
-      ),
+        collection(
+          db,
+          'users',
+          user.uid,
+          'sessions'
+        ),
 
-      {
+        {
 
-        createdAt:serverTimestamp(),
+          createdAt:serverTimestamp(),
 
-        durationSec:Math.round(snapshot.durationSec),
+          durationSec:Math.round(snapshot.durationSec),
 
-        distanceKm:Math.round(snapshot.distanceKm * 100) / 100,
+          distanceKm:Math.round(snapshot.distanceKm * 100) / 100,
 
-        maxSpeedKmh:Math.round(snapshot.maxSpeedKmh),
+          maxSpeedKmh:Math.round(snapshot.maxSpeedKmh),
 
-        maxLeftDeg:Math.round(snapshot.maxLeftDeg * 10) / 10,
+          maxLeftDeg:Math.round(snapshot.maxLeftDeg * 10) / 10,
 
-        maxRightDeg:Math.round(snapshot.maxRightDeg * 10) / 10,
+          maxRightDeg:Math.round(snapshot.maxRightDeg * 10) / 10,
 
-        speedAtMaxLeft:Math.round(snapshot.speedAtMaxLeft),
+          speedAtMaxLeft:Math.round(snapshot.speedAtMaxLeft),
 
-        speedAtMaxRight:Math.round(snapshot.speedAtMaxRight),
+          speedAtMaxRight:Math.round(snapshot.speedAtMaxRight),
 
-        pointCount:snapshot.track.length,
+          pointCount:snapshot.track.length,
 
-        track:compressTrack(snapshot.track),
+          track:compressTrack(snapshot.track),
 
-        turns:turnsForDoc
+          turns:turnsForDoc
 
-      }
+        }
 
-    );
+      );
 
     showSaveStatus('Session enregistrée ✅', false);
 
     saveSessionBtn.disabled = true;
+
+    /*
+       Synchronisation de la carte partagee des virages.
+       Non bloquant : si ca echoue (reseau, regles pas encore
+       publiees...), la session est deja sauvegardee, seul le
+       classement partage est reporte au prochain enregistrement.
+    */
+
+    syncTurnsToSharedMap(snapshot, sessionRef.id)
+      .then(recordedCount => {
+
+        if(recordedCount > 0){
+
+          showSaveStatus(
+            'Session enregistrée ✅ · ' +
+            recordedCount +
+            ' virage(s) ajoutés à la carte partagée',
+            false
+          );
+
+        }
+
+      })
+      .catch(err => {
+
+        console.error(
+          '[Virages] Echec de synchronisation avec la carte partagee :',
+          err
+        );
+
+      });
 
   }
   catch(error){
@@ -6233,6 +6564,935 @@ document.getElementById('session').addEventListener('click', () => {
     saveSessionBtn.disabled = true;
 
   }
+
+});
+
+
+/* =====================================================
+   VIRAGES - CARTE PARTAGEE ET CLASSEMENT
+   (reprend les virages deja detectes par le moteur dans
+   detectedTurns / snapshot.turns, ne redetecte rien)
+===================================================== */
+
+/*
+   Angle minimum (en valeur absolue) pour qu'un virage de
+   la session soit propose a la carte partagee. En dessous,
+   il reste visible dans le tableau "virages" de la session
+   (deja existant) mais n'est pas remonte sur la carte
+   commune, pour ne pas la noyer sous des petits ecarts.
+*/
+
+const MIN_TURN_ANGLE_FOR_MAP = 30;
+
+/*
+   Distance (en metres) en dessous de laquelle deux virages
+   sont consideres comme le meme virage physique. A ajuster
+   si des virages proches (succession d'epingles) se
+   retrouvent regroupes a tort, ou au contraire si le meme
+   virage cree plusieurs entrees a cause de l'imprecision GPS.
+*/
+
+const TURN_MATCH_RADIUS_M = 30;
+
+
+function haversineMeters(lat1, lon1, lat2, lon2){
+
+  const R = 6371000;
+
+  const toRad =
+    d => d * Math.PI / 180;
+
+  const dLat =
+    toRad(lat2 - lat1);
+
+  const dLon =
+    toRad(lon2 - lon1);
+
+  const a =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos(toRad(lat1)) *
+    Math.cos(toRad(lat2)) *
+    Math.sin(dLon / 2) ** 2;
+
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+}
+
+
+/*
+   Point d'entree appele juste apres l'enregistrement reussi
+   d'une session. Prend les virages de la session (deja
+   calcules par le moteur), ne garde que ceux au-dessus du
+   seuil, retrouve leur position GPS (via l'index deja fourni
+   par le moteur sur chaque virage) et les fait correspondre
+   aux virages deja connus.
+
+   Retourne le nombre de virages effectivement enregistres
+   sur la carte partagee (0 si aucun, ou en cas d'echec global).
+*/
+
+async function syncTurnsToSharedMap(snapshot, sessionId){
+
+  const user =
+    window.FirebaseBridge.currentUser;
+
+  if(!user){
+    return 0;
+  }
+
+  const candidates =
+    snapshot.turns
+      .filter(t => t.angleAbs >= MIN_TURN_ANGLE_FOR_MAP)
+      .map(t => {
+
+        const p =
+          snapshot.track[t.index];
+
+        return {
+
+          angle:t.angle,
+          angleAbs:t.angleAbs,
+          speedAtMax:t.speedAtMax,
+          averageSpeed:t.averageSpeed,
+          duration:t.duration,
+          side:t.side,
+          lat:p ? p.lat : null,
+          lon:p ? p.lon : null
+
+        };
+
+      })
+      .filter(c =>
+        Number.isFinite(c.lat) &&
+        Number.isFinite(c.lon)
+      );
+
+  if(candidates.length === 0){
+    return 0;
+  }
+
+  let existingTurns;
+
+  try{
+
+    const snap =
+      await getDocs(
+        collection(db, 'turns')
+      );
+
+    existingTurns =
+      snap.docs.map(d => ({
+        id:d.id,
+        ...d.data()
+      }));
+
+  }
+  catch(err){
+
+    console.error(
+      '[Virages] Impossible de charger les virages existants :',
+      err
+    );
+
+    return 0;
+
+  }
+
+  let recordedCount = 0;
+
+  for(const candidate of candidates){
+
+    try{
+
+      await matchAndRecordTurn(
+        candidate,
+        existingTurns,
+        user,
+        sessionId
+      );
+
+      recordedCount++;
+
+    }
+    catch(err){
+
+      console.error(
+        '[Virages] Echec enregistrement d\'un virage :',
+        err
+      );
+
+      /*
+         On continue avec les virages suivants de la session
+         meme si celui-ci a echoue.
+      */
+
+    }
+
+  }
+
+  return recordedCount;
+
+}
+
+
+/*
+   Cherche le virage existant le plus proche du candidat. Si un
+   virage est trouve a moins de TURN_MATCH_RADIUS_M, on y ajoute
+   un passage et on met a jour les records (transaction, pour
+   eviter les ecrasements en cas d'enregistrements simultanes).
+   Sinon, on cree un nouveau virage partage.
+*/
+
+async function matchAndRecordTurn(candidate, existingTurns, user, sessionId){
+
+  let nearest = null;
+
+  let nearestDist = Infinity;
+
+  for(const t of existingTurns){
+
+    if(
+      !Number.isFinite(t.centerLat) ||
+      !Number.isFinite(t.centerLon)
+    ){
+      continue;
+    }
+
+    const d =
+      haversineMeters(
+        candidate.lat,
+        candidate.lon,
+        t.centerLat,
+        t.centerLon
+      );
+
+    if(d < nearestDist){
+      nearestDist = d;
+      nearest = t;
+    }
+
+  }
+
+  const pseudo =
+    user.displayName || user.email;
+
+  const direction =
+    candidate.side > 0 ? 'droite' : 'gauche';
+
+  if(nearest && nearestDist <= TURN_MATCH_RADIUS_M){
+
+    const turnRef =
+      doc(db, 'turns', nearest.id);
+
+    const passRef =
+      doc(
+        collection(db, 'turns', nearest.id, 'passes')
+      );
+
+    await runTransaction(db, async (tx) => {
+
+      const turnSnap =
+        await tx.get(turnRef);
+
+      if(!turnSnap.exists()){
+        return;
+      }
+
+      const data =
+        turnSnap.data();
+
+      const updates = {
+
+        passCount:(data.passCount || 0) + 1,
+        participants:arrayUnion(user.uid),
+        updatedAt:serverTimestamp()
+
+      };
+
+      if(
+        !data.bestAngleValue ||
+        candidate.angleAbs > data.bestAngleValue
+      ){
+
+        updates.bestAngleValue = candidate.angleAbs;
+        updates.bestAngleSigned = candidate.angle;
+        updates.bestAngleUser = pseudo;
+        updates.bestAngleUid = user.uid;
+        updates.bestAngleDate = serverTimestamp();
+
+      }
+
+      if(
+        !data.bestSpeedValue ||
+        candidate.speedAtMax > data.bestSpeedValue
+      ){
+
+        updates.bestSpeedValue = candidate.speedAtMax;
+        updates.bestSpeedUser = pseudo;
+        updates.bestSpeedUid = user.uid;
+        updates.bestSpeedDate = serverTimestamp();
+
+      }
+
+      tx.update(turnRef, updates);
+
+      tx.set(passRef, {
+
+        uid:user.uid,
+        pseudo:pseudo,
+        sessionId:sessionId,
+        angle:candidate.angle,
+        angleAbs:candidate.angleAbs,
+        speedAtMax:candidate.speedAtMax,
+        averageSpeed:candidate.averageSpeed,
+        duration:candidate.duration,
+        direction:direction,
+        lat:candidate.lat,
+        lon:candidate.lon,
+        createdAt:serverTimestamp()
+
+      });
+
+    });
+
+    /*
+       Met a jour le cache local pour que les virages suivants
+       de la meme session (s'il y en a) puissent se rattacher a
+       ce virage sans le recreer.
+    */
+
+    nearest.passCount =
+      (nearest.passCount || 0) + 1;
+
+    if(candidate.angleAbs > (nearest.bestAngleValue || 0)){
+      nearest.bestAngleValue = candidate.angleAbs;
+    }
+
+    if(candidate.speedAtMax > (nearest.bestSpeedValue || 0)){
+      nearest.bestSpeedValue = candidate.speedAtMax;
+    }
+
+  }
+  else{
+
+    const newTurnRef =
+      doc(collection(db, 'turns'));
+
+    await setDoc(newTurnRef, {
+
+      centerLat:candidate.lat,
+      centerLon:candidate.lon,
+      placeName:null,
+      passCount:1,
+      participants:[user.uid],
+      bestAngleValue:candidate.angleAbs,
+      bestAngleSigned:candidate.angle,
+      bestAngleUser:pseudo,
+      bestAngleUid:user.uid,
+      bestAngleDate:serverTimestamp(),
+      bestSpeedValue:candidate.speedAtMax,
+      bestSpeedUser:pseudo,
+      bestSpeedUid:user.uid,
+      bestSpeedDate:serverTimestamp(),
+      discoveredBy:pseudo,
+      createdAt:serverTimestamp(),
+      updatedAt:serverTimestamp()
+
+    });
+
+    await addDoc(
+      collection(db, 'turns', newTurnRef.id, 'passes'),
+      {
+
+        uid:user.uid,
+        pseudo:pseudo,
+        sessionId:sessionId,
+        angle:candidate.angle,
+        angleAbs:candidate.angleAbs,
+        speedAtMax:candidate.speedAtMax,
+        averageSpeed:candidate.averageSpeed,
+        duration:candidate.duration,
+        direction:direction,
+        lat:candidate.lat,
+        lon:candidate.lon,
+        createdAt:serverTimestamp()
+
+      }
+    );
+
+    existingTurns.push({
+
+      id:newTurnRef.id,
+      centerLat:candidate.lat,
+      centerLon:candidate.lon,
+      passCount:1,
+      bestAngleValue:candidate.angleAbs,
+      bestSpeedValue:candidate.speedAtMax
+
+    });
+
+    /*
+       Nommage automatique du virage (rue/lieu-dit le plus
+       proche) en arriere-plan. Ne bloque jamais l'enregistrement
+       de la session : en cas d'echec ou de lenteur, le virage
+       garde simplement un nom generique (voir buildTurnLabel).
+    */
+
+    reverseGeocodeTurn(
+      newTurnRef.id,
+      candidate.lat,
+      candidate.lon
+    );
+
+  }
+
+}
+
+
+/*
+   Recherche du nom de rue / lieu-dit le plus proche via
+   l'API gratuite de geocodage inverse d'OpenStreetMap
+   (Nominatim), utilisee ici avec une grande parcimonie :
+   un seul appel, uniquement a la creation d'un nouveau
+   virage (jamais a chaque passage). En cas d'echec, de lenteur
+   ou de reponse vide, le virage garde un nom generique.
+*/
+
+async function reverseGeocodeTurn(turnId, lat, lon){
+
+  try{
+
+    const controller =
+      new AbortController();
+
+    const timeoutId =
+      setTimeout(() => controller.abort(), 5000);
+
+    const res =
+      await fetch(
+        'https://nominatim.openstreetmap.org/reverse' +
+        '?format=jsonv2&lat=' + lat +
+        '&lon=' + lon +
+        '&zoom=15&accept-language=fr',
+        { signal:controller.signal }
+      );
+
+    clearTimeout(timeoutId);
+
+    if(!res.ok){
+      return;
+    }
+
+    const data =
+      await res.json();
+
+    const addr =
+      data.address || {};
+
+    const road =
+      addr.road ||
+      addr.pedestrian ||
+      addr.footway ||
+      '';
+
+    const place =
+      addr.village ||
+      addr.town ||
+      addr.city ||
+      addr.municipality ||
+      addr.county ||
+      '';
+
+    let label =
+      [road, place]
+        .filter(Boolean)
+        .join(', ');
+
+    if(!label && data.display_name){
+
+      label =
+        data.display_name
+          .split(',')
+          .slice(0, 2)
+          .join(',');
+
+    }
+
+    if(label){
+
+      await updateDoc(
+        doc(db, 'turns', turnId),
+        { placeName:label }
+      );
+
+    }
+
+  }
+  catch(err){
+
+    console.warn(
+      '[Virages] Geocodage indisponible (non bloquant) :',
+      err
+    );
+
+  }
+
+}
+
+
+/* =====================================================
+   VIRAGES - CARTE (LEAFLET) ET PANNEAU DE DETAIL
+===================================================== */
+
+let sharedMapInstance = null;
+
+let sharedMapMarkersLayer = null;
+
+let lastLoadedTurns = [];
+
+let turnsMapLoaded = false;
+
+const turnsMapStatus =
+  document.getElementById('turnsMapStatus');
+
+const sharedMapEl =
+  document.getElementById('sharedMap');
+
+const turnsMapCountEl =
+  document.getElementById('turnsMapCount');
+
+const turnsMapMineOnly =
+  document.getElementById('turnsMapMineOnly');
+
+const turnsMapListPanel =
+  document.getElementById('turnsMapListPanel');
+
+const turnDetailPanel =
+  document.getElementById('turnDetailPanel');
+
+document.getElementById('turnsMapThreshold').textContent =
+  MIN_TURN_ANGLE_FOR_MAP;
+
+
+function buildTurnLabel(turn){
+
+  if(turn.placeName){
+    return turn.placeName;
+  }
+
+  if(
+    Number.isFinite(turn.centerLat) &&
+    Number.isFinite(turn.centerLon)
+  ){
+
+    return (
+      'Virage (' +
+      turn.centerLat.toFixed(4) +
+      ', ' +
+      turn.centerLon.toFixed(4) +
+      ')'
+    );
+
+  }
+
+  return 'Virage';
+
+}
+
+
+/*
+   Charge (ou recharge) la liste des virages partages depuis
+   Firestore. Appelee a chaque ouverture de l'onglet "Carte des
+   virages" : le volume attendu (quelques dizaines a quelques
+   centaines de virages pour un usage entre amis) reste tres
+   largement dans le quota gratuit, donc pas besoin de mise en
+   cache plus poussee pour l'instant.
+*/
+
+async function loadTurnsMap(){
+
+  if(!turnsMapLoaded){
+
+    turnsMapStatus.textContent =
+      'Chargement de la carte des virages...';
+
+    turnsMapStatus.classList.remove('hidden');
+
+    sharedMapEl.classList.add('hidden');
+
+  }
+
+  try{
+
+    const snap =
+      await getDocs(
+        collection(db, 'turns')
+      );
+
+    lastLoadedTurns =
+      snap.docs
+        .map(d => ({ id:d.id, ...d.data() }))
+        .filter(t =>
+          Number.isFinite(t.centerLat) &&
+          Number.isFinite(t.centerLon)
+        );
+
+    turnsMapLoaded = true;
+
+    renderTurnMarkers();
+
+  }
+  catch(err){
+
+    console.error(
+      '[Virages] Impossible de charger la carte des virages :',
+      err
+    );
+
+    turnsMapStatus.textContent =
+      'Impossible de charger la carte des virages pour le moment ' +
+      '(vérifie ta connexion, ou que les règles Firestore sont bien publiées).';
+
+    turnsMapStatus.classList.remove('hidden');
+
+    sharedMapEl.classList.add('hidden');
+
+  }
+
+}
+
+
+function renderTurnMarkers(){
+
+  const user =
+    window.FirebaseBridge.currentUser;
+
+  const mineOnly =
+    turnsMapMineOnly.checked;
+
+  const turnsToShow =
+    mineOnly && user
+      ? lastLoadedTurns.filter(t =>
+          Array.isArray(t.participants) &&
+          t.participants.includes(user.uid)
+        )
+      : lastLoadedTurns;
+
+  if(lastLoadedTurns.length === 0){
+
+    turnsMapStatus.textContent =
+      'Aucun virage enregistré pour le moment. Fais une session ' +
+      'avec au moins un virage à plus de ' +
+      MIN_TURN_ANGLE_FOR_MAP +
+      '° pour être le·la premier·ère à l\'ajouter !';
+
+    turnsMapStatus.classList.remove('hidden');
+
+    sharedMapEl.classList.add('hidden');
+
+    turnsMapCountEl.textContent = '';
+
+    return;
+
+  }
+
+  if(turnsToShow.length === 0){
+
+    turnsMapStatus.textContent =
+      'Tu n\'as encore aucun passage enregistré sur un virage partagé.';
+
+    turnsMapStatus.classList.remove('hidden');
+
+    sharedMapEl.classList.add('hidden');
+
+    turnsMapCountEl.textContent = '';
+
+    return;
+
+  }
+
+  turnsMapStatus.classList.add('hidden');
+
+  sharedMapEl.classList.remove('hidden');
+
+  if(!sharedMapInstance){
+
+    sharedMapInstance =
+      L.map('sharedMap', { attributionControl:true });
+
+    L.tileLayer(
+      'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+      {
+        maxZoom:19,
+        attribution:'&copy; OpenStreetMap contributors &copy; CARTO'
+      }
+    ).addTo(sharedMapInstance);
+
+    sharedMapMarkersLayer =
+      L.layerGroup().addTo(sharedMapInstance);
+
+  }
+
+  /*
+     La carte a pu etre initialisee alors que son conteneur
+     etait cache (onglet non actif) : Leaflet a besoin qu'on
+     lui dise de recalculer sa taille une fois visible.
+  */
+
+  setTimeout(() => {
+
+    if(sharedMapInstance){
+      sharedMapInstance.invalidateSize();
+    }
+
+  }, 60);
+
+  sharedMapMarkersLayer.clearLayers();
+
+  const bounds = [];
+
+  turnsToShow.forEach(turn => {
+
+    const mine =
+      !!user &&
+      (
+        turn.bestAngleUid === user.uid ||
+        turn.bestSpeedUid === user.uid
+      );
+
+    const marker =
+      L.circleMarker(
+        [turn.centerLat, turn.centerLon],
+        {
+          radius:8,
+          weight:2,
+          color:'#ffffff',
+          fillColor:mine ? '#ffcc33' : '#43d17a',
+          fillOpacity:0.9
+        }
+      );
+
+    marker.bindTooltip(buildTurnLabel(turn));
+
+    marker.on('click', () => openTurnDetail(turn));
+
+    marker.addTo(sharedMapMarkersLayer);
+
+    bounds.push([turn.centerLat, turn.centerLon]);
+
+  });
+
+  if(bounds.length === 1){
+
+    sharedMapInstance.setView(bounds[0], 14);
+
+  }
+  else{
+
+    sharedMapInstance.fitBounds(bounds, { padding:[30, 30] });
+
+  }
+
+  turnsMapCountEl.textContent =
+    turnsToShow.length +
+    ' virage(s) affiché(s) sur ' +
+    lastLoadedTurns.length +
+    ' au total.';
+
+}
+
+
+turnsMapMineOnly.addEventListener('change', () => {
+
+  if(turnsMapLoaded){
+    renderTurnMarkers();
+  }
+
+});
+
+
+/*
+   Le bouton d'onglet "Carte des virages" a deja un gestionnaire
+   dans le script de navigation (affichage/masquage du panneau).
+   On y ajoute simplement celui-ci, sans toucher a l'existant,
+   pour declencher le chargement des donnees.
+*/
+
+document.getElementById('subTabTurnsMap').addEventListener('click', () => {
+
+  loadTurnsMap();
+
+});
+
+
+async function openTurnDetail(turn){
+
+  turnsMapListPanel.classList.add('hidden');
+
+  turnDetailPanel.classList.remove('hidden');
+
+  document.getElementById('turnDetailTitle').textContent =
+    buildTurnLabel(turn);
+
+  const discoveredText =
+    turn.discoveredBy
+      ? ('Découvert par ' + turn.discoveredBy + '. ')
+      : '';
+
+  document.getElementById('turnDetailMeta').textContent =
+    discoveredText +
+    (turn.passCount || 0) +
+    ' passage(s) enregistré(s).';
+
+  document.getElementById('turnDetailStats').innerHTML =
+
+    statBoxHtml(
+      'Meilleur angle',
+      signed(turn.bestAngleSigned ?? turn.bestAngleValue, 0) +
+      '° — ' +
+      (turn.bestAngleUser || '?')
+    ) +
+
+    statBoxHtml(
+      'Meilleure vitesse',
+      fmt(turn.bestSpeedValue, 0) +
+      ' km/h — ' +
+      (turn.bestSpeedUser || '?')
+    );
+
+  const angleBody =
+    document.getElementById('turnLeaderboardAngle');
+
+  const speedBody =
+    document.getElementById('turnLeaderboardSpeed');
+
+  angleBody.innerHTML =
+    '<tr><td colspan="6" class="noTurns">Chargement...</td></tr>';
+
+  speedBody.innerHTML =
+    '<tr><td colspan="6" class="noTurns">Chargement...</td></tr>';
+
+  try{
+
+    const [angleSnap, speedSnap] =
+      await Promise.all([
+
+        getDocs(
+          query(
+            collection(db, 'turns', turn.id, 'passes'),
+            orderBy('angleAbs', 'desc'),
+            limit(10)
+          )
+        ),
+
+        getDocs(
+          query(
+            collection(db, 'turns', turn.id, 'passes'),
+            orderBy('speedAtMax', 'desc'),
+            limit(10)
+          )
+        )
+
+      ]);
+
+    renderTurnLeaderboard(
+      angleBody,
+      angleSnap.docs.map(d => d.data()),
+      'angle'
+    );
+
+    renderTurnLeaderboard(
+      speedBody,
+      speedSnap.docs.map(d => d.data()),
+      'speed'
+    );
+
+  }
+  catch(err){
+
+    console.error(
+      '[Virages] Impossible de charger le classement de ce virage :',
+      err
+    );
+
+    angleBody.innerHTML =
+      '<tr><td colspan="6" class="noTurns">Classement indisponible.</td></tr>';
+
+    speedBody.innerHTML =
+      '<tr><td colspan="6" class="noTurns">Classement indisponible.</td></tr>';
+
+  }
+
+}
+
+
+function renderTurnLeaderboard(tbody, passes, mode){
+
+  const user =
+    window.FirebaseBridge.currentUser;
+
+  tbody.innerHTML = '';
+
+  if(passes.length === 0){
+
+    tbody.innerHTML =
+      '<tr><td colspan="6" class="noTurns">Aucun passage enregistré.</td></tr>';
+
+    return;
+
+  }
+
+  passes.forEach((p, index) => {
+
+    const tr =
+      document.createElement('tr');
+
+    if(user && p.uid === user.uid){
+      tr.style.color = 'var(--yellow)';
+    }
+
+    const dateText =
+      p.createdAt && p.createdAt.toDate
+        ? p.createdAt.toDate().toLocaleDateString('fr-FR')
+        : '—';
+
+    const sideText =
+      p.direction === 'droite' ? 'DROITE' : 'GAUCHE';
+
+    const sideClass =
+      p.direction === 'droite' ? 'turnRight' : 'turnLeft';
+
+    const firstValueCell =
+      mode === 'angle'
+        ? '<td>' + signed(p.angle, 0) + '°</td>'
+        : '<td>' + fmt(p.speedAtMax, 0) + ' km/h</td>';
+
+    const secondValueCell =
+      mode === 'angle'
+        ? '<td>' + fmt(p.speedAtMax, 0) + ' km/h</td>'
+        : '<td>' + signed(p.angle, 0) + '°</td>';
+
+    tr.innerHTML =
+
+      '<td>' + (index + 1) + '</td>' +
+      '<td>' + (p.pseudo || '?') + '</td>' +
+      firstValueCell +
+      secondValueCell +
+      '<td class="' + sideClass + '">' + sideText + '</td>' +
+      '<td>' + dateText + '</td>';
+
+    tbody.appendChild(tr);
+
+  });
+
+}
+
+
+document.getElementById('closeTurnDetail').addEventListener('click', () => {
+
+  turnDetailPanel.classList.add('hidden');
+
+  turnsMapListPanel.classList.remove('hidden');
 
 });
 
