@@ -785,6 +785,102 @@ details{
 
 
 /* =====================================================
+   SOUS-ONGLETS (HISTORIQUE)
+===================================================== */
+
+.subTabs{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+  margin-bottom:14px;
+}
+
+.subTab{
+  border:0;
+  border-radius:10px;
+  padding:10px;
+  font-size:12px;
+  font-weight:700;
+  background:#202a35;
+  color:var(--muted);
+}
+
+.subTab.active{
+  background:var(--accent);
+  color:#07100b;
+}
+
+
+/* =====================================================
+   LISTE DES SESSIONS
+===================================================== */
+
+.sessionsList{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+
+.sessionCard{
+  width:100%;
+  text-align:left;
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:14px;
+  color:var(--text);
+}
+
+.sessionCard:active{
+  border-color:var(--accent);
+}
+
+.sessionCardDate{
+  font-size:13px;
+  font-weight:700;
+}
+
+.sessionCardMeta{
+  font-size:11px;
+  color:var(--muted);
+  margin-top:4px;
+}
+
+
+/* =====================================================
+   DETAIL D'UNE SESSION
+===================================================== */
+
+.sessionStatsGrid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+  margin:14px 0;
+}
+
+.sessionStatBox{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:10px 12px;
+}
+
+.sessionStatBox .label{
+  font-size:10px;
+}
+
+.sessionStatBox .val{
+  font-size:18px;
+  font-weight:700;
+  margin-top:2px;
+}
+
+#historyMap{
+  height:230px;
+}
+
+
+/* =====================================================
    PLACEHOLDER (historique a venir)
 ===================================================== */
 
@@ -1293,6 +1389,8 @@ details{
 
   </div>
 
+  <div id="cloudSaveStatus" class="small hidden"></div>
+
 </section>
 
 
@@ -1528,15 +1626,98 @@ Ne manipule pas le téléphone en roulant.
 
   </div>
 
-  <div class="placeholderCard">
 
-    🚧 Bientôt disponible.
+  <div class="subTabs" id="historySubTabs">
 
-    <br><br>
+    <button id="subTabSessions"
+            class="subTab active"
+            type="button">
+      Mes sessions
+    </button>
 
-    Tes sessions et tes virages seront bientôt enregistrés
-    automatiquement et consultables ici, avec un classement
-    par virage entre riders.
+    <button id="subTabTurnsMap"
+            class="subTab"
+            type="button">
+      Carte des virages
+    </button>
+
+  </div>
+
+
+  <!-- ===== Panneau : mes sessions ===== -->
+
+  <div id="mySessionsPanel">
+
+    <div id="sessionsListPanel">
+
+      <div id="sessionsListStatus" class="placeholderCard">
+        Chargement de tes sessions...
+      </div>
+
+      <div id="sessionsList" class="sessionsList"></div>
+
+    </div>
+
+
+    <div id="sessionDetailPanel" class="hidden">
+
+      <button id="backToSessionsList"
+              class="backBtn"
+              type="button">
+        ← Mes sessions
+      </button>
+
+      <div class="sessionStatsGrid" id="sessionDetailStats"></div>
+
+      <div class="chartWrap">
+        <canvas id="historyChart"></canvas>
+      </div>
+
+      <div class="mapWrap">
+        <canvas id="historyMap"></canvas>
+      </div>
+
+      <div class="tableWrap">
+
+        <table class="turnTable">
+
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Virage</th>
+              <th>Angle max</th>
+              <th>Vitesse</th>
+              <th>Vitesse moy.</th>
+              <th>Durée</th>
+            </tr>
+          </thead>
+
+          <tbody id="historyTurnsBody"></tbody>
+
+        </table>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- ===== Panneau : carte des virages (a venir) ===== -->
+
+  <div id="turnsMapPanel" class="hidden">
+
+    <div class="placeholderCard">
+
+      🚧 Bientôt disponible.
+
+      <br><br>
+
+      Le classement partagé par virage (qui est passé le plus
+      vite, qui a mis le plus d'angle) arrive dans une prochaine
+      étape.
+
+    </div>
 
   </div>
 
@@ -5097,6 +5278,65 @@ document.querySelectorAll('[data-back]').forEach(btn => {
 
 window.addEventListener('firebase-user-ready', showMenu);
 
+
+/* =====================================================
+   SOUS-ONGLETS HISTORIQUE
+===================================================== */
+
+const subTabSessions =
+  document.getElementById('subTabSessions');
+
+const subTabTurnsMap =
+  document.getElementById('subTabTurnsMap');
+
+const mySessionsPanel =
+  document.getElementById('mySessionsPanel');
+
+const turnsMapPanel =
+  document.getElementById('turnsMapPanel');
+
+
+subTabSessions.addEventListener('click', () => {
+
+  subTabSessions.classList.add('active');
+  subTabTurnsMap.classList.remove('active');
+
+  mySessionsPanel.classList.remove('hidden');
+  turnsMapPanel.classList.add('hidden');
+
+});
+
+
+subTabTurnsMap.addEventListener('click', () => {
+
+  subTabTurnsMap.classList.add('active');
+  subTabSessions.classList.remove('active');
+
+  turnsMapPanel.classList.remove('hidden');
+  mySessionsPanel.classList.add('hidden');
+
+});
+
+
+/* =====================================================
+   DETAIL D'UNE SESSION - RETOUR A LA LISTE
+===================================================== */
+
+const sessionsListPanel =
+  document.getElementById('sessionsListPanel');
+
+const sessionDetailPanel =
+  document.getElementById('sessionDetailPanel');
+
+
+document.getElementById('backToSessionsList').addEventListener('click', () => {
+
+  sessionDetailPanel.classList.add('hidden');
+
+  sessionsListPanel.classList.remove('hidden');
+
+});
+
 </script>
 
 
@@ -5125,6 +5365,12 @@ import {
   doc,
   getDoc,
   setDoc,
+  addDoc,
+  collection,
+  query,
+  orderBy,
+  limit,
+  getDocs,
   serverTimestamp
 } from 'https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js';
 
@@ -5502,6 +5748,858 @@ onAuthStateChanged(auth, user => {
   }
 
 });
+
+
+/* =====================================================
+   COMPRESSION DU TRACE
+   (limite la taille du document Firestore, 1 Mo max)
+===================================================== */
+
+const MAX_TRACK_POINTS = 2000;
+
+
+function compressTrack(data){
+
+  const step =
+    data.length > MAX_TRACK_POINTS
+    ? Math.ceil(data.length / MAX_TRACK_POINTS)
+    : 1;
+
+  const compressed = [];
+
+  for(let i = 0; i < data.length; i += step){
+
+    const p = data[i];
+
+    compressed.push([
+
+      Math.round(p.time * 10) / 10,
+
+      Math.round(p.angle * 10) / 10,
+
+      Math.round(p.speed * 10) / 10,
+
+      Number.isFinite(p.lat) ? Math.round(p.lat * 1e6) / 1e6 : null,
+
+      Number.isFinite(p.lon) ? Math.round(p.lon * 1e6) / 1e6 : null
+
+    ]);
+
+  }
+
+  return compressed;
+
+}
+
+
+function decompressTrack(track){
+
+  return track.map(p => ({
+
+    time:p[0],
+    angle:p[1],
+    speed:p[2],
+    lat:p[3],
+    lon:p[4]
+
+  }));
+
+}
+
+
+/* =====================================================
+   ENREGISTREMENT D'UNE SESSION
+   (lit les variables globales du moteur, ne les modifie
+   jamais - voir captureSessionSnapshot)
+===================================================== */
+
+function captureSessionSnapshot(){
+
+  if(sessionData.length === 0){
+
+    return null;
+
+  }
+
+  return {
+
+    track:sessionData.slice(),
+
+    turns:detectedTurns.slice(),
+
+    maxSpeedKmh:sessionMaxSpeed,
+
+    distanceKm:sessionDistance / 1000,
+
+    maxLeftDeg:maxLeft,
+
+    maxRightDeg:maxRight,
+
+    speedAtMaxLeft:speedAtMaxLeft,
+
+    speedAtMaxRight:speedAtMaxRight,
+
+    durationSec:sessionData[sessionData.length - 1].time
+
+  };
+
+}
+
+
+const cloudSaveStatus =
+  document.getElementById('cloudSaveStatus');
+
+
+function showSaveStatus(text, isError){
+
+  cloudSaveStatus.textContent = text;
+
+  cloudSaveStatus.classList.remove('hidden');
+
+  cloudSaveStatus.style.color =
+    isError ? 'var(--red)' : 'var(--muted)';
+
+}
+
+
+async function saveCurrentSessionToFirestore(){
+
+  const user =
+    window.FirebaseBridge.currentUser;
+
+  if(!user){
+
+    return;
+
+  }
+
+  const snapshot =
+    captureSessionSnapshot();
+
+  if(!snapshot){
+
+    return;
+
+  }
+
+  showSaveStatus('Enregistrement de la session...', false);
+
+  try{
+
+    const turnsForDoc =
+      snapshot.turns.map(t => ({
+
+        side:t.side,
+
+        angle:Math.round(t.angle * 10) / 10,
+
+        speedAtMax:Math.round(t.speedAtMax * 10) / 10,
+
+        averageSpeed:Math.round(t.averageSpeed * 10) / 10,
+
+        duration:Math.round(t.duration * 10) / 10,
+
+        startTime:Math.round(t.startTime * 10) / 10,
+
+        endTime:Math.round(t.endTime * 10) / 10
+
+      }));
+
+    await addDoc(
+
+      collection(
+        db,
+        'users',
+        user.uid,
+        'sessions'
+      ),
+
+      {
+
+        createdAt:serverTimestamp(),
+
+        durationSec:Math.round(snapshot.durationSec),
+
+        distanceKm:Math.round(snapshot.distanceKm * 100) / 100,
+
+        maxSpeedKmh:Math.round(snapshot.maxSpeedKmh),
+
+        maxLeftDeg:Math.round(snapshot.maxLeftDeg * 10) / 10,
+
+        maxRightDeg:Math.round(snapshot.maxRightDeg * 10) / 10,
+
+        speedAtMaxLeft:Math.round(snapshot.speedAtMaxLeft),
+
+        speedAtMaxRight:Math.round(snapshot.speedAtMaxRight),
+
+        pointCount:snapshot.track.length,
+
+        track:compressTrack(snapshot.track),
+
+        turns:turnsForDoc
+
+      }
+
+    );
+
+    showSaveStatus('Session enregistrée ✅', false);
+
+  }
+  catch(error){
+
+    console.error(
+      '[Firestore] Echec enregistrement session :',
+      error
+    );
+
+    showSaveStatus(
+      'Échec de l\'enregistrement (pas de réseau ?)',
+      true
+    );
+
+  }
+
+}
+
+
+document.getElementById('session').addEventListener('click', () => {
+
+  /*
+     Ce gestionnaire s'execute APRES celui du moteur
+     (attache plus haut dans le document), donc les
+     variables globales refletent deja le nouvel etat
+     au moment ou ce code s'execute : sessionActive
+     est a false uniquement juste apres un arret.
+  */
+
+  if(sessionActive === false && sessionData.length > 0){
+
+    saveCurrentSessionToFirestore();
+
+  }
+
+});
+
+
+/* =====================================================
+   HISTORIQUE - LISTE DES SESSIONS
+===================================================== */
+
+let cachedSessionDocs = [];
+
+
+function formatHistoryDuration(seconds){
+
+  const s = Math.floor(seconds);
+
+  const m = Math.floor(s / 60);
+
+  const r = s % 60;
+
+  return (
+    String(m).padStart(2, '0') +
+    ':' +
+    String(r).padStart(2, '0')
+  );
+
+}
+
+
+async function loadSessionsList(){
+
+  const user =
+    window.FirebaseBridge.currentUser;
+
+  if(!user){
+
+    return;
+
+  }
+
+  const statusEl =
+    document.getElementById('sessionsListStatus');
+
+  const listEl =
+    document.getElementById('sessionsList');
+
+  statusEl.textContent =
+    'Chargement de tes sessions...';
+
+  statusEl.classList.remove('hidden');
+
+  listEl.innerHTML = '';
+
+  try{
+
+    const sessionsQuery =
+      query(
+        collection(db, 'users', user.uid, 'sessions'),
+        orderBy('createdAt', 'desc'),
+        limit(30)
+      );
+
+    const snap =
+      await getDocs(sessionsQuery);
+
+    cachedSessionDocs =
+      snap.docs;
+
+    if(cachedSessionDocs.length === 0){
+
+      statusEl.textContent =
+        'Aucune session enregistrée pour l\'instant. ' +
+        'Termine une session depuis l\'Inclinomètre pour ' +
+        'la voir apparaître ici.';
+
+      return;
+
+    }
+
+    statusEl.classList.add('hidden');
+
+    cachedSessionDocs.forEach(docSnap => {
+
+      const data = docSnap.data();
+
+      const card =
+        document.createElement('button');
+
+      card.type = 'button';
+
+      card.className = 'sessionCard';
+
+      const dateText =
+        data.createdAt && data.createdAt.toDate
+        ? data.createdAt.toDate().toLocaleString('fr-FR')
+        : 'Date inconnue';
+
+      card.innerHTML =
+
+        '<div class="sessionCardDate">' +
+        dateText +
+        '</div>' +
+
+        '<div class="sessionCardMeta">' +
+        formatHistoryDuration(data.durationSec || 0) +
+        ' · ' + (data.distanceKm || 0).toFixed(2) + ' km' +
+        ' · ' + (data.maxSpeedKmh || 0) + ' km/h max' +
+        ' · G ' + (data.maxLeftDeg || 0) + '° / D ' + (data.maxRightDeg || 0) + '°' +
+        '</div>';
+
+      card.addEventListener('click', () => {
+
+        openSessionDetail(data);
+
+      });
+
+      listEl.appendChild(card);
+
+    });
+
+  }
+  catch(error){
+
+    console.error(
+      '[Firestore] Echec chargement sessions :',
+      error
+    );
+
+    statusEl.textContent =
+      'Impossible de charger tes sessions pour le moment.';
+
+  }
+
+}
+
+
+document.getElementById('navHistorique').addEventListener('click', () => {
+
+  loadSessionsList();
+
+});
+
+document.getElementById('subTabSessions').addEventListener('click', () => {
+
+  loadSessionsList();
+
+});
+
+
+/* =====================================================
+   HISTORIQUE - DETAIL D'UNE SESSION
+===================================================== */
+
+function statBoxHtml(label, value){
+
+  return (
+    '<div class="sessionStatBox">' +
+    '<div class="label">' + label + '</div>' +
+    '<div class="val">' + value + '</div>' +
+    '</div>'
+  );
+
+}
+
+
+function openSessionDetail(data){
+
+  document.getElementById('sessionsListPanel').classList.add('hidden');
+
+  document.getElementById('sessionDetailPanel').classList.remove('hidden');
+
+  const statsEl =
+    document.getElementById('sessionDetailStats');
+
+  const dateText =
+    data.createdAt && data.createdAt.toDate
+    ? data.createdAt.toDate().toLocaleString('fr-FR')
+    : 'Date inconnue';
+
+  statsEl.innerHTML =
+
+    statBoxHtml('Date', dateText) +
+    statBoxHtml('Durée', formatHistoryDuration(data.durationSec || 0)) +
+    statBoxHtml('Distance', (data.distanceKm || 0).toFixed(2) + ' km') +
+    statBoxHtml('Vitesse max', (data.maxSpeedKmh || 0) + ' km/h') +
+    statBoxHtml('Angle max gauche', (data.maxLeftDeg || 0) + '°') +
+    statBoxHtml('Angle max droite', (data.maxRightDeg || 0) + '°');
+
+  const track =
+    decompressTrack(data.track || []);
+
+  drawHistoryChart(track);
+
+  drawHistoryMap(track);
+
+  renderHistoryTurns(data.turns || []);
+
+}
+
+
+function renderHistoryTurns(turns){
+
+  const body =
+    document.getElementById('historyTurnsBody');
+
+  body.innerHTML = '';
+
+  if(turns.length === 0){
+
+    body.innerHTML =
+      '<tr><td colspan="6" class="noTurns">' +
+      'Aucun virage détecté sur cette session.' +
+      '</td></tr>';
+
+    return;
+
+  }
+
+  turns.forEach((turn, index) => {
+
+    const tr =
+      document.createElement('tr');
+
+    const sideText =
+      turn.side > 0 ? 'DROITE' : 'GAUCHE';
+
+    const sideClass =
+      turn.side > 0 ? 'turnRight' : 'turnLeft';
+
+    tr.innerHTML =
+
+      '<td>' + (index + 1) + '</td>' +
+      '<td class="' + sideClass + '">' + sideText + '</td>' +
+      '<td>' + signed(turn.angle, 0) + '°</td>' +
+      '<td>' + fmt(turn.speedAtMax, 0) + ' km/h</td>' +
+      '<td>' + fmt(turn.averageSpeed, 0) + ' km/h</td>' +
+      '<td>' + fmt(turn.duration, 1) + ' s</td>';
+
+    body.appendChild(tr);
+
+  });
+
+}
+
+
+/* =====================================================
+   HISTORIQUE - GRAPHIQUE (adapte du moteur, canvas dedie)
+===================================================== */
+
+function drawHistoryChart(track){
+
+  const canvas =
+    document.getElementById('historyChart');
+
+  const rect =
+    canvas.getBoundingClientRect();
+
+  const dpr =
+    window.devicePixelRatio || 1;
+
+  canvas.width = rect.width * dpr;
+
+  canvas.height = rect.height * dpr;
+
+  const ctx =
+    canvas.getContext('2d');
+
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+  const W = rect.width;
+
+  const H = rect.height;
+
+  ctx.clearRect(0, 0, W, H);
+
+  if(track.length < 2){
+
+    ctx.fillStyle = '#9ba8b7';
+
+    ctx.font = '13px system-ui';
+
+    ctx.textAlign = 'center';
+
+    ctx.fillText('Pas assez de données.', W / 2, H / 2);
+
+    return;
+
+  }
+
+  const left = 42;
+
+  const right = 42;
+
+  const top = 20;
+
+  const bottom = 32;
+
+  const plotW = W - left - right;
+
+  const plotH = H - top - bottom;
+
+  const maxTime =
+    track[track.length - 1].time || 1;
+
+  let maxAngleScale = 50;
+
+  for(const p of track){
+
+    maxAngleScale =
+      Math.max(maxAngleScale, Math.abs(p.angle));
+
+  }
+
+  let maxSpeedScale = 10;
+
+  for(const p of track){
+
+    maxSpeedScale =
+      Math.max(maxSpeedScale, p.speed);
+
+  }
+
+  ctx.strokeStyle = '#25303c';
+
+  ctx.lineWidth = 1;
+
+  for(let i = 0; i <= 4; i++){
+
+    const y = top + (plotH * i / 4);
+
+    ctx.beginPath();
+
+    ctx.moveTo(left, y);
+
+    ctx.lineTo(W - right, y);
+
+    ctx.stroke();
+
+  }
+
+  const zeroY =
+    top + plotH / 2;
+
+  ctx.strokeStyle = '#5a6675';
+
+  ctx.beginPath();
+
+  ctx.moveTo(left, zeroY);
+
+  ctx.lineTo(W - right, zeroY);
+
+  ctx.stroke();
+
+
+  /*
+     Courbe angle.
+  */
+
+  ctx.strokeStyle = '#43d17a';
+
+  ctx.lineWidth = 2;
+
+  ctx.beginPath();
+
+  track.forEach((p, i) => {
+
+    const x =
+      left + (p.time / maxTime) * plotW;
+
+    const y =
+      zeroY - (p.angle / maxAngleScale) * (plotH / 2);
+
+    if(i === 0){
+
+      ctx.moveTo(x, y);
+
+    }
+    else{
+
+      ctx.lineTo(x, y);
+
+    }
+
+  });
+
+  ctx.stroke();
+
+
+  /*
+     Courbe vitesse, colorée par segment
+     (reutilise colorForSpeed du moteur).
+  */
+
+  ctx.lineWidth = 2.5;
+
+  ctx.lineJoin = 'round';
+
+  ctx.lineCap = 'round';
+
+  for(let i = 0; i < track.length - 1; i++){
+
+    const p1 = track[i];
+
+    const p2 = track[i + 1];
+
+    const x1 =
+      left + (p1.time / maxTime) * plotW;
+
+    const y1 =
+      (H - bottom) - (p1.speed / maxSpeedScale) * plotH;
+
+    const x2 =
+      left + (p2.time / maxTime) * plotW;
+
+    const y2 =
+      (H - bottom) - (p2.speed / maxSpeedScale) * plotH;
+
+    ctx.strokeStyle =
+      colorForSpeed(p1.speed);
+
+    ctx.beginPath();
+
+    ctx.moveTo(x1, y1);
+
+    ctx.lineTo(x2, y2);
+
+    ctx.stroke();
+
+  }
+
+
+  ctx.textAlign = 'left';
+
+  ctx.font = '10px system-ui';
+
+  ctx.fillStyle = '#43d17a';
+
+  ctx.fillText('● Angle', left, 12);
+
+  ctx.fillStyle =
+    colorForSpeed(track[0].speed);
+
+  ctx.fillText('● Vitesse', left + 65, 12);
+
+}
+
+
+/* =====================================================
+   HISTORIQUE - CARTE GPS (adaptee du moteur, canvas dedie)
+===================================================== */
+
+function drawHistoryMap(track){
+
+  const canvas =
+    document.getElementById('historyMap');
+
+  const rect =
+    canvas.getBoundingClientRect();
+
+  const dpr =
+    window.devicePixelRatio || 1;
+
+  canvas.width = rect.width * dpr;
+
+  canvas.height = rect.height * dpr;
+
+  const ctx =
+    canvas.getContext('2d');
+
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+  const W = rect.width;
+
+  const H = rect.height;
+
+  ctx.clearRect(0, 0, W, H);
+
+  const points =
+    track.filter(p =>
+      Number.isFinite(p.lat) &&
+      Number.isFinite(p.lon)
+    );
+
+  if(points.length < 2){
+
+    ctx.fillStyle = '#9ba8b7';
+
+    ctx.font = '13px system-ui';
+
+    ctx.textAlign = 'center';
+
+    ctx.fillText(
+      'Pas de tracé GPS pour cette session.',
+      W / 2,
+      H / 2
+    );
+
+    return;
+
+  }
+
+  let minLat = Infinity;
+
+  let maxLat = -Infinity;
+
+  let minLon = Infinity;
+
+  let maxLon = -Infinity;
+
+  points.forEach(p => {
+
+    minLat = Math.min(minLat, p.lat);
+
+    maxLat = Math.max(maxLat, p.lat);
+
+    minLon = Math.min(minLon, p.lon);
+
+    maxLon = Math.max(maxLon, p.lon);
+
+  });
+
+  if(Math.abs(maxLat - minLat) < 0.000001){
+
+    maxLat += 0.00001;
+
+    minLat -= 0.00001;
+
+  }
+
+  if(Math.abs(maxLon - minLon) < 0.000001){
+
+    maxLon += 0.00001;
+
+    minLon -= 0.00001;
+
+  }
+
+  const padding = 20;
+
+  const midLat =
+    (minLat + maxLat) / 2;
+
+  const lonScale =
+    Math.cos(midLat * Math.PI / 180);
+
+  const geoW =
+    (maxLon - minLon) * lonScale;
+
+  const geoH =
+    maxLat - minLat;
+
+  const scale =
+    Math.min(
+      (W - padding * 2) / geoW,
+      (H - padding * 2) / geoH
+    );
+
+  const drawPoint = p => ({
+
+    x:
+      W / 2 +
+      (
+        (p.lon - (minLon + maxLon) / 2) *
+        lonScale *
+        scale
+      ),
+
+    y:
+      H / 2 -
+      (
+        (p.lat - (minLat + maxLat) / 2) *
+        scale
+      )
+
+  });
+
+  ctx.lineWidth = 3;
+
+  ctx.lineJoin = 'round';
+
+  ctx.lineCap = 'round';
+
+  for(let i = 0; i < points.length - 1; i++){
+
+    const p1 = drawPoint(points[i]);
+
+    const p2 = drawPoint(points[i + 1]);
+
+    ctx.strokeStyle =
+      colorForAngle(points[i].angle);
+
+    ctx.beginPath();
+
+    ctx.moveTo(p1.x, p1.y);
+
+    ctx.lineTo(p2.x, p2.y);
+
+    ctx.stroke();
+
+  }
+
+  const start =
+    drawPoint(points[0]);
+
+  ctx.fillStyle = '#43d17a';
+
+  ctx.beginPath();
+
+  ctx.arc(start.x, start.y, 5, 0, Math.PI * 2);
+
+  ctx.fill();
+
+  const finish =
+    drawPoint(points[points.length - 1]);
+
+  ctx.fillStyle = '#ff4d4d';
+
+  ctx.beginPath();
+
+  ctx.arc(finish.x, finish.y, 5, 0, Math.PI * 2);
+
+  ctx.fill();
+
+}
 
 </script>
 
