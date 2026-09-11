@@ -21,7 +21,7 @@
       content="0">
 
 <meta name="build-id"
-      content="2026-09-11T09:08:39Z">
+      content="2026-09-11T09:28:27Z">
 
 <title>Inclinomètre Moto</title>
 
@@ -925,6 +925,10 @@ details{
   height:230px;
 }
 
+#historyMapSpeed{
+  height:230px;
+}
+
 
 /* =====================================================
    PLACEHOLDER (historique a venir)
@@ -1744,9 +1748,50 @@ Ne manipule pas le téléphone en roulant.
         <canvas id="historyChart"></canvas>
       </div>
 
+      <div id="historyChartInfo" class="chartInfo">
+        Aucun point sélectionné.
+      </div>
+
+      <div class="speedScale" aria-label="Échelle de couleur de vitesse">
+
+        <div class="speedScaleTitle">Échelle vitesse</div>
+
+        <div class="speedScaleBar"></div>
+
+        <div class="speedScaleLabels">
+          <span>0</span>
+          <span>30</span>
+          <span>75</span>
+          <span>120</span>
+          <span>180+</span>
+          <span>km/h</span>
+        </div>
+
+      </div>
+
+      <div class="chartHint">
+        Fais glisser le doigt sur le graphique pour parcourir la session.
+      </div>
+
+      <div class="label" style="margin-top:18px;">
+        Tracé par angle
+      </div>
+
       <div class="mapWrap">
         <canvas id="historyMap"></canvas>
       </div>
+
+      <div id="historyMapInfo" class="mapInfo"></div>
+
+      <div class="label" style="margin-top:16px;">
+        Tracé par vitesse
+      </div>
+
+      <div class="mapWrap">
+        <canvas id="historyMapSpeed"></canvas>
+      </div>
+
+      <div id="historyMapSpeedInfo" class="mapInfo"></div>
 
       <div class="tableWrap">
 
@@ -6378,9 +6423,18 @@ function openSessionDetail(data){
   const track =
     decompressTrack(data.track || []);
 
+  historyTrack = track;
+
+  historySelectedIndex = -1;
+
+  document.getElementById('historyChartInfo').textContent =
+    'Aucun point sélectionné.';
+
   drawHistoryChart(track);
 
   drawHistoryMap(track);
+
+  drawHistoryMapSpeed(track);
 
   renderHistoryTurns(data.turns || []);
 
@@ -6618,6 +6672,56 @@ function drawHistoryChart(track){
   }
 
 
+  /*
+     Marqueur du point selectionne (curseur).
+  */
+
+  if(
+    historySelectedIndex >= 0 &&
+    historySelectedIndex < track.length
+  ){
+
+    const p =
+      track[historySelectedIndex];
+
+    const x =
+      left + (p.time / maxTime) * plotW;
+
+    const angleY =
+      zeroY - (p.angle / maxAngleScale) * (plotH / 2);
+
+    const speedY =
+      (H - bottom) - (p.speed / maxSpeedScale) * plotH;
+
+    ctx.strokeStyle = '#ffffff';
+
+    ctx.lineWidth = 1;
+
+    ctx.beginPath();
+
+    ctx.moveTo(x, top);
+
+    ctx.lineTo(x, H - bottom);
+
+    ctx.stroke();
+
+    ctx.fillStyle = '#ffffff';
+
+    ctx.beginPath();
+
+    ctx.arc(x, angleY, 4, 0, Math.PI * 2);
+
+    ctx.fill();
+
+    ctx.beginPath();
+
+    ctx.arc(x, speedY, 4, 0, Math.PI * 2);
+
+    ctx.fill();
+
+  }
+
+
   ctx.textAlign = 'left';
 
   ctx.font = '10px system-ui';
@@ -6635,13 +6739,172 @@ function drawHistoryChart(track){
 
 
 /* =====================================================
-   HISTORIQUE - CARTE GPS (adaptee du moteur, canvas dedie)
+   HISTORIQUE - CURSEUR / SELECTION SUR LE GRAPHIQUE
 ===================================================== */
 
-function drawHistoryMap(track){
+let historyTrack = [];
+
+let historySelectedIndex = -1;
+
+let historyChartDragging = false;
+
+
+function historyChartIndexFromEvent(event){
+
+  if(historyTrack.length < 2){
+
+    return -1;
+
+  }
 
   const canvas =
-    document.getElementById('historyMap');
+    document.getElementById('historyChart');
+
+  const rect =
+    canvas.getBoundingClientRect();
+
+  let x =
+    event.clientX - rect.left;
+
+  x =
+    Math.max(0, Math.min(rect.width, x));
+
+  const ratio =
+    x / rect.width;
+
+  const maxTime =
+    historyTrack[historyTrack.length - 1].time || 1;
+
+  const targetTime =
+    ratio * maxTime;
+
+  let low = 0;
+
+  let high =
+    historyTrack.length - 1;
+
+  while(low < high){
+
+    const mid =
+      Math.floor((low + high) / 2);
+
+    if(historyTrack[mid].time < targetTime){
+
+      low = mid + 1;
+
+    }
+    else{
+
+      high = mid;
+
+    }
+
+  }
+
+  return low;
+
+}
+
+
+function selectHistoryPoint(index){
+
+  if(index < 0 || index >= historyTrack.length){
+
+    return;
+
+  }
+
+  historySelectedIndex = index;
+
+  const p =
+    historyTrack[index];
+
+  document.getElementById('historyChartInfo').innerHTML =
+
+    '<strong>' + formatHistoryDuration(p.time) + '</strong>' +
+    ' &nbsp; | &nbsp; ' +
+    '<strong>' + signed(p.angle, 1) + '°</strong>' +
+    ' &nbsp; | &nbsp; ' +
+    '<strong>' + fmt(p.speed, 0) + ' km/h</strong>';
+
+  drawHistoryChart(historyTrack);
+
+  drawHistoryMap(historyTrack);
+
+  drawHistoryMapSpeed(historyTrack);
+
+}
+
+
+function historyChartPointerDown(event){
+
+  historyChartDragging = true;
+
+  const index =
+    historyChartIndexFromEvent(event);
+
+  if(index >= 0){
+
+    selectHistoryPoint(index);
+
+  }
+
+}
+
+
+function historyChartPointerMove(event){
+
+  if(!historyChartDragging){
+
+    return;
+
+  }
+
+  const index =
+    historyChartIndexFromEvent(event);
+
+  if(index >= 0){
+
+    selectHistoryPoint(index);
+
+  }
+
+}
+
+
+function historyChartPointerUp(){
+
+  historyChartDragging = false;
+
+}
+
+
+document.getElementById('historyChart').addEventListener(
+  'pointerdown',
+  historyChartPointerDown
+);
+
+document.getElementById('historyChart').addEventListener(
+  'pointermove',
+  historyChartPointerMove
+);
+
+window.addEventListener(
+  'pointerup',
+  historyChartPointerUp
+);
+
+
+/* =====================================================
+   HISTORIQUE - CARTES GPS (adaptees du moteur, canvas dedies)
+   Une version coloree par angle, une par vitesse - meme
+   fonction generique, seule la coloration change.
+===================================================== */
+
+function drawHistoryMapGeneric(canvasId, infoElId, track, colorFn){
+
+  const canvas =
+    document.getElementById(canvasId);
 
   const rect =
     canvas.getBoundingClientRect();
@@ -6683,6 +6946,9 @@ function drawHistoryMap(track){
       W / 2,
       H / 2
     );
+
+    document.getElementById(infoElId).textContent =
+      'Pas de tracé GPS pour cette session.';
 
     return;
 
@@ -6776,7 +7042,7 @@ function drawHistoryMap(track){
     const p2 = drawPoint(points[i + 1]);
 
     ctx.strokeStyle =
-      colorForAngle(points[i].angle);
+      colorFn(points[i]);
 
     ctx.beginPath();
 
@@ -6809,6 +7075,74 @@ function drawHistoryMap(track){
   ctx.arc(finish.x, finish.y, 5, 0, Math.PI * 2);
 
   ctx.fill();
+
+
+  /*
+     Position selectionnee (meme index que le curseur
+     du graphique), en jaune, comme dans la vue en direct.
+  */
+
+  if(
+    historySelectedIndex >= 0 &&
+    historySelectedIndex < track.length
+  ){
+
+    const selected =
+      track[historySelectedIndex];
+
+    if(
+      Number.isFinite(selected.lat) &&
+      Number.isFinite(selected.lon)
+    ){
+
+      const q =
+        drawPoint(selected);
+
+      ctx.fillStyle = '#ffcc33';
+
+      ctx.strokeStyle = '#ffffff';
+
+      ctx.lineWidth = 2;
+
+      ctx.beginPath();
+
+      ctx.arc(q.x, q.y, 7, 0, Math.PI * 2);
+
+      ctx.fill();
+
+      ctx.stroke();
+
+    }
+
+  }
+
+
+  document.getElementById(infoElId).textContent =
+    points.length + ' positions GPS enregistrées';
+
+}
+
+
+function drawHistoryMap(track){
+
+  drawHistoryMapGeneric(
+    'historyMap',
+    'historyMapInfo',
+    track,
+    p => colorForAngle(p.angle)
+  );
+
+}
+
+
+function drawHistoryMapSpeed(track){
+
+  drawHistoryMapGeneric(
+    'historyMapSpeed',
+    'historyMapSpeedInfo',
+    track,
+    p => colorForSpeed(p.speed)
+  );
 
 }
 
