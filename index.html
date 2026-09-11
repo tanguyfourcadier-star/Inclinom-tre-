@@ -21,7 +21,7 @@
       content="0">
 
 <meta name="build-id"
-      content="2026-09-11T20:43:14Z">
+      content="2026-09-11T21:42:43Z">
 
 <title>Inclinomètre Moto</title>
 
@@ -844,6 +844,27 @@ details{
   color:var(--muted);
 }
 
+.tipsCard ol,
+.tipsCard ul{
+  margin:6px 0 0;
+  padding-left:20px;
+  font-size:13px;
+  line-height:1.5;
+  color:var(--muted);
+}
+
+.tipsCard li{
+  margin-bottom:6px;
+}
+
+.tipsCard li:last-child{
+  margin-bottom:0;
+}
+
+.tipsCard strong{
+  color:var(--text);
+}
+
 
 /* =====================================================
    SOUS-ONGLETS (HISTORIQUE)
@@ -934,6 +955,45 @@ details{
   font-size:18px;
   font-weight:700;
   margin-top:2px;
+}
+
+.sessionDetailTopBar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+}
+
+button.sessionDeleteBtn{
+  width:auto;
+  padding:8px 12px;
+  font-size:12px;
+  border-radius:10px;
+  background:#472329;
+  color:#ffb9b9;
+}
+
+.sessionDeleteStatus{
+  font-size:12px;
+  line-height:1.5;
+  color:var(--red);
+  text-align:right;
+  margin-top:6px;
+}
+
+.sessionDeleteStatus:empty{
+  display:none;
+}
+
+.sessionsListNotice{
+  font-size:12px;
+  line-height:1.5;
+  color:var(--accent);
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:10px 12px;
+  margin-bottom:10px;
 }
 
 #historyMap{
@@ -1298,6 +1358,14 @@ button.turnsMapResyncBtn{
   line-height:1.5;
   white-space:pre-wrap;
   margin:0 0 10px;
+}
+
+.feedbackItemText:last-child{
+  margin-bottom:0;
+}
+
+.feedbackItemMine .feedbackItemMeta{
+  color:var(--yellow);
 }
 
 .feedbackItemActions{
@@ -2143,6 +2211,8 @@ Ne manipule pas le téléphone en roulant.
 
     <div id="sessionsListPanel">
 
+      <div id="sessionsListNotice" class="sessionsListNotice hidden"></div>
+
       <div id="sessionsListStatus" class="placeholderCard">
         Chargement de tes sessions...
       </div>
@@ -2154,11 +2224,23 @@ Ne manipule pas le téléphone en roulant.
 
     <div id="sessionDetailPanel" class="hidden">
 
-      <button id="backToSessionsList"
-              class="backBtn"
-              type="button">
-        ← Mes sessions
-      </button>
+      <div class="sessionDetailTopBar">
+
+        <button id="backToSessionsList"
+                class="backBtn"
+                type="button">
+          ← Mes sessions
+        </button>
+
+        <button id="deleteSessionBtn"
+                class="sessionDeleteBtn"
+                type="button">
+          🗑️ Supprimer ce trajet
+        </button>
+
+      </div>
+
+      <div id="deleteSessionStatus" class="sessionDeleteStatus"></div>
 
       <div class="sessionStatsGrid" id="sessionDetailStats"></div>
 
@@ -2414,7 +2496,34 @@ Ne manipule pas le téléphone en roulant.
 
   <div class="tipsCard">
     <h3>💾 Exporte tes sessions</h3>
-    <p>Le bouton "EXPORTER CSV" te permet de garder une trace de chaque sortie (angle, vitesse, position, G) même avant que l'historique en ligne soit disponible.</p>
+    <p>En plus de l'historique en ligne, le bouton "EXPORTER CSV" télécharge sur ton téléphone les données brutes de la session que tu viens d'arrêter (temps, angle, vitesse, position GPS, G).</p>
+  </div>
+
+  <div class="tipsCard">
+    <h3>🧭 Fonctionnement de l'appli</h3>
+    <ol>
+      <li><strong>Compte</strong> : inscription avec le code d'accès fourni par l'administrateur. Ton pseudo apparaît dans les classements et les commentaires.</li>
+      <li><strong>DÉMARRER LES CAPTEURS</strong> : active les capteurs de mouvement et le GPS du téléphone, puis fait un premier zéro automatique (garde la moto droite et immobile quelques instants). "FAIRE LE ZÉRO" recalibre à tout moment, "RESET MAX" remet les angles max à zéro.</li>
+      <li><strong>▶ DÉMARRER SESSION</strong> : enregistre l'angle, la vitesse GPS et la position jusqu'à 10 fois par seconde. Appuie à nouveau pour arrêter : le tableau des 10 virages les plus inclinés de la session s'affiche.</li>
+      <li><strong>💾 ENREGISTRER</strong> : envoie la session dans ton historique en ligne et ajoute automatiquement ses virages à la carte partagée.</li>
+      <li><strong>Historique → Mes sessions</strong> : courbes d'angle et de vitesse (fais glisser le doigt pour parcourir la session), tracés GPS colorés par angle et par vitesse, repères numérotés des virages, et bouton "Supprimer ce trajet" (suppression définitive, ses passages sont aussi retirés de la carte des virages).</li>
+      <li><strong>Historique → Carte des virages</strong> : les virages de tous les pilotes, avec un classement par virage (règles ci-dessous).</li>
+      <li><strong>Commentaires</strong> : messages visibles par tous les utilisateurs de l'appli. Tu peux supprimer les tiens.</li>
+      <li><strong>Tes données</strong> : tes sessions sont privées (toi seul y as accès). La carte des virages et les commentaires sont partagés entre utilisateurs. Tout est stocké sur Firebase.</li>
+    </ol>
+  </div>
+
+  <div class="tipsCard">
+    <h3>🗺️ Règles d'affichage des virages sur la carte</h3>
+    <ol>
+      <li><strong>Détection</strong> : un virage commence quand l'inclinaison dépasse 12° et se termine quand elle redescend sous 7° (ou quand tu bascules directement de l'autre côté). Il faut au moins 5 mesures (environ une demi-seconde), et un virage qui démarre moins de 1,5 s après la fin du précédent n'est pas compté.</li>
+      <li><strong>Seuil de la carte</strong> : seuls les virages dont l'angle max atteint 30° sont ajoutés à la carte partagée. Ils y vont tous, pas seulement les 10 du tableau de la session.</li>
+      <li><strong>Position du point</strong> : l'endroit où l'angle max a été atteint, corrigé du léger retard du GPS (environ une position par seconde). Si aucune position GPS valide n'existe à moins de 4 s de cet instant, le virage n'est pas placé.</li>
+      <li><strong>Regroupement</strong> : un passage situé à moins de 35 m d'un virage déjà connu est rattaché au plus proche, dans les deux sens de circulation. Au-delà, un nouveau virage est créé. Dans une même session, deux sommets à moins de 45 s d'intervalle ne sont jamais rattachés au même virage (virages en S, épingles rapprochées).</li>
+      <li><strong>Classement</strong> : une ligne par pilote, avec son meilleur passage. Classement angle : son angle le plus élevé. Classement vitesse : sa vitesse la plus élevée au moment de l'angle max. La colonne "Passages" indique combien de fois il est passé.</li>
+      <li><strong>Couleurs</strong> : point jaune = virage où tu as au moins un passage, point vert = virages des autres pilotes uniquement. Touche un point pour afficher son classement.</li>
+      <li><strong>Mise à jour</strong> : la carte se met à jour à chaque enregistrement, et tes anciennes sessions sont intégrées automatiquement. Le bouton "Resynchroniser mes sessions" recalcule tous tes passages à partir de tes sessions enregistrées.</li>
+    </ol>
   </div>
 
   <div class="tipsCard">
@@ -2500,7 +2609,7 @@ Ne manipule pas le téléphone en roulant.
 
   <div class="tipsCard">
     <h3>💬 Une remarque, un bug, une idée ?</h3>
-    <p>Ce message m'est envoyé directement, il n'est pas visible par les autres utilisateurs de l'appli. N'hésite pas, tout retour m'aide à l'améliorer.</p>
+    <p>Ton message est visible par tous les utilisateurs de l'appli. Partage tes idées, signale un bug ou échange avec les autres pilotes : tout retour aide à améliorer l'appli. Tu peux supprimer tes propres messages à tout moment.</p>
   </div>
 
   <form id="feedbackForm" class="feedbackForm">
@@ -2525,8 +2634,8 @@ Ne manipule pas le téléphone en roulant.
 
   <div id="feedbackInboxSection" class="hidden">
 
-    <div class="feedbackInboxTitle">📥 Commentaires reçus</div>
-    <div class="feedbackInboxHint">Visible uniquement par toi (connecté en tant qu'administrateur).</div>
+    <div class="feedbackInboxTitle">💬 Tous les commentaires</div>
+    <div class="feedbackInboxHint">Du plus récent au plus ancien.</div>
 
     <div id="feedbackInboxList"></div>
 
@@ -8261,27 +8370,42 @@ async function doResyncMyTurns(){
       ? turn.riders[uid]
       : undefined;
 
+    const update = {};
+
     if(entry){
 
       if(!sameRiderEntry(current, entry)){
-
-        turnOps.push(batch =>
-          batch.update(ref, {
-            ['riders.' + uid]:entry,
-            updatedAt:serverTimestamp()
-          })
-        );
-
+        update['riders.' + uid] = entry;
       }
 
     }
     else if(current !== undefined){
 
+      update['riders.' + uid] = deleteField();
+
+    }
+
+    /*
+       Anciennes donnees (version precedente) : une fois le pilote
+       resynchronise, tous ses passages sont portes par "riders".
+       On le retire de l'ancienne liste des participants pour ne
+       plus jamais relire ses anciens passages (sinon un trajet de
+       test supprime pourrait reapparaitre par ce biais).
+    */
+
+    if(
+      Array.isArray(turn.participants) &&
+      turn.participants.includes(uid)
+    ){
+      update.participants = turn.participants.filter(p => p !== uid);
+    }
+
+    if(Object.keys(update).length > 0){
+
+      update.updatedAt = serverTimestamp();
+
       turnOps.push(batch =>
-        batch.update(ref, {
-          ['riders.' + uid]:deleteField(),
-          updatedAt:serverTimestamp()
-        })
+        batch.update(ref, update)
       );
 
     }
@@ -8301,6 +8425,8 @@ async function doResyncMyTurns(){
       batch.update(doc(db, 'users', uid, 'sessions', u.id), u.data)
     )
   );
+
+  turnsClearDirty(uid);
 
   return {
     sessions:sessions.length,
@@ -8350,7 +8476,59 @@ function turnsWriteLocalSync(uid){
 }
 
 
+/*
+   Indicateur "carte a recalculer" (pose apres la suppression
+   d'un trajet, efface des qu'une resynchronisation reussit).
+*/
+
+function turnsDirtyKey(uid){
+
+  return 'incli.turnsMapDirty.' + uid;
+
+}
+
+
+function turnsWriteDirty(uid){
+
+  try{
+    localStorage.setItem(turnsDirtyKey(uid), '1');
+  }
+  catch(err){
+    /* stockage local indisponible : sans consequence */
+  }
+
+}
+
+
+function turnsReadDirty(uid){
+
+  try{
+    return localStorage.getItem(turnsDirtyKey(uid)) === '1';
+  }
+  catch(err){
+    return false;
+  }
+
+}
+
+
+function turnsClearDirty(uid){
+
+  try{
+    localStorage.removeItem(turnsDirtyKey(uid));
+  }
+  catch(err){
+    /* stockage local indisponible : sans consequence */
+  }
+
+}
+
+
 async function turnsNeedResync(uid){
+
+  if(turnsReadDirty(uid)){
+    return true;
+  }
 
   try{
 
@@ -8646,6 +8824,7 @@ function turnRecordSummary(turn, migratedUids){
     legacyVisible &&
     Number.isFinite(turn.bestAngleValue) &&
     (!best || turn.bestAngleValue > best.bestAngle) &&
+    turn.participants.includes(turn.bestAngleUid) &&
     !migratedUids.has(turn.bestAngleUid)
   ){
 
@@ -9608,6 +9787,8 @@ async function loadSessionsList(){
 
       card.addEventListener('click', () => {
 
+        currentHistorySessionId = docSnap.id;
+
         openSessionDetail(data);
 
       });
@@ -9641,6 +9822,142 @@ document.getElementById('navHistorique').addEventListener('click', () => {
 document.getElementById('subTabSessions').addEventListener('click', () => {
 
   loadSessionsList();
+
+});
+
+
+/* =====================================================
+   HISTORIQUE - SUPPRESSION D'UN TRAJET
+
+   Supprime definitivement la session ouverte, puis recalcule
+   les passages du pilote sur la carte des virages a partir des
+   sessions restantes (les virages qui ne venaient que de ce
+   trajet disparaissent, les classements sont corriges). Si ce
+   recalcul echoue (reseau...), un indicateur local force une
+   resynchronisation a la prochaine ouverture de la carte.
+===================================================== */
+
+let currentHistorySessionId = null;
+
+const deleteSessionBtn =
+  document.getElementById('deleteSessionBtn');
+
+const deleteSessionStatus =
+  document.getElementById('deleteSessionStatus');
+
+const sessionsListNotice =
+  document.getElementById('sessionsListNotice');
+
+
+function showSessionsListNotice(text, isError){
+
+  sessionsListNotice.textContent = text;
+
+  sessionsListNotice.style.color =
+    isError ? 'var(--red)' : 'var(--accent)';
+
+  sessionsListNotice.classList.remove('hidden');
+
+}
+
+
+deleteSessionBtn.addEventListener('click', async () => {
+
+  const user =
+    window.FirebaseBridge.currentUser;
+
+  const sessionId =
+    currentHistorySessionId;
+
+  if(!user || !sessionId){
+    return;
+  }
+
+  if(!confirm(
+    'Supprimer définitivement ce trajet ?\n\n' +
+    'Il disparaîtra de ton historique et ses passages seront ' +
+    'retirés de la carte des virages. Cette action est irréversible.'
+  )){
+    return;
+  }
+
+  deleteSessionBtn.disabled = true;
+
+  deleteSessionStatus.style.color = 'var(--muted)';
+
+  deleteSessionStatus.textContent = 'Suppression en cours...';
+
+  try{
+
+    await deleteDoc(
+      doc(db, 'users', user.uid, 'sessions', sessionId)
+    );
+
+  }
+  catch(err){
+
+    console.error('[Firestore] Echec suppression session :', err);
+
+    deleteSessionStatus.style.color = 'var(--red)';
+
+    deleteSessionStatus.textContent =
+      'Impossible de supprimer ce trajet pour le moment' +
+      (err && err.code ? ' (' + err.code + ')' : '') + '.';
+
+    deleteSessionBtn.disabled = false;
+
+    return;
+
+  }
+
+  turnsWriteDirty(user.uid);
+
+  currentHistorySessionId = null;
+
+  deleteSessionStatus.textContent = '';
+
+  deleteSessionBtn.disabled = false;
+
+  document.getElementById('sessionDetailPanel').classList.add('hidden');
+
+  document.getElementById('sessionsListPanel').classList.remove('hidden');
+
+  showSessionsListNotice('Trajet supprimé ✅ Mise à jour de la carte des virages...', false);
+
+  loadSessionsList();
+
+  try{
+
+    await resyncMyTurns();
+
+    showSessionsListNotice('Trajet supprimé ✅ Carte des virages mise à jour.', false);
+
+  }
+  catch(err){
+
+    console.warn('[Virages] Mise a jour de la carte reportee :', err);
+
+    showSessionsListNotice(
+      'Trajet supprimé ✅ La carte des virages sera mise à jour ' +
+      'à ta prochaine ouverture de la carte.',
+      false
+    );
+
+  }
+
+});
+
+
+document.getElementById('backToSessionsList').addEventListener('click', () => {
+
+  deleteSessionStatus.textContent = '';
+
+});
+
+
+document.getElementById('navHistorique').addEventListener('click', () => {
+
+  sessionsListNotice.classList.add('hidden');
 
 });
 
@@ -10805,15 +11122,14 @@ function drawHistoryMapTurns(track, turns){
 
 
 /* =====================================================
-   COMMENTAIRES (retours utilisateurs)
+   COMMENTAIRES
 
-   Espace simple pour que n'importe quel utilisateur
-   connecte puisse laisser un message. Les messages sont
-   prives : seul le compte dont l'email correspond a
-   ADMIN_EMAIL ci-dessous peut les lire, les marquer comme
-   lus ou les supprimer - les autres utilisateurs peuvent
-   seulement en envoyer (voir les regles Firestore a
-   ajouter, indiquees a part).
+   Espace commun : tout utilisateur connecte peut laisser un
+   message et lire tous les messages. Chacun peut supprimer les
+   siens ; le compte administrateur (ADMIN_EMAIL ci-dessous)
+   peut en plus supprimer n'importe quel message et suivre ceux
+   qu'il a deja lus. Ces droits sont appliques cote serveur par
+   les regles Firestore de la collection "feedback".
 ===================================================== */
 
 const ADMIN_EMAIL = 'tanguyfourcadier@gmail.com';
@@ -10839,6 +11155,8 @@ const feedbackInboxSection =
 const feedbackInboxList =
   document.getElementById('feedbackInboxList');
 
+let feedbackLoadSeq = 0;
+
 
 function escapeHtml(str){
 
@@ -10848,6 +11166,13 @@ function escapeHtml(str){
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#39;');
+
+}
+
+
+function isFeedbackAdmin(user){
+
+  return !!user && user.email === ADMIN_EMAIL;
 
 }
 
@@ -10897,7 +11222,9 @@ feedbackForm.addEventListener('submit', async (e) => {
     feedbackCharCount.textContent = '0 / 1000';
 
     feedbackSuccessEl.textContent =
-      'Merci, ton message a bien été envoyé ✅';
+      'Merci, ton message a bien été publié ✅';
+
+    loadFeedbackList();
 
   }
   catch(err){
@@ -10913,38 +11240,35 @@ feedbackForm.addEventListener('submit', async (e) => {
 
 
 /*
-   Le bouton d'onglet "Commentaires" a deja un gestionnaire
-   dans le script de navigation (affichage/masquage du
-   panneau). On y ajoute simplement celui-ci, sans toucher a
-   l'existant, pour afficher (et charger) la boite de
-   reception uniquement au compte administrateur.
+   Le bouton "Commentaires" du menu a deja un gestionnaire dans
+   le script de navigation (affichage du panneau). On y ajoute
+   simplement le chargement de la liste des messages.
 */
 
 document.getElementById('navFeedback').addEventListener('click', () => {
 
-  const user =
-    window.FirebaseBridge.currentUser;
+  feedbackSuccessEl.textContent = '';
 
-  if(user && user.email === ADMIN_EMAIL){
+  feedbackErrorEl.textContent = '';
 
-    feedbackInboxSection.classList.remove('hidden');
+  feedbackInboxSection.classList.remove('hidden');
 
-    loadFeedbackInbox();
-
-  }
-  else{
-
-    feedbackInboxSection.classList.add('hidden');
-
-  }
+  loadFeedbackList();
 
 });
 
 
-async function loadFeedbackInbox(){
+async function loadFeedbackList(){
 
-  feedbackInboxList.innerHTML =
-    '<div class="feedbackInboxEmpty">Chargement...</div>';
+  const seq =
+    ++feedbackLoadSeq;
+
+  if(feedbackInboxList.children.length === 0){
+
+    feedbackInboxList.innerHTML =
+      '<div class="feedbackInboxEmpty">Chargement...</div>';
+
+  }
 
   try{
 
@@ -10957,31 +11281,44 @@ async function loadFeedbackInbox(){
         )
       );
 
-    const items =
-      snap.docs.map(d => ({ id:d.id, ...d.data() }));
+    if(seq !== feedbackLoadSeq){
+      return;
+    }
 
-    renderFeedbackInbox(items);
+    renderFeedbackList(
+      snap.docs.map(d => ({ id:d.id, ...d.data() }))
+    );
 
   }
   catch(err){
 
     console.error('[Commentaires] Chargement impossible :', err);
 
+    if(seq !== feedbackLoadSeq){
+      return;
+    }
+
     feedbackInboxList.innerHTML =
       '<div class="feedbackInboxEmpty">Impossible de charger les commentaires pour le moment ' +
-      '(vérifie que les règles Firestore pour la collection "feedback" sont bien publiées).</div>';
+      '(vérifie ta connexion, ou que les règles Firestore de la collection "feedback" sont bien publiées).</div>';
 
   }
 
 }
 
 
-function renderFeedbackInbox(items){
+function renderFeedbackList(items){
+
+  const user =
+    window.FirebaseBridge.currentUser;
+
+  const admin =
+    isFeedbackAdmin(user);
 
   if(items.length === 0){
 
     feedbackInboxList.innerHTML =
-      '<div class="feedbackInboxEmpty">Aucun commentaire pour le moment.</div>';
+      '<div class="feedbackInboxEmpty">Aucun commentaire pour le moment. Lance-toi !</div>';
 
     return;
 
@@ -10990,6 +11327,9 @@ function renderFeedbackInbox(items){
   feedbackInboxList.innerHTML = '';
 
   items.forEach(item => {
+
+    const mine =
+      !!user && item.uid === user.uid;
 
     const dateText =
       item.createdAt && item.createdAt.toDate
@@ -11000,58 +11340,79 @@ function renderFeedbackInbox(items){
       document.createElement('div');
 
     div.className =
-      'feedbackItem' + (item.read ? '' : ' feedbackItemUnread');
+      'feedbackItem' +
+      (admin && !item.read ? ' feedbackItemUnread' : '') +
+      (mine ? ' feedbackItemMine' : '');
+
+    const actions =
+      (admin
+        ? '<button type="button" class="blue" data-toggle-read>' +
+            (item.read ? 'Marquer non lu' : 'Marquer lu') +
+          '</button>'
+        : '') +
+      (admin || mine
+        ? '<button type="button" class="danger" data-delete>Supprimer</button>'
+        : '');
 
     div.innerHTML =
 
       '<div class="feedbackItemMeta">' +
-        '<span>' + escapeHtml(item.pseudo || 'Anonyme') + ' · ' + dateText + '</span>' +
+        '<span>' + escapeHtml(item.pseudo || 'Anonyme') + (mine ? ' (toi)' : '') + ' · ' + dateText + '</span>' +
       '</div>' +
       '<p class="feedbackItemText">' + escapeHtml(item.text || '') + '</p>' +
-      '<div class="feedbackItemActions">' +
-        '<button type="button" class="blue" data-toggle-read>' +
-          (item.read ? 'Marquer non lu' : 'Marquer lu') +
-        '</button>' +
-        '<button type="button" class="danger" data-delete>Supprimer</button>' +
-      '</div>';
+      (actions ? '<div class="feedbackItemActions">' + actions + '</div>' : '');
 
-    div.querySelector('[data-toggle-read]').addEventListener('click', async () => {
+    const toggleBtn =
+      div.querySelector('[data-toggle-read]');
 
-      try{
+    if(toggleBtn){
 
-        await updateDoc(doc(db, 'feedback', item.id), { read:!item.read });
+      toggleBtn.addEventListener('click', async () => {
 
-        loadFeedbackInbox();
+        try{
 
-      }
-      catch(err){
+          await updateDoc(doc(db, 'feedback', item.id), { read:!item.read });
 
-        console.error('[Commentaires] Mise à jour impossible :', err);
+          loadFeedbackList();
 
-      }
+        }
+        catch(err){
 
-    });
+          console.error('[Commentaires] Mise à jour impossible :', err);
 
-    div.querySelector('[data-delete]').addEventListener('click', async () => {
+        }
 
-      if(!confirm('Supprimer ce commentaire ?')){
-        return;
-      }
+      });
 
-      try{
+    }
 
-        await deleteDoc(doc(db, 'feedback', item.id));
+    const deleteBtn =
+      div.querySelector('[data-delete]');
 
-        loadFeedbackInbox();
+    if(deleteBtn){
 
-      }
-      catch(err){
+      deleteBtn.addEventListener('click', async () => {
 
-        console.error('[Commentaires] Suppression impossible :', err);
+        if(!confirm('Supprimer ce commentaire ?')){
+          return;
+        }
 
-      }
+        try{
 
-    });
+          await deleteDoc(doc(db, 'feedback', item.id));
+
+          loadFeedbackList();
+
+        }
+        catch(err){
+
+          console.error('[Commentaires] Suppression impossible :', err);
+
+        }
+
+      });
+
+    }
 
     feedbackInboxList.appendChild(div);
 
