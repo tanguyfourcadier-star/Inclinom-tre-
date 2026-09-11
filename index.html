@@ -21,7 +21,7 @@
       content="0">
 
 <meta name="build-id"
-      content="2026-09-11T13:18:03Z">
+      content="2026-09-11T20:43:14Z">
 
 <title>Inclinomètre Moto</title>
 
@@ -974,12 +974,19 @@ details{
   height:16px;
 }
 
+.turnsMapStatusCard{
+  padding:14px 16px;
+  margin-bottom:12px;
+}
+
 .sharedMapWrap{
+  position:relative;
+  z-index:0;
   height:360px;
   border-radius:16px;
   overflow:hidden;
   border:1px solid var(--line);
-  margin-bottom:12px;
+  margin-bottom:8px;
   background:#0b1017;
 }
 
@@ -988,50 +995,101 @@ details{
    l'origine) par filtre CSS, pour rester coherent avec le theme
    de l'appli sans dependre d'un fournisseur de tuiles "dark"
    specifique (qui peut exiger une cle API du jour au lendemain).
+   Le filtre ne deplace rien : tuiles et points restent superposes.
 */
 
 #sharedMap .leaflet-tile-pane{
   filter:invert(1) hue-rotate(180deg) brightness(0.92) contrast(0.9) saturate(0.75);
 }
 
+/*
+   Protege la carte des styles generaux de l'appli (les canvas des
+   graphiques ont un fond et des coins arrondis).
+*/
+
+#sharedMap canvas{
+  background:transparent;
+  border-radius:0;
+}
+
+.turnMarker{
+  cursor:pointer;
+  filter:drop-shadow(0 0 3px rgba(0, 0, 0, 0.85));
+}
+
+.turnsMapLegend{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  gap:6px 16px;
+  font-size:11px;
+  color:var(--muted);
+  margin-bottom:4px;
+}
+
+.turnsLegendDot{
+  display:inline-block;
+  width:10px;
+  height:10px;
+  border-radius:50%;
+  margin-right:6px;
+  vertical-align:-1px;
+  border:2px solid #0b1017;
+  box-shadow:0 0 0 1px var(--line);
+}
+
+.turnsLegendOthers{
+  background:var(--accent);
+}
+
+.turnsLegendMine{
+  background:var(--yellow);
+}
+
 .turnsMapCount{
   font-size:12px;
   color:var(--muted);
   text-align:center;
+  margin-bottom:12px;
 }
 
-.turnMarkerMine{
-  filter:drop-shadow(0 0 4px var(--yellow));
-}
-
-.leaflet-popup-content-wrapper,
-.leaflet-popup-tip{
+#sharedMap .leaflet-tooltip{
   background:var(--card);
   color:var(--text);
-}
-
-.leaflet-popup-content{
+  border:1px solid var(--line);
+  box-shadow:0 2px 8px rgba(0, 0, 0, 0.5);
   font-size:12px;
-  line-height:1.5;
+  line-height:1.4;
 }
 
-.turnPopupBtn{
-  display:inline-block;
-  margin-top:6px;
-  border:0;
-  border-radius:8px;
-  padding:6px 10px;
-  font-size:11px;
-  font-weight:700;
-  background:var(--accent);
-  color:#07100b;
-  width:auto;
+#sharedMap .leaflet-tooltip-top:before{
+  border-top-color:var(--line);
+}
+
+.turnDetailCard{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:14px;
+  margin-bottom:12px;
+  scroll-margin-top:12px;
+}
+
+.turnDetailHeader{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:10px;
+}
+
+.turnDetailHeading{
+  min-width:0;
 }
 
 .turnDetailTitle{
   font-size:17px;
   font-weight:700;
-  margin-top:14px;
+  overflow-wrap:anywhere;
 }
 
 .turnDetailMeta{
@@ -1039,6 +1097,76 @@ details{
   color:var(--muted);
   margin-top:4px;
   line-height:1.5;
+}
+
+button.turnDetailClose{
+  width:auto;
+  flex:none;
+  padding:6px 11px;
+  font-size:14px;
+  border-radius:8px;
+}
+
+.turnDetailCard .sessionStatsGrid{
+  margin:12px 0;
+}
+
+.turnDetailCard .sessionStatBox .val{
+  font-size:15px;
+  overflow-wrap:anywhere;
+}
+
+.turnDetailCard .turnTable{
+  min-width:0;
+  font-size:11px;
+}
+
+.turnDetailCard .turnTable th,
+.turnDetailCard .turnTable td{
+  padding:7px 2px;
+}
+
+.turnDetailCard .turnTable td:nth-child(2){
+  overflow-wrap:anywhere;
+}
+
+.turnRowMine{
+  color:var(--yellow);
+}
+
+.turnDetailHint{
+  font-size:11px;
+  color:var(--muted);
+  margin-top:10px;
+  line-height:1.5;
+}
+
+.turnDetailOsmLink{
+  display:inline-block;
+  margin-top:10px;
+  font-size:12px;
+  color:var(--blue);
+  text-decoration:none;
+}
+
+.turnsMapSync{
+  text-align:center;
+  margin-bottom:8px;
+}
+
+.turnsMapSyncStatus{
+  font-size:11px;
+  color:var(--muted);
+  min-height:14px;
+  margin-bottom:8px;
+  line-height:1.5;
+}
+
+button.turnsMapResyncBtn{
+  width:auto;
+  padding:9px 14px;
+  font-size:12px;
+  border-radius:10px;
 }
 
 
@@ -2125,43 +2253,51 @@ Ne manipule pas le téléphone en roulant.
 
   <div id="turnsMapPanel" class="hidden">
 
-    <div id="turnsMapListPanel">
-
-      <div class="turnsMapIntro">
-        Tous les virages pris à plus de <span id="turnsMapThreshold">30</span>° par
-        les pilotes de l'appli, avec le classement de chaque virage.
-      </div>
-
-      <label class="turnsMapFilter">
-        <input type="checkbox" id="turnsMapMineOnly">
-        Afficher uniquement les virages où j'ai un passage
-      </label>
-
-      <div id="turnsMapStatus" class="placeholderCard">
-        Chargement de la carte des virages...
-      </div>
-
-      <div id="sharedMap" class="sharedMapWrap hidden"></div>
-
-      <div id="turnsMapCount" class="turnsMapCount"></div>
-
+    <div class="turnsMapIntro">
+      Chaque point est un virage pris à plus de <span id="turnsMapThreshold">30</span>°
+      par au moins un pilote. Touche un point pour voir son classement :
+      une ligne par pilote, avec son meilleur passage.
     </div>
 
+    <label class="turnsMapFilter">
+      <input type="checkbox" id="turnsMapMineOnly">
+      Afficher uniquement les virages où j'ai un passage
+    </label>
 
-    <div id="turnDetailPanel" class="hidden">
+    <div id="turnsMapStatus" class="placeholderCard turnsMapStatusCard">
+      Chargement de la carte des virages...
+    </div>
 
-      <button id="closeTurnDetail"
-              class="backBtn"
-              type="button">
-        ← Carte des virages
-      </button>
+    <div id="sharedMap" class="sharedMapWrap"></div>
 
-      <div class="turnDetailTitle" id="turnDetailTitle"></div>
-      <div class="turnDetailMeta" id="turnDetailMeta"></div>
+    <div class="turnsMapLegend">
+      <span><span class="turnsLegendDot turnsLegendOthers"></span>Virages des autres pilotes</span>
+      <span><span class="turnsLegendDot turnsLegendMine"></span>Virages où j'ai un passage</span>
+    </div>
+
+    <div id="turnsMapCount" class="turnsMapCount"></div>
+
+    <div id="turnDetailPanel" class="turnDetailCard hidden">
+
+      <div class="turnDetailHeader">
+
+        <div class="turnDetailHeading">
+          <div class="turnDetailTitle" id="turnDetailTitle"></div>
+          <div class="turnDetailMeta" id="turnDetailMeta"></div>
+        </div>
+
+        <button id="closeTurnDetail"
+                class="turnDetailClose"
+                type="button"
+                aria-label="Fermer le détail du virage">
+          ✕
+        </button>
+
+      </div>
 
       <div class="sessionStatsGrid" id="turnDetailStats"></div>
 
-      <div class="label" style="margin-top:16px;">
+      <div class="label">
         🏆 Classement angle
       </div>
 
@@ -2175,13 +2311,14 @@ Ne manipule pas le téléphone en roulant.
               <th>Vitesse</th>
               <th>Sens</th>
               <th>Date</th>
+              <th>Passages</th>
             </tr>
           </thead>
           <tbody id="turnLeaderboardAngle"></tbody>
         </table>
       </div>
 
-      <div class="label" style="margin-top:16px;">
+      <div class="label" style="margin-top:14px;">
         🏆 Classement vitesse
       </div>
 
@@ -2195,11 +2332,38 @@ Ne manipule pas le téléphone en roulant.
               <th>Angle</th>
               <th>Sens</th>
               <th>Date</th>
+              <th>Passages</th>
             </tr>
           </thead>
           <tbody id="turnLeaderboardSpeed"></tbody>
         </table>
       </div>
+
+      <div class="turnDetailHint">
+        Une ligne par pilote : son meilleur passage sur ce virage
+        (le plus incliné pour le classement angle, le plus rapide pour
+        le classement vitesse) et son nombre total de passages.
+      </div>
+
+      <a id="turnDetailOsmLink"
+         class="turnDetailOsmLink"
+         href="#"
+         target="_blank"
+         rel="noopener">
+        Vérifier l'emplacement sur OpenStreetMap ↗
+      </a>
+
+    </div>
+
+    <div class="turnsMapSync">
+
+      <div id="turnsMapSyncStatus" class="turnsMapSyncStatus"></div>
+
+      <button id="turnsMapResyncBtn"
+              class="turnsMapResyncBtn"
+              type="button">
+        🔄 Resynchroniser mes sessions
+      </button>
 
     </div>
 
@@ -6098,6 +6262,9 @@ import {
   limit,
   getDocs,
   deleteDoc,
+  writeBatch,
+  deleteField,
+  where,
   serverTimestamp
 } from 'https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js';
 
@@ -6864,51 +7031,88 @@ document.getElementById('session').addEventListener('click', () => {
 
 /* =====================================================
    VIRAGES - CARTE PARTAGEE ET CLASSEMENT
-   (reprend les virages deja detectes par le moteur dans
-   detectedTurns / snapshot.turns, ne redetecte rien)
+
+   Modele de donnees (collection "turns", un document par
+   virage physique) :
+
+     centerLat / centerLon   position du virage (fixee a sa
+                             creation, sert a l'affichage et au
+                             rapprochement des passages)
+     placeName               nom de lieu (geocodage OSM, a la
+                             demande)
+     discoveredBy / discoveredByUid / createdAt / updatedAt
+     riders                  { <uid> : entree du pilote }
+
+   Une seule entree par pilote et par virage, qui conserve SON
+   meilleur passage : meilleur angle (avec la vitesse a cet
+   instant) et meilleure vitesse (avec l'angle a cet instant),
+   plus son nombre de passages. Chaque pilote n'ecrit jamais que
+   sa propre entree (chemin "riders.<uid>"), donc plusieurs
+   pilotes sur le meme virage cumulent leurs lignes dans le meme
+   classement sans jamais s'ecraser.
+
+   Aucune nouvelle regle Firestore n'est necessaire : tout passe
+   par les droits deja accordes sur "turns" (lecture/creation/
+   mise a jour) et sur ses propres sessions.
+
+   Les anciens documents (champs passCount / participants /
+   best... et sous-collection "passes") restent lus en secours
+   tant que le pilote concerne n'a pas ete resynchronise.
 ===================================================== */
 
 /*
-   Angle minimum (en valeur absolue) pour qu'un virage de
-   la session soit propose a la carte partagee. En dessous,
-   il reste visible dans le tableau "virages" de la session
-   (deja existant) mais n'est pas remonte sur la carte
-   commune, pour ne pas la noyer sous des petits ecarts.
+   Angle minimum (en valeur absolue) pour qu'un virage soit
+   remonte sur la carte partagee.
 */
 
 const MIN_TURN_ANGLE_FOR_MAP = 30;
 
 /*
-   Distance (en metres) en dessous de laquelle deux virages
-   sont consideres comme le meme virage physique. A ajuster
-   si des virages proches (succession d'epingles) se
-   retrouvent regroupes a tort, ou au contraire si le meme
-   virage cree plusieurs entrees a cause de l'imprecision GPS.
+   Distance (en metres) en dessous de laquelle un passage est
+   rattache a un virage deja connu (le plus proche gagne).
 */
 
-const TURN_MATCH_RADIUS_M = 30;
+const TURN_MATCH_RADIUS_M = 35;
 
 /*
-   Nombre de points (echantillonnes toutes les RECORD_INTERVAL_MS,
-   soit 100ms) que l'on accepte de chercher de part et d'autre du
-   sommet d'un virage pour trouver une position GPS valide. 30
-   points = environ 3 secondes. Utile car le GPS peut manquer
-   pile a l'instant de l'angle max (debut de trajet avant que le
-   GPS ait accroche, coupure momentanee sous des arbres/un pont...)
-   sans que le reste du trajet soit affecte.
+   Dans une meme session, un virage deja rattache il y a moins de
+   ce delai (secondes) ne peut pas recevoir un second passage :
+   evite de fusionner les deux sommets d'un S ou d'une succession
+   d'epingles tres rapprochees.
+*/
+
+const TURN_SAME_SESSION_GAP_SEC = 45;
+
+/*
+   Ecart de temps maximum (secondes) accepte pour aller chercher
+   une position GPS valide autour du sommet d'un virage.
+*/
+
+const TURN_POSITION_MAX_GAP_SEC = 4;
+
+/*
+   Version de la synchronisation, stockee sur chaque session
+   traitee (champ mapSyncV).
+*/
+
+const TURNS_MAP_SYNC_VERSION = 2;
+
+/*
+   Meme URL que l'import Firestore en haut du script : utilisee
+   pour un import dynamique (aucun risque de casser le chargement
+   de l'appli si une fonction venait a manquer).
+*/
+
+const FIRESTORE_MODULE_URL =
+  'https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js';
+
+/*
+   Utilises par l'enregistrement des sessions (reperes numerotes
+   de l'historique) : inchanges.
 */
 
 const GPS_LOOKUP_WINDOW = 30;
 
-
-/*
-   Cherche la position GPS valide la plus proche (en nombre de
-   points, donc en temps) de l'index donne. Retourne le point du
-   tableau (avec .lat/.lon valides) ou null si rien de valide n'a
-   ete trouve dans la fenetre. Utilisee pour situer un virage sur
-   la carte meme quand le point exact du sommet d'angle n'a pas
-   de position GPS.
-*/
 
 function findNearestValidGps(track, index, maxOffset){
 
@@ -6978,30 +7182,769 @@ function haversineMeters(lat1, lon1, lat2, lon2){
 }
 
 
-/*
-   Point d'entree appele juste apres l'enregistrement reussi
-   d'une session. Prend les virages de la session (deja
-   calcules par le moteur), ne garde que ceux au-dessus du
-   seuil, retrouve leur position GPS (via l'index deja fourni
-   par le moteur sur chaque virage) et les fait correspondre
-   aux virages deja connus.
+/* -----------------------------------------------------
+   Detection de TOUS les virages d'un trace
 
-   Retourne le nombre de virages effectivement enregistres
-   sur la carte partagee (0 si aucun, ou en cas d'echec global).
+   Le moteur ne conserve que les 10 virages les plus inclines
+   d'une session (tableau de la session). Pour la carte, on veut
+   tous ceux qui depassent le seuil : on reprend exactement la
+   meme logique de detection (memes seuils, meme buildTurn du
+   moteur, appele sans etre modifie), simplement sans la limite
+   des 10, et dans l'ordre chronologique.
+----------------------------------------------------- */
+
+function detectAllTurnsForMap(data){
+
+  const turns = [];
+
+  if(!Array.isArray(data) || data.length < MIN_TURN_POINTS){
+    return turns;
+  }
+
+  let active = false;
+
+  let side = 0;
+
+  let start = 0;
+
+  let lastTime = 0;
+
+  const closeTurn = end => {
+
+    const turn =
+      buildTurn(data, start, end, side);
+
+    if(
+      turn &&
+      turn.startTime - lastTime >= MIN_TURN_GAP_SEC
+    ){
+
+      turns.push(turn);
+
+      lastTime = turn.endTime;
+
+    }
+
+  };
+
+  for(let i = 0; i < data.length; i++){
+
+    const a =
+      data[i].angle;
+
+    const abs =
+      Math.abs(a);
+
+    if(!active){
+
+      if(abs >= TURN_START_DEG){
+
+        active = true;
+
+        side = a >= 0 ? 1 : -1;
+
+        start = i;
+
+      }
+
+      continue;
+
+    }
+
+    if(a !== 0 && Math.sign(a) !== side){
+
+      closeTurn(i - 1);
+
+      if(abs >= TURN_START_DEG){
+
+        start = i;
+
+        side = a >= 0 ? 1 : -1;
+
+      }
+      else{
+
+        active = false;
+
+      }
+
+      continue;
+
+    }
+
+    if(abs <= TURN_END_DEG){
+
+      closeTurn(i);
+
+      active = false;
+
+    }
+
+  }
+
+  if(active){
+
+    const turn =
+      buildTurn(data, start, data.length - 1, side);
+
+    if(turn){
+      turns.push(turn);
+    }
+
+  }
+
+  return turns
+    .filter(t =>
+      t.points >= MIN_TURN_POINTS &&
+      t.angleAbs >= TURN_START_DEG
+    )
+    .sort((a, b) => a.startTime - b.startTime);
+
+}
+
+
+/* -----------------------------------------------------
+   Position GPS du sommet d'un virage
+
+   Chaque echantillon enregistre par le moteur recopie le
+   DERNIER fix GPS recu (environ 1 par seconde) : au sommet d'un
+   virage, la position peut donc dater de pres d'une seconde, soit
+   15 a 25 m de retard a vitesse de balade. On corrige en
+   interpolant entre le fix en cours et le fix suivant, au prorata
+   du temps ecoule depuis l'arrivee du fix en cours.
+
+   Si le sommet n'a pas de position du tout, on prend la position
+   valide la plus proche dans le temps, a TURN_POSITION_MAX_GAP_SEC
+   secondes maximum (au-dela, on prefere ne pas placer le virage
+   plutot que de le placer au mauvais endroit sur la carte
+   commune).
+----------------------------------------------------- */
+
+function turnsIsValidFix(p){
+
+  return (
+    !!p &&
+    Number.isFinite(p.lat) &&
+    Number.isFinite(p.lon)
+  );
+
+}
+
+
+function estimateTurnPosition(track, apexIndex){
+
+  if(!Array.isArray(track) || !track[apexIndex]){
+    return null;
+  }
+
+  const apex =
+    track[apexIndex];
+
+  const tApex =
+    apex.time;
+
+  if(!turnsIsValidFix(apex)){
+
+    for(let offset = 1; offset < track.length; offset++){
+
+      const before =
+        track[apexIndex - offset];
+
+      const after =
+        track[apexIndex + offset];
+
+      if(!before && !after){
+        break;
+      }
+
+      const dtBefore =
+        before ? Math.abs(tApex - before.time) : Infinity;
+
+      const dtAfter =
+        after ? Math.abs(after.time - tApex) : Infinity;
+
+      if(Math.min(dtBefore, dtAfter) > TURN_POSITION_MAX_GAP_SEC){
+        break;
+      }
+
+      let best = null;
+
+      let bestDt = Infinity;
+
+      if(
+        turnsIsValidFix(before) &&
+        dtBefore <= TURN_POSITION_MAX_GAP_SEC &&
+        dtBefore < bestDt
+      ){
+        best = before;
+        bestDt = dtBefore;
+      }
+
+      if(
+        turnsIsValidFix(after) &&
+        dtAfter <= TURN_POSITION_MAX_GAP_SEC &&
+        dtAfter < bestDt
+      ){
+        best = after;
+        bestDt = dtAfter;
+      }
+
+      if(best){
+        return { lat:best.lat, lon:best.lon };
+      }
+
+    }
+
+    return null;
+
+  }
+
+  const lat0 = apex.lat;
+
+  const lon0 = apex.lon;
+
+  const sameFix = p =>
+    turnsIsValidFix(p) &&
+    p.lat === lat0 &&
+    p.lon === lon0;
+
+  let first = apexIndex;
+
+  while(first - 1 >= 0 && sameFix(track[first - 1])){
+    first--;
+  }
+
+  let next = apexIndex + 1;
+
+  while(next < track.length && sameFix(track[next])){
+    next++;
+  }
+
+  if(next >= track.length || !turnsIsValidFix(track[next])){
+    return { lat:lat0, lon:lon0 };
+  }
+
+  const t0 =
+    track[first].time;
+
+  const t1 =
+    track[next].time;
+
+  const dt =
+    t1 - t0;
+
+  const lat1 = track[next].lat;
+
+  const lon1 = track[next].lon;
+
+  if(
+    !(dt > 0) ||
+    dt > 3 ||
+    haversineMeters(lat0, lon0, lat1, lon1) > 200
+  ){
+    return { lat:lat0, lon:lon0 };
+  }
+
+  const f =
+    Math.min(1, Math.max(0, (tApex - t0) / dt));
+
+  return {
+    lat:lat0 + (lat1 - lat0) * f,
+    lon:lon0 + (lon1 - lon0) * f
+  };
+
+}
+
+
+function findApexIndexInWindow(track, startTime, endTime){
+
+  let best = -1;
+
+  let bestAbs = -1;
+
+  for(let i = 0; i < track.length; i++){
+
+    const p = track[i];
+
+    if(
+      Number.isFinite(p.time) &&
+      p.time >= startTime &&
+      p.time <= endTime &&
+      Math.abs(p.angle) > bestAbs
+    ){
+      bestAbs = Math.abs(p.angle);
+      best = i;
+    }
+
+  }
+
+  if(best >= 0){
+    return best;
+  }
+
+  const mid =
+    (startTime + endTime) / 2;
+
+  let bestDiff = Infinity;
+
+  for(let i = 0; i < track.length; i++){
+
+    const diff =
+      Math.abs(track[i].time - mid);
+
+    if(diff < bestDiff){
+      bestDiff = diff;
+      best = i;
+    }
+
+  }
+
+  return best;
+
+}
+
+
+/*
+   Format compact d'un passage, stocke sur la session (champ
+   mapTurns) : t = debut du virage (s), a = angle max signe,
+   s = vitesse au sommet (km/h), y/x = latitude/longitude.
 */
+
+function compactMapTurn(startTime, angle, speed, pos){
+
+  return {
+    t:Math.round(startTime * 10) / 10,
+    a:Math.round(angle * 10) / 10,
+    s:Math.round((Number.isFinite(speed) ? speed : 0) * 10) / 10,
+    y:Math.round(pos.lat * 1e6) / 1e6,
+    x:Math.round(pos.lon * 1e6) / 1e6
+  };
+
+}
+
+
+/*
+   Passages eligibles d'un trace pleine resolution (session qui
+   vient d'etre enregistree).
+*/
+
+function buildMapTurnsFromTrack(track){
+
+  const eligible =
+    detectAllTurnsForMap(track)
+      .filter(t => t.angleAbs >= MIN_TURN_ANGLE_FOR_MAP);
+
+  const mapTurns = [];
+
+  let withoutGps = 0;
+
+  eligible.forEach(t => {
+
+    const pos =
+      estimateTurnPosition(track, t.index);
+
+    if(!pos){
+      withoutGps++;
+      return;
+    }
+
+    mapTurns.push(
+      compactMapTurn(t.startTime, t.angle, t.speedAtMax, pos)
+    );
+
+  });
+
+  return {
+    eligible:eligible.length,
+    withoutGps:withoutGps,
+    mapTurns:mapTurns
+  };
+
+}
+
+
+/*
+   Passages eligibles d'une session enregistree AVANT cette
+   version (pas de champ mapTurns) : on redetecte sur le trace
+   sauvegarde, et on reprend les valeurs exactes du tableau des
+   virages de la session (calculees en pleine resolution) quand
+   elles existent.
+*/
+
+function deriveMapTurnsFromSession(data){
+
+  const track =
+    decompressTrack(Array.isArray(data.track) ? data.track : []);
+
+  const passes =
+    detectAllTurnsForMap(track)
+      .filter(t => t.angleAbs >= MIN_TURN_ANGLE_FOR_MAP)
+      .map(t => ({
+        startTime:t.startTime,
+        endTime:t.endTime,
+        apexIndex:t.index,
+        angle:t.angle,
+        speedAtMax:t.speedAtMax,
+        savedLat:null,
+        savedLon:null
+      }));
+
+  (Array.isArray(data.turns) ? data.turns : [])
+    .filter(saved =>
+      Number.isFinite(saved.angle) &&
+      Math.abs(saved.angle) >= MIN_TURN_ANGLE_FOR_MAP &&
+      Number.isFinite(saved.startTime) &&
+      Number.isFinite(saved.endTime)
+    )
+    .forEach(saved => {
+
+      const overlap =
+        passes.find(p =>
+          p.startTime <= saved.endTime &&
+          saved.startTime <= p.endTime
+        );
+
+      if(overlap){
+
+        overlap.angle = saved.angle;
+
+        if(Number.isFinite(saved.speedAtMax)){
+          overlap.speedAtMax = saved.speedAtMax;
+        }
+
+        overlap.savedLat = saved.lat;
+
+        overlap.savedLon = saved.lon;
+
+      }
+      else{
+
+        passes.push({
+          startTime:saved.startTime,
+          endTime:saved.endTime,
+          apexIndex:-1,
+          angle:saved.angle,
+          speedAtMax:saved.speedAtMax,
+          savedLat:saved.lat,
+          savedLon:saved.lon
+        });
+
+      }
+
+    });
+
+  return passes
+    .map(p => {
+
+      const index =
+        p.apexIndex >= 0
+        ? p.apexIndex
+        : findApexIndexInWindow(track, p.startTime, p.endTime);
+
+      let pos =
+        index >= 0
+        ? estimateTurnPosition(track, index)
+        : null;
+
+      if(
+        !pos &&
+        Number.isFinite(p.savedLat) &&
+        Number.isFinite(p.savedLon)
+      ){
+        pos = { lat:p.savedLat, lon:p.savedLon };
+      }
+
+      return pos
+        ? compactMapTurn(p.startTime, p.angle, p.speedAtMax, pos)
+        : null;
+
+    })
+    .filter(Boolean)
+    .sort((a, b) => a.t - b.t);
+
+}
+
+
+/* -----------------------------------------------------
+   Entrees par pilote
+----------------------------------------------------- */
+
+function emptyRiderEntry(pseudo){
+
+  return {
+    pseudo:pseudo,
+    passCount:0,
+    bestAngle:0,
+    bestAngleSigned:0,
+    bestAngleSpeed:0,
+    bestAngleAt:0,
+    bestSpeed:0,
+    bestSpeedAngle:0,
+    bestSpeedAt:0,
+    lastPassAt:0
+  };
+
+}
+
+
+function normalizeRiderEntry(raw, pseudo){
+
+  const entry =
+    emptyRiderEntry(pseudo);
+
+  if(!raw || typeof raw !== 'object'){
+    return entry;
+  }
+
+  Object.keys(entry).forEach(key => {
+
+    if(key === 'pseudo'){
+      return;
+    }
+
+    if(Number.isFinite(raw[key])){
+      entry[key] = raw[key];
+    }
+
+  });
+
+  if(typeof raw.pseudo === 'string' && !pseudo){
+    entry.pseudo = raw.pseudo;
+  }
+
+  return entry;
+
+}
+
+
+function addPassToRiderEntry(entry, pass, passAt){
+
+  const first =
+    !(entry.passCount > 0);
+
+  const absAngle =
+    Math.abs(pass.a);
+
+  if(first || absAngle > entry.bestAngle){
+
+    entry.bestAngle = Math.round(absAngle * 10) / 10;
+    entry.bestAngleSigned = pass.a;
+    entry.bestAngleSpeed = pass.s;
+    entry.bestAngleAt = passAt;
+
+  }
+
+  if(first || pass.s > entry.bestSpeed){
+
+    entry.bestSpeed = pass.s;
+    entry.bestSpeedAngle = pass.a;
+    entry.bestSpeedAt = passAt;
+
+  }
+
+  entry.passCount = (entry.passCount || 0) + 1;
+
+  entry.lastPassAt = Math.max(entry.lastPassAt || 0, passAt);
+
+  return entry;
+
+}
+
+
+function sameRiderEntry(a, b){
+
+  if(!a || !b){
+    return false;
+  }
+
+  return Object.keys(emptyRiderEntry('')).every(key =>
+    a[key] === b[key]
+  );
+
+}
+
+
+/* -----------------------------------------------------
+   Rapprochement des passages avec les virages connus
+----------------------------------------------------- */
+
+function turnHasCenter(turn){
+
+  return (
+    Number.isFinite(turn.centerLat) &&
+    Number.isFinite(turn.centerLon)
+  );
+
+}
+
+
+/*
+   Rattache chaque passage d'UNE session (ordre chronologique)
+   au virage connu le plus proche, ou planifie la creation d'un
+   nouveau virage (ajoute a turnsList pour que les passages
+   suivants puissent s'y rattacher). Retourne [{ turn, pass }].
+*/
+
+function assignPassesToTurns(mapTurns, turnsList){
+
+  const assignments = [];
+
+  const lastMatchInSession =
+    new Map();
+
+  const ordered =
+    mapTurns
+      .filter(p =>
+        Number.isFinite(p.y) &&
+        Number.isFinite(p.x) &&
+        Number.isFinite(p.a)
+      )
+      .slice()
+      .sort((a, b) => a.t - b.t);
+
+  ordered.forEach(pass => {
+
+    let best = null;
+
+    let bestDist = Infinity;
+
+    for(const turn of turnsList){
+
+      if(!turnHasCenter(turn)){
+        continue;
+      }
+
+      const d =
+        haversineMeters(pass.y, pass.x, turn.centerLat, turn.centerLon);
+
+      if(d > TURN_MATCH_RADIUS_M || d >= bestDist){
+        continue;
+      }
+
+      const lastT =
+        lastMatchInSession.get(turn.id);
+
+      if(
+        lastT !== undefined &&
+        Math.abs(pass.t - lastT) < TURN_SAME_SESSION_GAP_SEC
+      ){
+        continue;
+      }
+
+      best = turn;
+
+      bestDist = d;
+
+    }
+
+    if(!best){
+
+      best = {
+        id:doc(collection(db, 'turns')).id,
+        centerLat:pass.y,
+        centerLon:pass.x,
+        riders:{},
+        isNew:true
+      };
+
+      turnsList.push(best);
+
+    }
+
+    lastMatchInSession.set(best.id, pass.t);
+
+    assignments.push({ turn:best, pass:pass });
+
+  });
+
+  return assignments;
+
+}
+
+
+function newTurnDocData(turn, uid, pseudo, entry){
+
+  return {
+    centerLat:turn.centerLat,
+    centerLon:turn.centerLon,
+    placeName:null,
+    discoveredBy:pseudo,
+    discoveredByUid:uid,
+    createdAt:serverTimestamp(),
+    updatedAt:serverTimestamp(),
+    riders:{ [uid]:entry }
+  };
+
+}
+
+
+function sessionStartMs(data){
+
+  const created =
+    data && data.createdAt;
+
+  let createdMs = NaN;
+
+  if(created && typeof created.toMillis === 'function'){
+    createdMs = created.toMillis();
+  }
+  else if(created && typeof created.toDate === 'function'){
+    createdMs = created.toDate().getTime();
+  }
+
+  if(!Number.isFinite(createdMs)){
+    createdMs = Date.now();
+  }
+
+  const duration =
+    data && Number.isFinite(data.durationSec)
+    ? data.durationSec
+    : 0;
+
+  return Math.round(createdMs - duration * 1000);
+
+}
+
+
+async function fetchAllTurns(){
+
+  const snap =
+    await getDocs(collection(db, 'turns'));
+
+  return snap.docs.map(d => ({
+    id:d.id,
+    ...d.data()
+  }));
+
+}
+
+
+/* -----------------------------------------------------
+   Synchronisation a l'enregistrement d'une session
+
+   Point d'entree appele juste apres l'enregistrement reussi
+   d'une session (voir saveCurrentSessionToFirestore). Tout est
+   ecrit dans UNE transaction : entrees du pilote sur les virages
+   concernes, virages nouvellement decouverts, et marquage de la
+   session comme synchronisee (mapTurns + mapSyncV). Si quoi que
+   ce soit echoue, rien n'est ecrit et la resynchronisation
+   automatique (a l'ouverture de la carte) rattrapera la session.
+
+   Retourne { recorded, eligible, withoutGps, loadFailed }.
+----------------------------------------------------- */
 
 async function syncTurnsToSharedMap(snapshot, sessionId){
 
   const user =
     window.FirebaseBridge.currentUser;
 
-  const eligibleTurns =
-    snapshot.turns.filter(t => t.angleAbs >= MIN_TURN_ANGLE_FOR_MAP);
+  const built =
+    buildMapTurnsFromTrack(snapshot.track);
 
   const result = {
     recorded:0,
-    eligible:eligibleTurns.length,
-    withoutGps:0,
+    eligible:built.eligible,
+    withoutGps:built.withoutGps,
     loadFailed:false
   };
 
@@ -7009,57 +7952,41 @@ async function syncTurnsToSharedMap(snapshot, sessionId){
     return result;
   }
 
-  const candidates =
-    eligibleTurns
-      .map(t => {
+  const uid = user.uid;
 
-        const p =
-          findNearestValidGps(
-            snapshot.track,
-            t.index,
-            GPS_LOOKUP_WINDOW
-          );
+  const pseudo =
+    user.displayName || user.email;
 
-        return {
+  const sessionRef =
+    doc(db, 'users', uid, 'sessions', sessionId);
 
-          angle:t.angle,
-          angleAbs:t.angleAbs,
-          speedAtMax:t.speedAtMax,
-          averageSpeed:t.averageSpeed,
-          duration:t.duration,
-          side:t.side,
-          lat:p ? p.lat : null,
-          lon:p ? p.lon : null
+  /*
+     Heure de reference des passages (debut de la session), stockee
+     avec eux sur la session : la resynchronisation reutilise
+     exactement la meme, donc les dates ne changent jamais.
+  */
 
-        };
+  const startMs =
+    Math.round(Date.now() - (snapshot.durationSec || 0) * 1000);
 
-      })
-      .filter(c =>
-        Number.isFinite(c.lat) &&
-        Number.isFinite(c.lon)
-      );
+  if(built.mapTurns.length === 0){
 
-  result.withoutGps =
-    eligibleTurns.length - candidates.length;
+    await updateDoc(sessionRef, {
+      mapTurns:[],
+      mapTurnsBaseMs:startMs,
+      mapSyncV:TURNS_MAP_SYNC_VERSION
+    });
 
-  if(candidates.length === 0){
     return result;
+
   }
 
-  let existingTurns;
+  let turnsList;
 
   try{
 
-    const snap =
-      await getDocs(
-        collection(db, 'turns')
-      );
-
-    existingTurns =
-      snap.docs.map(d => ({
-        id:d.id,
-        ...d.data()
-      }));
+    turnsList =
+      await fetchAllTurns();
 
   }
   catch(err){
@@ -7075,263 +8002,403 @@ async function syncTurnsToSharedMap(snapshot, sessionId){
 
   }
 
-  for(const candidate of candidates){
+  const assignments =
+    assignPassesToTurns(built.mapTurns, turnsList);
 
-    try{
+  const byTurn =
+    new Map();
 
-      await matchAndRecordTurn(
-        candidate,
-        existingTurns,
-        user,
-        sessionId
-      );
+  assignments.forEach(({ turn, pass }) => {
 
-      result.recorded++;
-
-    }
-    catch(err){
-
-      console.error(
-        '[Virages] Echec enregistrement d\'un virage :',
-        err
-      );
-
-      /*
-         On continue avec les virages suivants de la session
-         meme si celui-ci a echoue.
-      */
-
+    if(!byTurn.has(turn.id)){
+      byTurn.set(turn.id, { turn:turn, passes:[] });
     }
 
-  }
+    byTurn.get(turn.id).passes.push(pass);
+
+  });
+
+  await runTransaction(db, async tx => {
+
+    const groups =
+      Array.from(byTurn.values());
+
+    const snaps =
+      await Promise.all(
+        groups.map(g =>
+          g.turn.isNew
+          ? Promise.resolve(null)
+          : tx.get(doc(db, 'turns', g.turn.id))
+        )
+      );
+
+    groups.forEach((g, i) => {
+
+      const ref =
+        doc(db, 'turns', g.turn.id);
+
+      const snap =
+        snaps[i];
+
+      const exists =
+        !!snap && snap.exists();
+
+      const current =
+        exists && snap.data().riders
+        ? snap.data().riders[uid]
+        : null;
+
+      const entry =
+        normalizeRiderEntry(current, pseudo);
+
+      g.passes.forEach(pass =>
+        addPassToRiderEntry(entry, pass, Math.round(startMs + pass.t * 1000))
+      );
+
+      if(exists){
+
+        tx.update(ref, {
+          ['riders.' + uid]:entry,
+          updatedAt:serverTimestamp()
+        });
+
+      }
+      else{
+
+        tx.set(ref, newTurnDocData(g.turn, uid, pseudo, entry));
+
+      }
+
+    });
+
+    tx.update(sessionRef, {
+      mapTurns:built.mapTurns,
+      mapTurnsBaseMs:startMs,
+      mapSyncV:TURNS_MAP_SYNC_VERSION
+    });
+
+  });
+
+  result.recorded = built.mapTurns.length;
 
   return result;
 
 }
 
 
-/*
-   Cherche le virage existant le plus proche du candidat. Si un
-   virage est trouve a moins de TURN_MATCH_RADIUS_M, on y ajoute
-   un passage et on met a jour les records (transaction, pour
-   eviter les ecrasements en cas d'enregistrements simultanes).
-   Sinon, on cree un nouveau virage partage.
-*/
+/* -----------------------------------------------------
+   Resynchronisation complete des entrees du pilote connecte
 
-async function matchAndRecordTurn(candidate, existingTurns, user, sessionId){
+   Recalcule depuis zero TOUTES les entrees du pilote a partir de
+   TOUTES ses sessions enregistrees, puis ecrit uniquement ce qui
+   change. Idempotent : peut etre relance autant de fois que
+   necessaire sans jamais compter un passage deux fois. Sert a :
+     - integrer les sessions enregistrees avant cette version,
+     - rattraper une session dont la synchronisation a echoue.
+----------------------------------------------------- */
 
-  let nearest = null;
+let turnsResyncPromise = null;
 
-  let nearestDist = Infinity;
 
-  for(const t of existingTurns){
+function resyncMyTurns(){
 
-    if(
-      !Number.isFinite(t.centerLat) ||
-      !Number.isFinite(t.centerLon)
-    ){
-      continue;
-    }
+  if(!turnsResyncPromise){
 
-    const d =
-      haversineMeters(
-        candidate.lat,
-        candidate.lon,
-        t.centerLat,
-        t.centerLon
-      );
-
-    if(d < nearestDist){
-      nearestDist = d;
-      nearest = t;
-    }
+    turnsResyncPromise =
+      doResyncMyTurns()
+        .finally(() => {
+          turnsResyncPromise = null;
+        });
 
   }
 
-  const pseudo =
-    user.displayName || user.email;
+  return turnsResyncPromise;
 
-  const direction =
-    candidate.side > 0 ? 'droite' : 'gauche';
+}
 
-  if(nearest && nearestDist <= TURN_MATCH_RADIUS_M){
 
-    const turnRef =
-      doc(db, 'turns', nearest.id);
+async function commitTurnsOpsInChunks(ops){
 
-    const passRef =
-      doc(
-        collection(db, 'turns', nearest.id, 'passes')
-      );
+  const CHUNK = 400;
 
-    await runTransaction(db, async (tx) => {
+  for(let i = 0; i < ops.length; i += CHUNK){
 
-      const turnSnap =
-        await tx.get(turnRef);
+    const batch =
+      writeBatch(db);
 
-      if(!turnSnap.exists()){
-        return;
-      }
+    ops.slice(i, i + CHUNK).forEach(op => op(batch));
 
-      const data =
-        turnSnap.data();
-
-      const updates = {
-
-        passCount:(data.passCount || 0) + 1,
-        participants:arrayUnion(user.uid),
-        updatedAt:serverTimestamp()
-
-      };
-
-      if(
-        !data.bestAngleValue ||
-        candidate.angleAbs > data.bestAngleValue
-      ){
-
-        updates.bestAngleValue = candidate.angleAbs;
-        updates.bestAngleSigned = candidate.angle;
-        updates.bestAngleUser = pseudo;
-        updates.bestAngleUid = user.uid;
-        updates.bestAngleDate = serverTimestamp();
-
-      }
-
-      if(
-        !data.bestSpeedValue ||
-        candidate.speedAtMax > data.bestSpeedValue
-      ){
-
-        updates.bestSpeedValue = candidate.speedAtMax;
-        updates.bestSpeedUser = pseudo;
-        updates.bestSpeedUid = user.uid;
-        updates.bestSpeedDate = serverTimestamp();
-
-      }
-
-      tx.update(turnRef, updates);
-
-      tx.set(passRef, {
-
-        uid:user.uid,
-        pseudo:pseudo,
-        sessionId:sessionId,
-        angle:candidate.angle,
-        angleAbs:candidate.angleAbs,
-        speedAtMax:candidate.speedAtMax,
-        averageSpeed:candidate.averageSpeed,
-        duration:candidate.duration,
-        direction:direction,
-        lat:candidate.lat,
-        lon:candidate.lon,
-        createdAt:serverTimestamp()
-
-      });
-
-    });
-
-    /*
-       Met a jour le cache local pour que les virages suivants
-       de la meme session (s'il y en a) puissent se rattacher a
-       ce virage sans le recreer.
-    */
-
-    nearest.passCount =
-      (nearest.passCount || 0) + 1;
-
-    if(candidate.angleAbs > (nearest.bestAngleValue || 0)){
-      nearest.bestAngleValue = candidate.angleAbs;
-    }
-
-    if(candidate.speedAtMax > (nearest.bestSpeedValue || 0)){
-      nearest.bestSpeedValue = candidate.speedAtMax;
-    }
-
-  }
-  else{
-
-    const newTurnRef =
-      doc(collection(db, 'turns'));
-
-    await setDoc(newTurnRef, {
-
-      centerLat:candidate.lat,
-      centerLon:candidate.lon,
-      placeName:null,
-      passCount:1,
-      participants:[user.uid],
-      bestAngleValue:candidate.angleAbs,
-      bestAngleSigned:candidate.angle,
-      bestAngleUser:pseudo,
-      bestAngleUid:user.uid,
-      bestAngleDate:serverTimestamp(),
-      bestSpeedValue:candidate.speedAtMax,
-      bestSpeedUser:pseudo,
-      bestSpeedUid:user.uid,
-      bestSpeedDate:serverTimestamp(),
-      discoveredBy:pseudo,
-      createdAt:serverTimestamp(),
-      updatedAt:serverTimestamp()
-
-    });
-
-    await addDoc(
-      collection(db, 'turns', newTurnRef.id, 'passes'),
-      {
-
-        uid:user.uid,
-        pseudo:pseudo,
-        sessionId:sessionId,
-        angle:candidate.angle,
-        angleAbs:candidate.angleAbs,
-        speedAtMax:candidate.speedAtMax,
-        averageSpeed:candidate.averageSpeed,
-        duration:candidate.duration,
-        direction:direction,
-        lat:candidate.lat,
-        lon:candidate.lon,
-        createdAt:serverTimestamp()
-
-      }
-    );
-
-    existingTurns.push({
-
-      id:newTurnRef.id,
-      centerLat:candidate.lat,
-      centerLon:candidate.lon,
-      passCount:1,
-      bestAngleValue:candidate.angleAbs,
-      bestSpeedValue:candidate.speedAtMax
-
-    });
-
-    /*
-       Nommage automatique du virage (rue/lieu-dit le plus
-       proche) en arriere-plan. Ne bloque jamais l'enregistrement
-       de la session : en cas d'echec ou de lenteur, le virage
-       garde simplement un nom generique (voir buildTurnLabel).
-    */
-
-    reverseGeocodeTurn(
-      newTurnRef.id,
-      candidate.lat,
-      candidate.lon
-    );
+    await batch.commit();
 
   }
 
 }
 
 
+async function doResyncMyTurns(){
+
+  const user =
+    window.FirebaseBridge.currentUser;
+
+  if(!user){
+    return null;
+  }
+
+  const uid = user.uid;
+
+  const pseudo =
+    user.displayName || user.email;
+
+  const [turnsList, sessionsSnap] =
+    await Promise.all([
+      fetchAllTurns(),
+      getDocs(collection(db, 'users', uid, 'sessions'))
+    ]);
+
+  const sessions =
+    sessionsSnap.docs
+      .map(d => ({ id:d.id, data:d.data() }))
+      .sort((a, b) => sessionStartMs(a.data) - sessionStartMs(b.data));
+
+  const entries =
+    new Map();
+
+  const sessionUpdates = [];
+
+  let passTotal = 0;
+
+  sessions.forEach(s => {
+
+    const hasBase =
+      Number.isFinite(s.data.mapTurnsBaseMs);
+
+    const startMs =
+      hasBase
+      ? s.data.mapTurnsBaseMs
+      : sessionStartMs(s.data);
+
+    let mapTurns;
+
+    if(Array.isArray(s.data.mapTurns)){
+
+      mapTurns = s.data.mapTurns;
+
+      if(s.data.mapSyncV !== TURNS_MAP_SYNC_VERSION || !hasBase){
+        sessionUpdates.push({
+          id:s.id,
+          data:{
+            mapTurnsBaseMs:startMs,
+            mapSyncV:TURNS_MAP_SYNC_VERSION
+          }
+        });
+      }
+
+    }
+    else{
+
+      mapTurns = deriveMapTurnsFromSession(s.data);
+
+      sessionUpdates.push({
+        id:s.id,
+        data:{
+          mapTurns:mapTurns,
+          mapTurnsBaseMs:startMs,
+          mapSyncV:TURNS_MAP_SYNC_VERSION
+        }
+      });
+
+    }
+
+    assignPassesToTurns(mapTurns, turnsList)
+      .forEach(({ turn, pass }) => {
+
+        if(!entries.has(turn.id)){
+          entries.set(turn.id, emptyRiderEntry(pseudo));
+        }
+
+        addPassToRiderEntry(
+          entries.get(turn.id),
+          pass,
+          Math.round(startMs + pass.t * 1000)
+        );
+
+        passTotal++;
+
+      });
+
+  });
+
+  const turnOps = [];
+
+  let created = 0;
+
+  turnsList.forEach(turn => {
+
+    const entry =
+      entries.get(turn.id);
+
+    const ref =
+      doc(db, 'turns', turn.id);
+
+    if(turn.isNew){
+
+      if(entry){
+
+        created++;
+
+        turnOps.push(batch =>
+          batch.set(ref, newTurnDocData(turn, uid, pseudo, entry))
+        );
+
+      }
+
+      return;
+
+    }
+
+    const current =
+      turn.riders && typeof turn.riders === 'object'
+      ? turn.riders[uid]
+      : undefined;
+
+    if(entry){
+
+      if(!sameRiderEntry(current, entry)){
+
+        turnOps.push(batch =>
+          batch.update(ref, {
+            ['riders.' + uid]:entry,
+            updatedAt:serverTimestamp()
+          })
+        );
+
+      }
+
+    }
+    else if(current !== undefined){
+
+      turnOps.push(batch =>
+        batch.update(ref, {
+          ['riders.' + uid]:deleteField(),
+          updatedAt:serverTimestamp()
+        })
+      );
+
+    }
+
+  });
+
+  /*
+     D'abord les virages, ensuite seulement le marquage des
+     sessions : si l'ecriture des virages echoue, les sessions ne
+     sont pas marquees et la resynchronisation sera retentee.
+  */
+
+  await commitTurnsOpsInChunks(turnOps);
+
+  await commitTurnsOpsInChunks(
+    sessionUpdates.map(u => batch =>
+      batch.update(doc(db, 'users', uid, 'sessions', u.id), u.data)
+    )
+  );
+
+  return {
+    sessions:sessions.length,
+    passes:passTotal,
+    turns:entries.size,
+    created:created
+  };
+
+}
+
+
 /*
-   Recherche du nom de rue / lieu-dit le plus proche via
-   l'API gratuite de geocodage inverse d'OpenStreetMap
-   (Nominatim), utilisee ici avec une grande parcimonie :
-   un seul appel, uniquement a la creation d'un nouveau
-   virage (jamais a chaque passage). En cas d'echec, de lenteur
-   ou de reponse vide, le virage garde un nom generique.
+   Faut-il resynchroniser ? Oui si au moins une session du pilote
+   n'est pas marquee comme synchronisee. Le comptage se fait cote
+   serveur (tres peu couteux) ; s'il n'est pas disponible, on se
+   rabat sur une resynchronisation unique par appareil.
 */
+
+function turnsLocalSyncKey(uid){
+
+  return 'incli.turnsMapSync.v' + TURNS_MAP_SYNC_VERSION + '.' + uid;
+
+}
+
+
+function turnsReadLocalSync(uid){
+
+  try{
+    return localStorage.getItem(turnsLocalSyncKey(uid)) === '1';
+  }
+  catch(err){
+    return false;
+  }
+
+}
+
+
+function turnsWriteLocalSync(uid){
+
+  try{
+    localStorage.setItem(turnsLocalSyncKey(uid), '1');
+  }
+  catch(err){
+    /* stockage local indisponible : sans consequence */
+  }
+
+}
+
+
+async function turnsNeedResync(uid){
+
+  try{
+
+    const firestoreModule =
+      await import(FIRESTORE_MODULE_URL);
+
+    if(typeof firestoreModule.getCountFromServer === 'function'){
+
+      const sessionsCol =
+        collection(db, 'users', uid, 'sessions');
+
+      const [all, synced] =
+        await Promise.all([
+          firestoreModule.getCountFromServer(sessionsCol),
+          firestoreModule.getCountFromServer(
+            query(
+              sessionsCol,
+              where('mapSyncV', '==', TURNS_MAP_SYNC_VERSION)
+            )
+          )
+        ]);
+
+      return all.data().count !== synced.data().count;
+
+    }
+
+  }
+  catch(err){
+
+    console.warn(
+      '[Virages] Verification de synchronisation indisponible :',
+      err
+    );
+
+  }
+
+  return !turnsReadLocalSync(uid);
+
+}
+
+
+/* -----------------------------------------------------
+   Nom de lieu (geocodage inverse OpenStreetMap / Nominatim)
+
+   Utilise avec parcimonie : un seul appel, uniquement quand on
+   ouvre le detail d'un virage qui n'a pas encore de nom, puis le
+   nom est enregistre sur le virage pour tout le monde.
+----------------------------------------------------- */
 
 async function reverseGeocodeTurn(turnId, lat, lon){
 
@@ -7355,7 +8422,7 @@ async function reverseGeocodeTurn(turnId, lat, lon){
     clearTimeout(timeoutId);
 
     if(!res.ok){
-      return;
+      return null;
     }
 
     const data =
@@ -7393,14 +8460,16 @@ async function reverseGeocodeTurn(turnId, lat, lon){
 
     }
 
-    if(label){
-
-      await updateDoc(
-        doc(db, 'turns', turnId),
-        { placeName:label }
-      );
-
+    if(!label){
+      return null;
     }
+
+    await updateDoc(
+      doc(db, 'turns', turnId),
+      { placeName:label }
+    );
+
+    return label;
 
   }
   catch(err){
@@ -7409,6 +8478,8 @@ async function reverseGeocodeTurn(turnId, lat, lon){
       '[Virages] Geocodage indisponible (non bloquant) :',
       err
     );
+
+    return null;
 
   }
 
@@ -7419,13 +8490,8 @@ async function reverseGeocodeTurn(turnId, lat, lon){
    VIRAGES - CARTE (LEAFLET) ET PANNEAU DE DETAIL
 ===================================================== */
 
-let sharedMapInstance = null;
-
-let sharedMapMarkersLayer = null;
-
-let lastLoadedTurns = [];
-
-let turnsMapLoaded = false;
+const turnsMapPanelEl =
+  document.getElementById('turnsMapPanel');
 
 const turnsMapStatus =
   document.getElementById('turnsMapStatus');
@@ -7439,8 +8505,11 @@ const turnsMapCountEl =
 const turnsMapMineOnly =
   document.getElementById('turnsMapMineOnly');
 
-const turnsMapListPanel =
-  document.getElementById('turnsMapListPanel');
+const turnsMapSyncStatusEl =
+  document.getElementById('turnsMapSyncStatus');
+
+const turnsMapResyncBtn =
+  document.getElementById('turnsMapResyncBtn');
 
 const turnDetailPanel =
   document.getElementById('turnDetailPanel');
@@ -7449,16 +8518,48 @@ document.getElementById('turnsMapThreshold').textContent =
   MIN_TURN_ANGLE_FOR_MAP;
 
 
+let sharedMapInstance = null;
+
+let sharedMapMarkersLayer = null;
+
+let sharedMapUserMoved = false;
+
+let turnsMapAllTurns = [];
+
+let turnsMapLoadedOnce = false;
+
+let turnsMapLoadSeq = 0;
+
+let turnsMapSelectedId = null;
+
+let turnDetailSeq = 0;
+
+const turnsMapMarkers =
+  new Map();
+
+const turnsLegacyRidersCache =
+  new Map();
+
+
+function turnsHtml(value){
+
+  return String(value === undefined || value === null ? '' : value)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+
+}
+
+
 function buildTurnLabel(turn){
 
   if(turn.placeName){
     return turn.placeName;
   }
 
-  if(
-    Number.isFinite(turn.centerLat) &&
-    Number.isFinite(turn.centerLon)
-  ){
+  if(turnHasCenter(turn)){
 
     return (
       'Virage (' +
@@ -7476,45 +8577,417 @@ function buildTurnLabel(turn){
 
 
 /*
-   Charge (ou recharge) la liste des virages partages depuis
-   Firestore. Appelee a chaque ouverture de l'onglet "Carte des
-   virages" : le volume attendu (quelques dizaines a quelques
-   centaines de virages pour un usage entre amis) reste tres
-   largement dans le quota gratuit, donc pas besoin de mise en
-   cache plus poussee pour l'instant.
+   Pilotes deja passes a la nouvelle version (au moins une entree
+   "riders" quelque part) : leurs anciennes donnees ne sont plus
+   lues, pour ne jamais les afficher en double.
 */
+
+function collectMigratedRiderUids(turns){
+
+  const uids =
+    new Set();
+
+  turns.forEach(turn => {
+
+    if(turn.riders && typeof turn.riders === 'object'){
+      Object.keys(turn.riders).forEach(uid => uids.add(uid));
+    }
+
+  });
+
+  return uids;
+
+}
+
+
+function turnRiderUids(turn, migratedUids){
+
+  const uids =
+    new Set(
+      turn.riders && typeof turn.riders === 'object'
+      ? Object.keys(turn.riders)
+      : []
+    );
+
+  (Array.isArray(turn.participants) ? turn.participants : [])
+    .forEach(uid => {
+      if(!migratedUids.has(uid)){
+        uids.add(uid);
+      }
+    });
+
+  return uids;
+
+}
+
+
+function turnRecordSummary(turn, migratedUids){
+
+  const riders =
+    turn.riders && typeof turn.riders === 'object'
+    ? Object.values(turn.riders)
+    : [];
+
+  let best = null;
+
+  riders.forEach(r => {
+
+    if(!best || (r.bestAngle || 0) > (best.bestAngle || 0)){
+      best = r;
+    }
+
+  });
+
+  const legacyVisible =
+    Array.isArray(turn.participants) &&
+    turn.participants.some(uid => !migratedUids.has(uid));
+
+  if(
+    legacyVisible &&
+    Number.isFinite(turn.bestAngleValue) &&
+    (!best || turn.bestAngleValue > best.bestAngle) &&
+    !migratedUids.has(turn.bestAngleUid)
+  ){
+
+    return {
+      angle:Number.isFinite(turn.bestAngleSigned)
+        ? turn.bestAngleSigned
+        : turn.bestAngleValue,
+      pseudo:turn.bestAngleUser || '?'
+    };
+
+  }
+
+  return best
+    ? { angle:best.bestAngleSigned, pseudo:best.pseudo || '?' }
+    : null;
+
+}
+
+
+function turnMarkerStyle(mine, selected){
+
+  return {
+    radius:selected ? 13 : 9,
+    weight:selected ? 4 : 3,
+    color:selected ? '#ffffff' : '#0b1017',
+    opacity:1,
+    fillColor:mine ? '#ffcc33' : '#43d17a',
+    fillOpacity:1,
+    className:'turnMarker'
+  };
+
+}
+
+
+/*
+   Creation unique de la carte. Elle est creee avec une vue
+   initiale (donc immediatement "chargee" pour Leaflet), et un
+   ResizeObserver previent Leaflet a chaque changement de taille
+   reel du conteneur (onglet reaffiche, rotation d'ecran, ...) :
+   c'est ce qui garantit que le fond de carte et les points
+   restent parfaitement superposes.
+*/
+
+function ensureSharedMap(){
+
+  if(sharedMapInstance){
+    return sharedMapInstance;
+  }
+
+  if(typeof L === 'undefined'){
+    return null;
+  }
+
+  sharedMapInstance =
+    L.map(sharedMapEl, {
+      center:[46.6, 2.4],
+      zoom:5,
+      zoomControl:true,
+      attributionControl:true
+    });
+
+  /*
+     Tuiles officielles OpenStreetMap : gratuites, sans cle API.
+     Le rendu sombre est un simple filtre CSS applique aux tuiles
+     (voir #sharedMap .leaflet-tile-pane), qui ne deplace rien :
+     tuiles et points partagent la meme projection Leaflet.
+  */
+
+  L.tileLayer(
+    'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+    {
+      maxZoom:19,
+      attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    }
+  ).addTo(sharedMapInstance);
+
+  sharedMapMarkersLayer =
+    L.layerGroup().addTo(sharedMapInstance);
+
+  sharedMapInstance.on('dragstart', () => {
+    sharedMapUserMoved = true;
+  });
+
+  if(typeof ResizeObserver === 'function'){
+
+    const observer =
+      new ResizeObserver(entries => {
+
+        const box =
+          entries[0] && entries[0].contentRect;
+
+        if(!box || box.width < 2 || box.height < 2){
+          return;
+        }
+
+        sharedMapInstance.invalidateSize(false);
+
+      });
+
+    observer.observe(sharedMapEl);
+
+  }
+
+  return sharedMapInstance;
+
+}
+
+
+function visibleTurnsForMap(){
+
+  const user =
+    window.FirebaseBridge.currentUser;
+
+  const uid =
+    user ? user.uid : null;
+
+  const migrated =
+    collectMigratedRiderUids(turnsMapAllTurns);
+
+  const all =
+    turnsMapAllTurns.filter(turn =>
+      turnHasCenter(turn) &&
+      turnRiderUids(turn, migrated).size > 0
+    );
+
+  const shown =
+    turnsMapMineOnly.checked && uid
+    ? all.filter(turn => turnRiderUids(turn, migrated).has(uid))
+    : all;
+
+  return { all:all, shown:shown, migrated:migrated, uid:uid };
+
+}
+
+
+function fitSharedMapToTurns(turns){
+
+  if(!sharedMapInstance || turns.length === 0){
+    return;
+  }
+
+  sharedMapInstance.invalidateSize(false);
+
+  const latLngs =
+    turns.map(t => [t.centerLat, t.centerLon]);
+
+  if(latLngs.length === 1){
+
+    sharedMapInstance.setView(latLngs[0], 15, { animate:false });
+
+  }
+  else{
+
+    sharedMapInstance.fitBounds(
+      L.latLngBounds(latLngs),
+      { padding:[40, 40], maxZoom:15, animate:false }
+    );
+
+  }
+
+  sharedMapUserMoved = false;
+
+}
+
+
+function renderTurnsMap(options){
+
+  const fit =
+    !!(options && options.fit);
+
+  const view =
+    visibleTurnsForMap();
+
+  if(turnsMapLoadedOnce){
+
+    if(view.all.length === 0){
+
+      turnsMapStatus.textContent =
+        'Aucun virage sur la carte pour le moment. Enregistre une session ' +
+        'avec au moins un virage à plus de ' + MIN_TURN_ANGLE_FOR_MAP +
+        '° pour le faire apparaître.';
+
+      turnsMapStatus.classList.remove('hidden');
+
+    }
+    else if(view.shown.length === 0){
+
+      turnsMapStatus.textContent =
+        'Tu n\'as encore aucun passage sur un virage de la carte.';
+
+      turnsMapStatus.classList.remove('hidden');
+
+    }
+    else{
+
+      turnsMapStatus.classList.add('hidden');
+
+    }
+
+    turnsMapCountEl.textContent =
+      view.shown.length +
+      ' virage(s) affiché(s) sur ' +
+      view.all.length +
+      ' au total.';
+
+  }
+
+  const map =
+    ensureSharedMap();
+
+  if(!map){
+
+    turnsMapStatus.textContent =
+      'La carte n\'a pas pu être chargée (bibliothèque cartographique ' +
+      'indisponible : vérifie ta connexion puis rouvre l\'onglet).';
+
+    turnsMapStatus.classList.remove('hidden');
+
+    return;
+
+  }
+
+  map.invalidateSize(false);
+
+  sharedMapMarkersLayer.clearLayers();
+
+  turnsMapMarkers.clear();
+
+  view.shown.forEach(turn => {
+
+    const mine =
+      !!view.uid &&
+      turnRiderUids(turn, view.migrated).has(view.uid);
+
+    const marker =
+      L.circleMarker(
+        [turn.centerLat, turn.centerLon],
+        turnMarkerStyle(mine, turn.id === turnsMapSelectedId)
+      );
+
+    const record =
+      turnRecordSummary(turn, view.migrated);
+
+    marker.bindTooltip(
+      turnsHtml(buildTurnLabel(turn)) +
+      (record
+        ? '<br>Record : ' + signed(record.angle, 0) + '° (' + turnsHtml(record.pseudo) + ')'
+        : ''),
+      { direction:'top', offset:[0, -10] }
+    );
+
+    marker.on('click', () => selectTurn(turn.id, true));
+
+    marker.addTo(sharedMapMarkersLayer);
+
+    turnsMapMarkers.set(turn.id, { marker:marker, mine:mine });
+
+  });
+
+  if(turnsMapSelectedId && turnsMapMarkers.has(turnsMapSelectedId)){
+    turnsMapMarkers.get(turnsMapSelectedId).marker.bringToFront();
+  }
+
+  if(fit){
+
+    fitSharedMapToTurns(view.shown);
+
+    /*
+       Second cadrage de securite une fois la mise en page
+       stabilisee (sauf si l'utilisateur a deja deplace la carte).
+    */
+
+    setTimeout(() => {
+
+      if(sharedMapInstance && !sharedMapUserMoved){
+        fitSharedMapToTurns(visibleTurnsForMap().shown);
+      }
+
+    }, 300);
+
+  }
+
+}
+
+
+function restyleTurnMarkers(){
+
+  turnsMapMarkers.forEach((item, id) => {
+
+    const selected =
+      id === turnsMapSelectedId;
+
+    item.marker.setStyle(turnMarkerStyle(item.mine, selected));
+
+    if(selected){
+      item.marker.bringToFront();
+    }
+
+  });
+
+}
+
 
 async function loadTurnsMap(){
 
-  if(!turnsMapLoaded){
+  const user =
+    window.FirebaseBridge.currentUser;
+
+  if(!user){
+    return;
+  }
+
+  const seq =
+    ++turnsMapLoadSeq;
+
+  ensureSharedMap();
+
+  if(!turnsMapLoadedOnce){
 
     turnsMapStatus.textContent =
       'Chargement de la carte des virages...';
 
     turnsMapStatus.classList.remove('hidden');
 
-    sharedMapEl.classList.add('hidden');
-
   }
 
   try{
 
-    const snap =
-      await getDocs(
-        collection(db, 'turns')
-      );
+    const turns =
+      await fetchAllTurns();
 
-    lastLoadedTurns =
-      snap.docs
-        .map(d => ({ id:d.id, ...d.data() }))
-        .filter(t =>
-          Number.isFinite(t.centerLat) &&
-          Number.isFinite(t.centerLon)
-        );
+    if(seq !== turnsMapLoadSeq){
+      return;
+    }
 
-    turnsMapLoaded = true;
+    turnsMapAllTurns = turns;
 
-    renderTurnMarkers();
+    turnsMapLoadedOnce = true;
+
+    renderTurnsMap({ fit:true });
+
+    refreshTurnDetail();
 
   }
   catch(err){
@@ -7530,214 +9003,457 @@ async function loadTurnsMap(){
 
     turnsMapStatus.classList.remove('hidden');
 
-    sharedMapEl.classList.add('hidden');
+    return;
+
+  }
+
+  try{
+
+    if(!turnsResyncPromise && await turnsNeedResync(user.uid)){
+      await runTurnsResync();
+    }
+
+  }
+  catch(err){
+
+    console.warn('[Virages] Resynchronisation automatique ignoree :', err);
 
   }
 
 }
 
 
-function renderTurnMarkers(){
+async function runTurnsResync(){
 
   const user =
     window.FirebaseBridge.currentUser;
 
-  const mineOnly =
-    turnsMapMineOnly.checked;
-
-  const turnsToShow =
-    mineOnly && user
-      ? lastLoadedTurns.filter(t =>
-          Array.isArray(t.participants) &&
-          t.participants.includes(user.uid)
-        )
-      : lastLoadedTurns;
-
-  if(lastLoadedTurns.length === 0){
-
-    turnsMapStatus.textContent =
-      'Aucun virage enregistré pour le moment. Fais une session ' +
-      'avec au moins un virage à plus de ' +
-      MIN_TURN_ANGLE_FOR_MAP +
-      '° pour être le·la premier·ère à l\'ajouter !';
-
-    turnsMapStatus.classList.remove('hidden');
-
-    sharedMapEl.classList.add('hidden');
-
-    turnsMapCountEl.textContent = '';
-
+  if(!user){
     return;
-
   }
 
-  if(turnsToShow.length === 0){
+  turnsMapResyncBtn.disabled = true;
 
-    turnsMapStatus.textContent =
-      'Tu n\'as encore aucun passage enregistré sur un virage partagé.';
+  turnsMapSyncStatusEl.textContent =
+    'Mise à jour de tes virages à partir de tes sessions enregistrées...';
 
-    turnsMapStatus.classList.remove('hidden');
+  try{
 
-    sharedMapEl.classList.add('hidden');
+    const stats =
+      await resyncMyTurns();
 
-    turnsMapCountEl.textContent = '';
+    turnsWriteLocalSync(user.uid);
 
-    return;
+    if(stats){
 
-  }
+      turnsMapSyncStatusEl.textContent =
+        '✅ Tes virages sont à jour (' +
+        stats.sessions + ' session(s) analysée(s), ' +
+        stats.turns + ' virage(s) où tu as un passage).';
 
-  turnsMapStatus.classList.add('hidden');
+    }
 
-  sharedMapEl.classList.remove('hidden');
+    const turns =
+      await fetchAllTurns();
 
-  if(!sharedMapInstance){
+    const current =
+      window.FirebaseBridge.currentUser;
 
-    sharedMapInstance =
-      L.map('sharedMap', { attributionControl:true });
-
-    /*
-       Tuiles officielles OpenStreetMap : gratuites, sans cle API,
-       simplement soumises a une politique d'usage raisonnable
-       (largement suffisante pour une appli perso entre amis).
-       Le rendu sombre est obtenu par un filtre CSS applique
-       uniquement a ces tuiles (voir #sharedMap .leaflet-tile-pane
-       dans le CSS), pas par un fournisseur de tuiles specifique,
-       pour eviter de redependre d'un service qui pourrait un jour
-       exiger une cle lui aussi.
-    */
-
-    L.tileLayer(
-      'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-      {
-        maxZoom:19,
-        attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-      }
-    ).addTo(sharedMapInstance);
-
-    sharedMapMarkersLayer =
-      L.layerGroup().addTo(sharedMapInstance);
-
-  }
-
-  /*
-     Le conteneur de la carte vient tout juste de redevenir
-     visible (l'onglet peut etre affiche par un autre gestionnaire
-     de clic sur ce meme bouton, execute juste avant ou apres
-     celui-ci) : tant que le navigateur n'a pas fini de recalculer
-     la mise en page, Leaflet peut avoir une taille de conteneur
-     perimee. Si on place les reperes et qu'on cadre la carte
-     pendant cette fenetre, ils se retrouvent positionnes au
-     mauvais endroit (invisibles) meme si le fond de carte, lui,
-     se corrige tout seul un peu plus tard (les tuiles se
-     redemandent automatiquement au redimensionnement). On
-     regroupe donc invalidateSize() ET la pose des reperes dans le
-     meme callback different, apres que la mise en page soit
-     certainement stabilisee.
-  */
-
-  setTimeout(() => {
-
-    if(!sharedMapInstance){
+    if(!current || current.uid !== user.uid){
       return;
     }
 
-    sharedMapInstance.invalidateSize();
+    turnsMapAllTurns = turns;
 
-    sharedMapMarkersLayer.clearLayers();
+    turnsMapLoadedOnce = true;
 
-    const bounds = [];
+    renderTurnsMap({ fit:!sharedMapUserMoved });
 
-    turnsToShow.forEach(turn => {
+    refreshTurnDetail();
 
-      const mine =
-        !!user &&
-        (
-          turn.bestAngleUid === user.uid ||
-          turn.bestSpeedUid === user.uid
-        );
+  }
+  catch(err){
 
-      const marker =
-        L.circleMarker(
-          [turn.centerLat, turn.centerLon],
-          {
-            radius:9,
-            weight:3,
-            color:'#ffffff',
-            fillColor:mine ? '#ffcc33' : '#43d17a',
-            fillOpacity:1
-          }
-        );
+    console.error('[Virages] Echec de la resynchronisation :', err);
 
-      marker.bindTooltip(buildTurnLabel(turn));
+    turnsMapSyncStatusEl.textContent =
+      'La mise à jour de tes virages a échoué' +
+      (err && err.code ? ' (' + err.code + ')' : '') +
+      '. Réessaie avec le bouton ci-dessous.';
 
-      marker.on('click', () => openTurnDetail(turn));
+  }
+  finally{
 
-      marker.addTo(sharedMapMarkersLayer);
+    turnsMapResyncBtn.disabled = false;
 
-      bounds.push([turn.centerLat, turn.centerLon]);
-
-    });
-
-    if(bounds.length === 1){
-
-      sharedMapInstance.setView(bounds[0], 14);
-
-    }
-    else{
-
-      sharedMapInstance.fitBounds(bounds, { padding:[30, 30] });
-
-    }
-
-    /*
-       Filet de securite supplementaire : un deuxieme
-       invalidateSize() + re-cadrage un peu plus tard, au cas ou
-       la mise en page bougerait encore (transition d'onglet en
-       cours, clavier virtuel, etc.).
-    */
-
-    setTimeout(() => {
-
-      if(!sharedMapInstance){
-        return;
-      }
-
-      sharedMapInstance.invalidateSize();
-
-      if(bounds.length === 1){
-        sharedMapInstance.setView(bounds[0], 14);
-      }
-      else if(bounds.length > 1){
-        sharedMapInstance.fitBounds(bounds, { padding:[30, 30] });
-      }
-
-    }, 300);
-
-  }, 80);
-
-  turnsMapCountEl.textContent =
-    turnsToShow.length +
-    ' virage(s) affiché(s) sur ' +
-    lastLoadedTurns.length +
-    ' au total.';
+  }
 
 }
 
 
+/* -----------------------------------------------------
+   Detail d'un virage : classement (une ligne par pilote)
+----------------------------------------------------- */
+
+async function loadLegacyRiders(turnId){
+
+  if(turnsLegacyRidersCache.has(turnId)){
+    return turnsLegacyRidersCache.get(turnId);
+  }
+
+  const snap =
+    await getDocs(collection(db, 'turns', turnId, 'passes'));
+
+  const byUid =
+    new Map();
+
+  snap.docs
+    .map(d => d.data())
+    .forEach(p => {
+
+      if(!p.uid || !Number.isFinite(p.angle)){
+        return;
+      }
+
+      if(!byUid.has(p.uid)){
+        byUid.set(p.uid, emptyRiderEntry(p.pseudo || '?'));
+      }
+
+      const at =
+        p.createdAt && typeof p.createdAt.toMillis === 'function'
+        ? p.createdAt.toMillis()
+        : 0;
+
+      addPassToRiderEntry(
+        byUid.get(p.uid),
+        {
+          a:p.angle,
+          s:Number.isFinite(p.speedAtMax) ? p.speedAtMax : 0
+        },
+        at
+      );
+
+    });
+
+  const rows =
+    Array.from(byUid.entries())
+      .map(([uid, entry]) => ({ uid:uid, ...entry }));
+
+  turnsLegacyRidersCache.set(turnId, rows);
+
+  return rows;
+
+}
+
+
+function turnDateText(ms){
+
+  return Number.isFinite(ms) && ms > 0
+    ? new Date(ms).toLocaleDateString('fr-FR', { day:'2-digit', month:'2-digit', year:'2-digit' })
+    : '—';
+
+}
+
+
+function turnSideCell(angle){
+
+  return angle >= 0
+    ? '<td class="turnRight">DROITE</td>'
+    : '<td class="turnLeft">GAUCHE</td>';
+
+}
+
+
+function renderTurnLeaderboard(tbody, rows, mode){
+
+  const user =
+    window.FirebaseBridge.currentUser;
+
+  tbody.innerHTML = '';
+
+  if(rows.length === 0){
+
+    tbody.innerHTML =
+      '<tr><td colspan="7" class="noTurns">Aucun passage enregistré.</td></tr>';
+
+    return;
+
+  }
+
+  const sorted =
+    rows
+      .slice()
+      .sort((a, b) =>
+        mode === 'angle'
+        ? (b.bestAngle - a.bestAngle) || (b.bestAngleSpeed - a.bestAngleSpeed)
+        : (b.bestSpeed - a.bestSpeed) || (Math.abs(b.bestSpeedAngle) - Math.abs(a.bestSpeedAngle))
+      );
+
+  sorted.forEach((r, index) => {
+
+    const tr =
+      document.createElement('tr');
+
+    if(user && r.uid === user.uid){
+      tr.classList.add('turnRowMine');
+    }
+
+    const cells =
+      mode === 'angle'
+      ? (
+        '<td>' + signed(r.bestAngleSigned, 0) + '°</td>' +
+        '<td>' + fmt(r.bestAngleSpeed, 0) + ' km/h</td>' +
+        turnSideCell(r.bestAngleSigned) +
+        '<td>' + turnDateText(r.bestAngleAt) + '</td>'
+      )
+      : (
+        '<td>' + fmt(r.bestSpeed, 0) + ' km/h</td>' +
+        '<td>' + signed(r.bestSpeedAngle, 0) + '°</td>' +
+        turnSideCell(r.bestSpeedAngle) +
+        '<td>' + turnDateText(r.bestSpeedAt) + '</td>'
+      );
+
+    tr.innerHTML =
+      '<td>' + (index + 1) + '</td>' +
+      '<td>' + turnsHtml(r.pseudo || '?') + '</td>' +
+      cells +
+      '<td>' + (r.passCount || 0) + '</td>';
+
+    tbody.appendChild(tr);
+
+  });
+
+}
+
+
+function renderTurnDetail(turn, rows, loadingLegacy){
+
+  document.getElementById('turnDetailTitle').textContent =
+    buildTurnLabel(turn);
+
+  const passTotal =
+    rows.reduce((sum, r) => sum + (r.passCount || 0), 0);
+
+  document.getElementById('turnDetailMeta').textContent =
+    (turn.discoveredBy ? 'Découvert par ' + turn.discoveredBy + ' · ' : '') +
+    rows.length + ' pilote(s) · ' +
+    passTotal + ' passage(s)' +
+    (loadingLegacy ? ' · chargement...' : '');
+
+  let bestAngleRow = null;
+
+  let bestSpeedRow = null;
+
+  rows.forEach(r => {
+
+    if(!bestAngleRow || r.bestAngle > bestAngleRow.bestAngle){
+      bestAngleRow = r;
+    }
+
+    if(!bestSpeedRow || r.bestSpeed > bestSpeedRow.bestSpeed){
+      bestSpeedRow = r;
+    }
+
+  });
+
+  document.getElementById('turnDetailStats').innerHTML =
+
+    statBoxHtml(
+      'Record d\'angle',
+      bestAngleRow
+        ? signed(bestAngleRow.bestAngleSigned, 0) + '° · ' + turnsHtml(bestAngleRow.pseudo)
+        : '—'
+    ) +
+
+    statBoxHtml(
+      'Record de vitesse',
+      bestSpeedRow
+        ? fmt(bestSpeedRow.bestSpeed, 0) + ' km/h · ' + turnsHtml(bestSpeedRow.pseudo)
+        : '—'
+    );
+
+  renderTurnLeaderboard(
+    document.getElementById('turnLeaderboardAngle'),
+    rows,
+    'angle'
+  );
+
+  renderTurnLeaderboard(
+    document.getElementById('turnLeaderboardSpeed'),
+    rows,
+    'speed'
+  );
+
+  const osmLink =
+    document.getElementById('turnDetailOsmLink');
+
+  osmLink.href =
+    'https://www.openstreetmap.org/?mlat=' + turn.centerLat.toFixed(6) +
+    '&mlon=' + turn.centerLon.toFixed(6) +
+    '#map=17/' + turn.centerLat.toFixed(6) + '/' + turn.centerLon.toFixed(6);
+
+}
+
+
+async function openTurnDetail(turnId, scrollIntoView){
+
+  const turn =
+    turnsMapAllTurns.find(t => t.id === turnId);
+
+  if(!turn || !turnHasCenter(turn)){
+    closeTurnDetail();
+    return;
+  }
+
+  const seq =
+    ++turnDetailSeq;
+
+  turnDetailPanel.classList.remove('hidden');
+
+  const migrated =
+    collectMigratedRiderUids(turnsMapAllTurns);
+
+  const rows =
+    turn.riders && typeof turn.riders === 'object'
+    ? Object.entries(turn.riders)
+        .map(([uid, raw]) => ({ uid:uid, ...normalizeRiderEntry(raw, raw && raw.pseudo) }))
+    : [];
+
+  const riderUids =
+    new Set(rows.map(r => r.uid));
+
+  const legacyUids =
+    (Array.isArray(turn.participants) ? turn.participants : [])
+      .filter(uid => !migrated.has(uid) && !riderUids.has(uid));
+
+  renderTurnDetail(turn, rows, legacyUids.length > 0);
+
+  if(scrollIntoView && typeof turnDetailPanel.scrollIntoView === 'function'){
+    turnDetailPanel.scrollIntoView({ behavior:'smooth', block:'start' });
+  }
+
+  if(legacyUids.length > 0){
+
+    try{
+
+      const legacyRows =
+        await loadLegacyRiders(turn.id);
+
+      if(seq !== turnDetailSeq){
+        return;
+      }
+
+      legacyRows
+        .filter(r => legacyUids.includes(r.uid))
+        .forEach(r => rows.push(r));
+
+    }
+    catch(err){
+
+      console.warn('[Virages] Anciens passages indisponibles :', err);
+
+    }
+
+    if(seq !== turnDetailSeq){
+      return;
+    }
+
+    renderTurnDetail(turn, rows, false);
+
+  }
+
+  if(!turn.placeName){
+
+    const label =
+      await reverseGeocodeTurn(turn.id, turn.centerLat, turn.centerLon);
+
+    if(label){
+
+      turn.placeName = label;
+
+      if(seq === turnDetailSeq && turnsMapSelectedId === turn.id){
+        document.getElementById('turnDetailTitle').textContent = label;
+      }
+
+    }
+
+  }
+
+}
+
+
+function selectTurn(turnId, scrollIntoView){
+
+  turnsMapSelectedId = turnId;
+
+  restyleTurnMarkers();
+
+  openTurnDetail(turnId, scrollIntoView);
+
+}
+
+
+function refreshTurnDetail(){
+
+  if(!turnsMapSelectedId){
+    return;
+  }
+
+  if(!turnsMapMarkers.has(turnsMapSelectedId)){
+    closeTurnDetail();
+    return;
+  }
+
+  openTurnDetail(turnsMapSelectedId, false);
+
+}
+
+
+function closeTurnDetail(){
+
+  turnDetailSeq++;
+
+  turnsMapSelectedId = null;
+
+  turnDetailPanel.classList.add('hidden');
+
+  restyleTurnMarkers();
+
+}
+
+
+document.getElementById('closeTurnDetail').addEventListener('click', () => {
+
+  closeTurnDetail();
+
+});
+
+
 turnsMapMineOnly.addEventListener('change', () => {
 
-  if(turnsMapLoaded){
-    renderTurnMarkers();
+  if(!turnsMapLoadedOnce){
+    return;
   }
+
+  renderTurnsMap({ fit:true });
+
+  refreshTurnDetail();
+
+});
+
+
+turnsMapResyncBtn.addEventListener('click', () => {
+
+  runTurnsResync();
 
 });
 
 
 /*
-   Le bouton d'onglet "Carte des virages" a deja un gestionnaire
-   dans le script de navigation (affichage/masquage du panneau).
-   On y ajoute simplement celui-ci, sans toucher a l'existant,
-   pour declencher le chargement des donnees.
+   Les boutons "Carte des virages" et "Historique" ont deja leurs
+   gestionnaires d'affichage dans le script de navigation (executes
+   avant ceux-ci). On y ajoute simplement le chargement des donnees,
+   uniquement quand le panneau de la carte est effectivement visible.
 */
 
 document.getElementById('subTabTurnsMap').addEventListener('click', () => {
@@ -7747,174 +9463,40 @@ document.getElementById('subTabTurnsMap').addEventListener('click', () => {
 });
 
 
-async function openTurnDetail(turn){
+document.getElementById('navHistorique').addEventListener('click', () => {
 
-  turnsMapListPanel.classList.add('hidden');
-
-  turnDetailPanel.classList.remove('hidden');
-
-  document.getElementById('turnDetailTitle').textContent =
-    buildTurnLabel(turn);
-
-  const discoveredText =
-    turn.discoveredBy
-      ? ('Découvert par ' + turn.discoveredBy + '. ')
-      : '';
-
-  document.getElementById('turnDetailMeta').textContent =
-    discoveredText +
-    (turn.passCount || 0) +
-    ' passage(s) enregistré(s).';
-
-  document.getElementById('turnDetailStats').innerHTML =
-
-    statBoxHtml(
-      'Meilleur angle',
-      signed(turn.bestAngleSigned ?? turn.bestAngleValue, 0) +
-      '° — ' +
-      (turn.bestAngleUser || '?')
-    ) +
-
-    statBoxHtml(
-      'Meilleure vitesse',
-      fmt(turn.bestSpeedValue, 0) +
-      ' km/h — ' +
-      (turn.bestSpeedUser || '?')
-    );
-
-  const angleBody =
-    document.getElementById('turnLeaderboardAngle');
-
-  const speedBody =
-    document.getElementById('turnLeaderboardSpeed');
-
-  angleBody.innerHTML =
-    '<tr><td colspan="6" class="noTurns">Chargement...</td></tr>';
-
-  speedBody.innerHTML =
-    '<tr><td colspan="6" class="noTurns">Chargement...</td></tr>';
-
-  try{
-
-    const [angleSnap, speedSnap] =
-      await Promise.all([
-
-        getDocs(
-          query(
-            collection(db, 'turns', turn.id, 'passes'),
-            orderBy('angleAbs', 'desc'),
-            limit(10)
-          )
-        ),
-
-        getDocs(
-          query(
-            collection(db, 'turns', turn.id, 'passes'),
-            orderBy('speedAtMax', 'desc'),
-            limit(10)
-          )
-        )
-
-      ]);
-
-    renderTurnLeaderboard(
-      angleBody,
-      angleSnap.docs.map(d => d.data()),
-      'angle'
-    );
-
-    renderTurnLeaderboard(
-      speedBody,
-      speedSnap.docs.map(d => d.data()),
-      'speed'
-    );
-
-  }
-  catch(err){
-
-    console.error(
-      '[Virages] Impossible de charger le classement de ce virage :',
-      err
-    );
-
-    angleBody.innerHTML =
-      '<tr><td colspan="6" class="noTurns">Classement indisponible.</td></tr>';
-
-    speedBody.innerHTML =
-      '<tr><td colspan="6" class="noTurns">Classement indisponible.</td></tr>';
-
+  if(!turnsMapPanelEl.classList.contains('hidden')){
+    loadTurnsMap();
   }
 
-}
+});
 
 
-function renderTurnLeaderboard(tbody, passes, mode){
+/*
+   Changement de compte : on repart d'un etat vierge.
+*/
 
-  const user =
-    window.FirebaseBridge.currentUser;
+window.addEventListener('firebase-user-ready', () => {
 
-  tbody.innerHTML = '';
+  turnsMapLoadSeq++;
 
-  if(passes.length === 0){
+  turnsMapAllTurns = [];
 
-    tbody.innerHTML =
-      '<tr><td colspan="6" class="noTurns">Aucun passage enregistré.</td></tr>';
+  turnsMapLoadedOnce = false;
 
-    return;
+  turnsLegacyRidersCache.clear();
 
+  turnsMapSyncStatusEl.textContent = '';
+
+  turnsMapCountEl.textContent = '';
+
+  closeTurnDetail();
+
+  if(sharedMapMarkersLayer){
+    sharedMapMarkersLayer.clearLayers();
   }
 
-  passes.forEach((p, index) => {
-
-    const tr =
-      document.createElement('tr');
-
-    if(user && p.uid === user.uid){
-      tr.style.color = 'var(--yellow)';
-    }
-
-    const dateText =
-      p.createdAt && p.createdAt.toDate
-        ? p.createdAt.toDate().toLocaleDateString('fr-FR')
-        : '—';
-
-    const sideText =
-      p.direction === 'droite' ? 'DROITE' : 'GAUCHE';
-
-    const sideClass =
-      p.direction === 'droite' ? 'turnRight' : 'turnLeft';
-
-    const firstValueCell =
-      mode === 'angle'
-        ? '<td>' + signed(p.angle, 0) + '°</td>'
-        : '<td>' + fmt(p.speedAtMax, 0) + ' km/h</td>';
-
-    const secondValueCell =
-      mode === 'angle'
-        ? '<td>' + fmt(p.speedAtMax, 0) + ' km/h</td>'
-        : '<td>' + signed(p.angle, 0) + '°</td>';
-
-    tr.innerHTML =
-
-      '<td>' + (index + 1) + '</td>' +
-      '<td>' + (p.pseudo || '?') + '</td>' +
-      firstValueCell +
-      secondValueCell +
-      '<td class="' + sideClass + '">' + sideText + '</td>' +
-      '<td>' + dateText + '</td>';
-
-    tbody.appendChild(tr);
-
-  });
-
-}
-
-
-document.getElementById('closeTurnDetail').addEventListener('click', () => {
-
-  turnDetailPanel.classList.add('hidden');
-
-  turnsMapListPanel.classList.remove('hidden');
+  turnsMapMarkers.clear();
 
 });
 
