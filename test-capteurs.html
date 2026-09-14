@@ -1,0 +1,1160 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+
+<meta charset="utf-8">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover">
+
+<title>Test capteurs - Inclinomètre Moto</title>
+
+<style>
+
+:root{
+  --bg:#080b10;
+  --card:#111720;
+  --text:#f3f6fa;
+  --muted:#9ba8b7;
+  --accent:#43d17a;
+  --yellow:#ffcc33;
+  --red:#ff4d4d;
+  --blue:#5aa9ff;
+  --line:#25303c;
+}
+
+*{
+  box-sizing:border-box;
+}
+
+html,body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+}
+
+body{
+  padding:
+    env(safe-area-inset-top)
+    14px
+    env(safe-area-inset-bottom);
+}
+
+.wrap{
+  max-width:620px;
+  margin:auto;
+  padding-bottom:30px;
+}
+
+h1{
+  font-size:19px;
+  margin:16px 0 4px;
+}
+
+.sub{
+  font-size:12px;
+  color:var(--muted);
+  line-height:1.5;
+  margin-bottom:14px;
+}
+
+.card{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:14px;
+  margin-bottom:12px;
+}
+
+.card h2{
+  font-size:14px;
+  margin:0 0 8px;
+}
+
+.card p{
+  font-size:13px;
+  line-height:1.5;
+  color:var(--muted);
+  margin:0 0 8px;
+}
+
+.card p:last-child{
+  margin-bottom:0;
+}
+
+button{
+  width:100%;
+  border:0;
+  border-radius:13px;
+  padding:14px 10px;
+  font-size:16px;
+  font-weight:700;
+  background:#202a35;
+  color:var(--text);
+  margin-bottom:8px;
+}
+
+button.primary{
+  background:var(--accent);
+  color:#07100b;
+}
+
+button.blue{
+  background:#1d3855;
+  color:#bcdcff;
+}
+
+button:disabled{
+  opacity:0.45;
+}
+
+.state{
+  font-size:12px;
+  color:var(--muted);
+  text-align:center;
+  min-height:16px;
+  line-height:1.5;
+}
+
+.verdict{
+  font-size:15px;
+  font-weight:700;
+  line-height:1.5;
+}
+
+.verdictDetail{
+  font-size:12px;
+  color:var(--muted);
+  line-height:1.5;
+  margin-top:6px;
+}
+
+.angleBox{
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:12px;
+  margin-bottom:10px;
+  background:#0b1017;
+}
+
+.angleBox:last-child{
+  margin-bottom:0;
+}
+
+.angleLabel{
+  font-size:11px;
+  letter-spacing:0.04em;
+  text-transform:uppercase;
+  color:var(--muted);
+}
+
+.angleValue{
+  font-size:30px;
+  font-weight:700;
+  font-variant-numeric:tabular-nums;
+  margin-top:2px;
+}
+
+.angleSide{
+  font-size:15px;
+  font-weight:700;
+}
+
+.sideRight{
+  color:var(--yellow);
+}
+
+.sideLeft{
+  color:var(--blue);
+}
+
+.sideFlat{
+  color:var(--muted);
+}
+
+.bar{
+  position:relative;
+  height:10px;
+  border-radius:10px;
+  background:#1b232e;
+  margin-top:8px;
+  overflow:hidden;
+}
+
+.barMid{
+  position:absolute;
+  left:50%;
+  top:0;
+  bottom:0;
+  width:1px;
+  background:var(--line);
+}
+
+.barFill{
+  position:absolute;
+  top:0;
+  bottom:0;
+  left:50%;
+  width:0;
+  background:var(--accent);
+}
+
+.switchRow{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  font-size:13px;
+  color:var(--muted);
+  margin-top:10px;
+}
+
+.switchRow input{
+  width:18px;
+  height:18px;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  font-size:12px;
+  font-variant-numeric:tabular-nums;
+}
+
+td{
+  padding:5px 2px;
+  border-bottom:1px solid var(--line);
+}
+
+td:last-child{
+  text-align:right;
+}
+
+ol{
+  margin:6px 0 0;
+  padding-left:20px;
+  font-size:13px;
+  line-height:1.5;
+  color:var(--muted);
+}
+
+li{
+  margin-bottom:8px;
+}
+
+.stepDone{
+  color:var(--accent);
+}
+
+.report{
+  width:100%;
+  min-height:150px;
+  border:1px solid var(--line);
+  border-radius:10px;
+  padding:10px;
+  font-size:11px;
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+  background:#0b1017;
+  color:var(--text);
+  white-space:pre;
+  overflow:auto;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="wrap">
+
+<h1>🏍️ Test des capteurs</h1>
+
+<div class="sub">
+  Page de test indépendante de l'application : elle ne touche à rien,
+  n'enregistre rien et ne demande aucun compte. Elle sert à vérifier
+  si le capteur d'inclinaison confond la gauche et la droite sur ton
+  téléphone, et si le correctif règle le problème.
+</div>
+
+
+<div class="card">
+
+  <h2>1. Démarrer</h2>
+
+  <p>
+    Fixe le téléphone comme pour rouler (ou tiens-le bien à plat dans
+    la main), puis appuie sur le bouton. Sur iPhone, il faut accepter
+    la demande d'accès aux capteurs.
+  </p>
+
+  <button id="startBtn" class="primary" type="button">
+    DÉMARRER LES CAPTEURS
+  </button>
+
+  <button id="zeroBtn" type="button" disabled>
+    FAIRE LE ZÉRO (moto droite, immobile)
+  </button>
+
+  <div id="state" class="state">Capteurs arrêtés.</div>
+
+</div>
+
+
+<div class="card">
+
+  <h2>2. Convention détectée</h2>
+
+  <div id="verdict" class="verdict">En attente des capteurs...</div>
+
+  <div id="verdictDetail" class="verdictDetail"></div>
+
+</div>
+
+
+<div class="card">
+
+  <h2>3. Inclinaison mesurée</h2>
+
+  <div class="angleBox">
+    <div class="angleLabel">Version actuelle de l'appli</div>
+    <div id="angleCurrent" class="angleValue">0.0°</div>
+    <div id="sideCurrent" class="angleSide sideFlat">À plat</div>
+    <div class="bar"><div class="barMid"></div><div id="barCurrent" class="barFill"></div></div>
+  </div>
+
+  <div class="angleBox">
+    <div class="angleLabel">Version corrigée (proposée)</div>
+    <div id="angleFixed" class="angleValue">0.0°</div>
+    <div id="sideFixed" class="angleSide sideFlat">À plat</div>
+    <div class="bar"><div class="barMid"></div><div id="barFixed" class="barFill"></div></div>
+  </div>
+
+  <label class="switchRow">
+    <input type="checkbox" id="manualFlip">
+    Forcer l'inversion gauche/droite (test manuel)
+  </label>
+
+</div>
+
+
+<div class="card">
+
+  <h2>4. Test guidé</h2>
+
+  <p>
+    Fais le zéro d'abord. Ensuite, garde la position demandée pendant
+    la capture, appuie sur le bouton et attends une seconde.
+  </p>
+
+  <ol id="steps">
+    <li id="step1">Téléphone <strong>à plat, écran vers le ciel</strong> (sur une table).</li>
+    <li id="step2">Penche le téléphone (ou la moto) <strong>vers la droite</strong>, environ 30°.</li>
+    <li id="step3">Penche-le <strong>vers la gauche</strong>, environ 30°.</li>
+  </ol>
+
+  <button id="capture1" class="blue" type="button" disabled>Capturer à plat</button>
+  <button id="capture2" class="blue" type="button" disabled>Capturer penché à droite</button>
+  <button id="capture3" class="blue" type="button" disabled>Capturer penché à gauche</button>
+
+  <div id="testVerdict" class="verdictDetail"></div>
+
+</div>
+
+
+<div class="card">
+
+  <h2>5. Valeurs brutes</h2>
+
+  <table>
+    <tbody>
+      <tr><td>Accéléromètre X</td><td id="rawX">—</td></tr>
+      <tr><td>Accéléromètre Y</td><td id="rawY">—</td></tr>
+      <tr><td>Accéléromètre Z</td><td id="rawZ">—</td></tr>
+      <tr><td>Intensité mesurée</td><td id="rawG">—</td></tr>
+      <tr><td>Orientation bêta / gamma</td><td id="rawOri">—</td></tr>
+      <tr><td>Fréquence capteur</td><td id="rawHz">—</td></tr>
+    </tbody>
+  </table>
+
+</div>
+
+
+<div class="card">
+
+  <h2>6. Rapport à renvoyer</h2>
+
+  <p>
+    Appuie sur "Copier le rapport" puis colle-le dans un message.
+    Il ne contient aucune donnée personnelle : uniquement le modèle de
+    navigateur et des mesures de capteurs.
+  </p>
+
+  <button id="copyBtn" type="button">Copier le rapport</button>
+
+  <div id="copyState" class="state"></div>
+
+  <div id="report" class="report">Démarre les capteurs pour générer le rapport.</div>
+
+</div>
+
+</div>
+
+
+<script>
+
+'use strict';
+
+/* =====================================================
+   Calcul d'angle : COPIE CONFORME de l'application
+   (aucune modification, pour comparer honnetement)
+===================================================== */
+
+const LEAN_SIGN = 1;
+
+const CALIBRATION_MS = 1200;
+
+let running = false;
+
+let calibrating = false;
+
+let calibrationCount = 0;
+
+let calibrationGravity = { x:0, y:0, z:0 };
+
+let verticalAxis = { x:0, y:1, z:0 };
+
+const lateralAxis = { x:1, y:0, z:0 };
+
+let hzCount = 0;
+
+let hzTimer = performance.now();
+
+let hz = 0;
+
+
+function dot(a, b){
+  return a.x * b.x + a.y * b.y + a.z * b.z;
+}
+
+function norm(v){
+  return Math.sqrt(dot(v, v));
+}
+
+function normalize(v){
+
+  const n = norm(v);
+
+  if(n < 0.000001){
+    return { x:0, y:0, z:0 };
+  }
+
+  return { x:v.x / n, y:v.y / n, z:v.z / n };
+
+}
+
+function angleFromGravity(gravity){
+
+  const lateral = dot(gravity, lateralAxis);
+
+  const vertical = dot(gravity, verticalAxis);
+
+  return Math.atan2(lateral, vertical) * 180 / Math.PI * LEAN_SIGN;
+
+}
+
+
+/* =====================================================
+   Detection de la convention du capteur
+
+   Au repos, l'accelerometre d'un telephone renvoie un
+   vecteur d'intensite 9,81 : sur iPhone il pointe vers le
+   BAS (vers le sol), sur Android il pointe vers le HAUT
+   (norme W3C). L'application a ete reglee sur iPhone : sur
+   un telephone "norme W3C", la composante laterale change
+   de signe, ce qui inverse la gauche et la droite.
+
+   On compare le vecteur mesure avec la direction du bas
+   calculee a partir de l'orientation du telephone
+   (evenement deviceorientation, identique sur les deux
+   plateformes) : si les deux pointent dans le meme sens,
+   c'est la convention iPhone.
+===================================================== */
+
+const isAppleDevice =
+  /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+  (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+
+let orientationBeta = null;
+
+let orientationGamma = null;
+
+let orientationSamples = 0;
+
+let detectionScore = 0;
+
+let detectionSamples = 0;
+
+let detectedSign = isAppleDevice ? 1 : -1;
+
+let detectionMethod = isAppleDevice
+  ? 'modèle de téléphone (Apple)'
+  : 'modèle de téléphone (non Apple)';
+
+let lastRaw = null;
+
+let lastDownDevice = null;
+
+
+function downDirectionFromOrientation(betaDeg, gammaDeg){
+
+  const beta = betaDeg * Math.PI / 180;
+
+  const gamma = gammaDeg * Math.PI / 180;
+
+  return {
+    x:Math.cos(beta) * Math.sin(gamma),
+    y:-Math.sin(beta),
+    z:-Math.cos(beta) * Math.cos(gamma)
+  };
+
+}
+
+
+function updateDetection(totalVector){
+
+  if(orientationBeta === null || orientationGamma === null){
+    return;
+  }
+
+  const down =
+    downDirectionFromOrientation(orientationBeta, orientationGamma);
+
+  lastDownDevice = down;
+
+  const measured = normalize(totalVector);
+
+  if(norm(measured) < 0.5){
+    return;
+  }
+
+  const alignment = dot(measured, down);
+
+  /*
+     On n'utilise que les mesures franches (telephone pas
+     secoue, direction nette) pour ne pas se tromper.
+  */
+
+  if(Math.abs(alignment) < 0.6){
+    return;
+  }
+
+  detectionScore += alignment;
+
+  detectionSamples++;
+
+  if(detectionSamples >= 10){
+
+    detectedSign = detectionScore >= 0 ? 1 : -1;
+
+    detectionMethod = 'mesure capteur + orientation';
+
+  }
+
+}
+
+
+/* =====================================================
+   Lecture des capteurs
+===================================================== */
+
+const el = id => document.getElementById(id);
+
+let angleCurrent = 0;
+
+let angleFixed = 0;
+
+
+function handleOrientation(event){
+
+  if(event.beta === null || event.gamma === null){
+    return;
+  }
+
+  orientationBeta = event.beta;
+
+  orientationGamma = event.gamma;
+
+  orientationSamples++;
+
+}
+
+
+function handleMotion(event){
+
+  if(!running){
+    return;
+  }
+
+  const total = event.accelerationIncludingGravity;
+
+  if(!total || total.x === null || total.y === null || total.z === null){
+    return;
+  }
+
+  const totalVector = {
+    x:total.x / 9.80665,
+    y:total.y / 9.80665,
+    z:total.z / 9.80665
+  };
+
+  lastRaw = totalVector;
+
+  updateDetection(totalVector);
+
+  const dynamic = event.acceleration;
+
+  let dynamicVector = { x:0, y:0, z:0 };
+
+  if(dynamic && dynamic.x !== null && dynamic.y !== null && dynamic.z !== null){
+
+    dynamicVector = {
+      x:dynamic.x / 9.80665,
+      y:dynamic.y / 9.80665,
+      z:dynamic.z / 9.80665
+    };
+
+  }
+
+  if(calibrating){
+
+    calibrationGravity.x += totalVector.x;
+
+    calibrationGravity.y += totalVector.y;
+
+    calibrationGravity.z += totalVector.z;
+
+    calibrationCount++;
+
+    return;
+
+  }
+
+  const gravityVector = {
+    x:totalVector.x - dynamicVector.x,
+    y:totalVector.y - dynamicVector.y,
+    z:totalVector.z - dynamicVector.z
+  };
+
+  if(norm(verticalAxis) < 0.5){
+    return;
+  }
+
+  const gravityUnit = normalize(gravityVector);
+
+  angleCurrent = angleFromGravity(gravityUnit);
+
+  /*
+     Version corrigee.
+
+     Remettre le vecteur du capteur dans la convention de
+     l'iPhone revient a le multiplier par -1... mais ce -1
+     s'applique AUSSI au vecteur de calibration, donc a l'axe
+     vertical. Resultat : la composante verticale (produit de
+     deux vecteurs inverses) ne change pas, seule la
+     composante laterale change de signe. Autrement dit, la
+     correction se resume exactement a inverser le signe de
+     l'angle - l'amplitude, elle, est deja bonne.
+  */
+
+  const sign = el('manualFlip').checked ? -detectedSign : detectedSign;
+
+  angleFixed = angleCurrent * sign;
+
+  hzCount++;
+
+  const now = performance.now();
+
+  if(now - hzTimer >= 1000){
+
+    hz = Math.round(hzCount * 1000 / (now - hzTimer));
+
+    hzCount = 0;
+
+    hzTimer = now;
+
+  }
+
+}
+
+
+/* =====================================================
+   Calibration (meme duree que l'application)
+===================================================== */
+
+function startCalibration(){
+
+  calibrating = true;
+
+  calibrationCount = 0;
+
+  calibrationGravity = { x:0, y:0, z:0 };
+
+  el('state').textContent = 'Calibration en cours, ne bouge pas...';
+
+  setTimeout(finishCalibration, CALIBRATION_MS);
+
+}
+
+
+function finishCalibration(){
+
+  if(calibrationCount < 5){
+
+    calibrating = false;
+
+    el('state').textContent =
+      'Calibration impossible : aucune mesure reçue du capteur.';
+
+    return;
+
+  }
+
+  calibrationGravity.x /= calibrationCount;
+
+  calibrationGravity.y /= calibrationCount;
+
+  calibrationGravity.z /= calibrationCount;
+
+  verticalAxis = normalize(calibrationGravity);
+
+  calibrating = false;
+
+  el('state').textContent =
+    'Zéro effectué. Penche le téléphone pour comparer les deux versions.';
+
+  [1, 2, 3].forEach(n => {
+    el('capture' + n).disabled = false;
+  });
+
+}
+
+
+/* =====================================================
+   Affichage
+===================================================== */
+
+function sideLabel(angle){
+
+  if(Math.abs(angle) < 3){
+    return { text:'À plat', cls:'sideFlat' };
+  }
+
+  return angle > 0
+    ? { text:'➡️ DROITE', cls:'sideRight' }
+    : { text:'⬅️ GAUCHE', cls:'sideLeft' };
+
+}
+
+
+function paintAngle(angle, valueId, sideId, barId){
+
+  el(valueId).textContent = angle.toFixed(1) + '°';
+
+  const side = sideLabel(angle);
+
+  const sideEl = el(sideId);
+
+  sideEl.textContent = side.text;
+
+  sideEl.className = 'angleSide ' + side.cls;
+
+  const ratio = Math.max(-1, Math.min(1, angle / 60));
+
+  const bar = el(barId);
+
+  const width = Math.abs(ratio) * 50;
+
+  bar.style.width = width + '%';
+
+  bar.style.left = ratio >= 0 ? '50%' : (50 - width) + '%';
+
+  bar.style.background =
+    Math.abs(angle) < 3
+    ? '#3a4756'
+    : (angle > 0 ? 'var(--yellow)' : 'var(--blue)');
+
+}
+
+
+function refresh(){
+
+  paintAngle(angleCurrent, 'angleCurrent', 'sideCurrent', 'barCurrent');
+
+  paintAngle(angleFixed, 'angleFixed', 'sideFixed', 'barFixed');
+
+  if(lastRaw){
+
+    el('rawX').textContent = (lastRaw.x * 9.80665).toFixed(2);
+
+    el('rawY').textContent = (lastRaw.y * 9.80665).toFixed(2);
+
+    el('rawZ').textContent = (lastRaw.z * 9.80665).toFixed(2);
+
+    el('rawG').textContent = norm(lastRaw).toFixed(3) + ' G';
+
+  }
+
+  el('rawOri').textContent =
+    orientationBeta === null
+    ? 'non disponible'
+    : orientationBeta.toFixed(0) + '° / ' + orientationGamma.toFixed(0) + '°';
+
+  el('rawHz').textContent = hz + ' Hz';
+
+  const verdictEl = el('verdict');
+
+  if(!running){
+
+    verdictEl.textContent = 'En attente des capteurs...';
+
+    el('verdictDetail').textContent = '';
+
+  }
+  else if(detectedSign === 1){
+
+    verdictEl.innerHTML =
+      '<span style="color:var(--accent)">Convention iPhone détectée</span>';
+
+    el('verdictDetail').textContent =
+      'Le capteur renvoie le vecteur vers le bas, comme sur iPhone. ' +
+      'L\'application actuelle donne déjà le bon sens sur ce téléphone. ' +
+      'Méthode : ' + detectionMethod + '.';
+
+  }
+  else{
+
+    verdictEl.innerHTML =
+      '<span style="color:var(--yellow)">Convention Android (norme W3C) détectée</span>';
+
+    el('verdictDetail').textContent =
+      'Le capteur renvoie le vecteur vers le haut : c\'est ce qui inverse ' +
+      'la gauche et la droite dans l\'application actuelle. La version ' +
+      'corrigée ci-dessous doit afficher le bon sens. ' +
+      'Méthode : ' + detectionMethod + '.';
+
+  }
+
+  requestAnimationFrame(refresh);
+
+}
+
+
+/* =====================================================
+   Test guide
+===================================================== */
+
+const captures = { flat:null, right:null, left:null };
+
+
+function capture(which, label, button){
+
+  button.disabled = true;
+
+  button.textContent = 'Capture en cours...';
+
+  const samples = [];
+
+  const started = performance.now();
+
+  const timer = setInterval(() => {
+
+    if(lastRaw){
+
+      samples.push({
+        raw:{ x:lastRaw.x, y:lastRaw.y, z:lastRaw.z },
+        current:angleCurrent,
+        fixed:angleFixed
+      });
+
+    }
+
+    if(performance.now() - started > 900){
+
+      clearInterval(timer);
+
+      button.disabled = false;
+
+      button.textContent = label;
+
+      if(samples.length === 0){
+        el('testVerdict').textContent = 'Aucune mesure reçue pendant la capture.';
+        return;
+      }
+
+      const mid = samples[Math.floor(samples.length / 2)];
+
+      captures[which] = mid;
+
+      updateTestVerdict();
+
+    }
+
+  }, 60);
+
+}
+
+
+function updateTestVerdict(){
+
+  const lines = [];
+
+  if(captures.flat){
+
+    const z = captures.flat.raw.z * 9.80665;
+
+    lines.push(
+      'À plat : Z = ' + z.toFixed(2) + ' m/s² → ' +
+      (z > 0
+        ? 'convention Android (norme W3C)'
+        : 'convention iPhone')
+    );
+
+    el('step1').classList.add('stepDone');
+
+  }
+
+  if(captures.right){
+
+    lines.push(
+      'Penché à droite : version actuelle ' +
+      captures.right.current.toFixed(0) + '° (' +
+      (captures.right.current > 0 ? 'DROITE' : 'GAUCHE') + ')' +
+      ', version corrigée ' +
+      captures.right.fixed.toFixed(0) + '° (' +
+      (captures.right.fixed > 0 ? 'DROITE' : 'GAUCHE') + ')'
+    );
+
+    el('step2').classList.add('stepDone');
+
+  }
+
+  if(captures.left){
+
+    lines.push(
+      'Penché à gauche : version actuelle ' +
+      captures.left.current.toFixed(0) + '° (' +
+      (captures.left.current > 0 ? 'DROITE' : 'GAUCHE') + ')' +
+      ', version corrigée ' +
+      captures.left.fixed.toFixed(0) + '° (' +
+      (captures.left.fixed > 0 ? 'DROITE' : 'GAUCHE') + ')'
+    );
+
+    el('step3').classList.add('stepDone');
+
+  }
+
+  if(captures.right && captures.left){
+
+    const currentOk =
+      captures.right.current > 3 && captures.left.current < -3;
+
+    const fixedOk =
+      captures.right.fixed > 3 && captures.left.fixed < -3;
+
+    lines.push('');
+
+    lines.push(
+      'Résultat : version actuelle ' +
+      (currentOk ? 'CORRECTE' : 'INVERSÉE') +
+      ', version corrigée ' +
+      (fixedOk ? 'CORRECTE' : 'INVERSÉE') + '.'
+    );
+
+  }
+
+  el('testVerdict').innerHTML = lines.join('<br>');
+
+  buildReport();
+
+}
+
+
+/* =====================================================
+   Rapport
+===================================================== */
+
+function buildReport(){
+
+  const lines = [];
+
+  lines.push('=== Test capteurs Inclinomètre Moto ===');
+
+  lines.push('Date : ' + new Date().toISOString());
+
+  lines.push('Navigateur : ' + navigator.userAgent);
+
+  lines.push('Plateforme : ' + (navigator.platform || '?') +
+    ' / points tactiles : ' + (navigator.maxTouchPoints || 0));
+
+  lines.push('Appareil Apple détecté : ' + (isAppleDevice ? 'oui' : 'non'));
+
+  lines.push('Convention détectée : ' +
+    (detectedSign === 1 ? 'iPhone (vecteur vers le bas)' : 'Android W3C (vecteur vers le haut)'));
+
+  lines.push('Méthode de détection : ' + detectionMethod);
+
+  lines.push('Mesures de détection : ' + detectionSamples +
+    ' (score ' + detectionScore.toFixed(2) + ')');
+
+  lines.push('Orientation disponible : ' +
+    (orientationSamples > 0 ? 'oui (' + orientationSamples + ' mesures)' : 'non'));
+
+  lines.push('Fréquence capteur : ' + hz + ' Hz');
+
+  if(lastRaw){
+
+    lines.push('Accéléromètre brut (m/s²) : x=' + (lastRaw.x * 9.80665).toFixed(2) +
+      ' y=' + (lastRaw.y * 9.80665).toFixed(2) +
+      ' z=' + (lastRaw.z * 9.80665).toFixed(2) +
+      ' (intensité ' + norm(lastRaw).toFixed(3) + ' G)');
+
+  }
+
+  lines.push('Axe vertical calibré : x=' + verticalAxis.x.toFixed(3) +
+    ' y=' + verticalAxis.y.toFixed(3) + ' z=' + verticalAxis.z.toFixed(3));
+
+  lines.push('Inversion manuelle : ' + (el('manualFlip').checked ? 'activée' : 'non'));
+
+  ['flat', 'right', 'left'].forEach(key => {
+
+    const c = captures[key];
+
+    if(!c){
+      lines.push('Capture ' + key + ' : non faite');
+      return;
+    }
+
+    lines.push('Capture ' + key +
+      ' : brut x=' + (c.raw.x * 9.80665).toFixed(2) +
+      ' y=' + (c.raw.y * 9.80665).toFixed(2) +
+      ' z=' + (c.raw.z * 9.80665).toFixed(2) +
+      ' | actuelle ' + c.current.toFixed(1) + '°' +
+      ' | corrigée ' + c.fixed.toFixed(1) + '°');
+
+  });
+
+  el('report').textContent = lines.join('\n');
+
+  return lines.join('\n');
+
+}
+
+
+/* =====================================================
+   Boutons
+===================================================== */
+
+async function startSensors(){
+
+  try{
+
+    if(typeof DeviceMotionEvent !== 'undefined' &&
+       typeof DeviceMotionEvent.requestPermission === 'function'){
+
+      const permission = await DeviceMotionEvent.requestPermission();
+
+      if(permission !== 'granted'){
+        throw new Error('Permission des capteurs refusée.');
+      }
+
+    }
+
+    if(typeof DeviceOrientationEvent !== 'undefined' &&
+       typeof DeviceOrientationEvent.requestPermission === 'function'){
+
+      try{
+        await DeviceOrientationEvent.requestPermission();
+      }
+      catch(err){
+        /* l'orientation n'est qu'une aide a la detection */
+      }
+
+    }
+
+    window.addEventListener('devicemotion', handleMotion, { passive:true });
+
+    window.addEventListener('deviceorientation', handleOrientation, { passive:true });
+
+    running = true;
+
+    el('startBtn').disabled = true;
+
+    el('startBtn').textContent = 'CAPTEURS ACTIFS';
+
+    el('zeroBtn').disabled = false;
+
+    el('state').textContent =
+      'Capteurs actifs. Fais le zéro, téléphone fixé et immobile.';
+
+    startCalibration();
+
+    setInterval(buildReport, 1000);
+
+  }
+  catch(error){
+
+    el('state').textContent = 'Impossible d\'utiliser les capteurs : ' + error.message;
+
+  }
+
+}
+
+
+el('startBtn').addEventListener('click', startSensors);
+
+el('zeroBtn').addEventListener('click', () => {
+
+  if(running){
+    startCalibration();
+  }
+
+});
+
+el('capture1').addEventListener('click', () =>
+  capture('flat', 'Capturer à plat', el('capture1')));
+
+el('capture2').addEventListener('click', () =>
+  capture('right', 'Capturer penché à droite', el('capture2')));
+
+el('capture3').addEventListener('click', () =>
+  capture('left', 'Capturer penché à gauche', el('capture3')));
+
+el('copyBtn').addEventListener('click', async () => {
+
+  const text = buildReport();
+
+  try{
+
+    await navigator.clipboard.writeText(text);
+
+    el('copyState').textContent = 'Rapport copié ✅';
+
+  }
+  catch(err){
+
+    el('copyState').textContent =
+      'Copie impossible : sélectionne le texte ci-dessous et copie-le à la main.';
+
+  }
+
+});
+
+refresh();
+
+</script>
+
+</body>
+
+</html>
