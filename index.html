@@ -21,7 +21,7 @@
       content="0">
 
 <meta name="build-id"
-      content="2026-09-11T21:42:43Z">
+      content="2026-09-15T08:52:13Z">
 
 <title>Inclinomètre Moto</title>
 
@@ -955,6 +955,31 @@ details{
   font-size:18px;
   font-weight:700;
   margin-top:2px;
+}
+
+.sensorBar{
+  margin-top:10px;
+  text-align:center;
+}
+
+.sensorBarText{
+  font-size:11px;
+  color:var(--muted);
+  line-height:1.5;
+}
+
+.sensorBarActions{
+  display:flex;
+  gap:8px;
+  justify-content:center;
+  margin-top:8px;
+}
+
+button.sensorBarBtn{
+  width:auto;
+  padding:8px 12px;
+  font-size:11px;
+  border-radius:9px;
 }
 
 .sessionDetailTopBar{
@@ -1952,6 +1977,30 @@ button.turnsMapResyncBtn{
 
   <div id="cloudSaveStatus" class="small hidden"></div>
 
+  <div id="sensorConventionBar" class="sensorBar">
+
+    <div id="sensorConventionText" class="sensorBarText">
+      Capteur : détection au démarrage des capteurs.
+    </div>
+
+    <div class="sensorBarActions">
+
+      <button id="sensorFlipBtn"
+              class="sensorBarBtn"
+              type="button">
+        Inverser gauche/droite
+      </button>
+
+      <button id="sensorAutoBtn"
+              class="sensorBarBtn hidden"
+              type="button">
+        Revenir à la détection auto
+      </button>
+
+    </div>
+
+  </div>
+
 </section>
 
 
@@ -2477,11 +2526,18 @@ Ne manipule pas le téléphone en roulant.
   <div class="tipsCard">
     <h3>📌 Fixe le téléphone rigidement</h3>
     <p>Utilise un support rigide sur le guidon ou le réservoir, orienté écran vers toi. Un téléphone qui vibre ou qui bouge dans une poche fausse complètement la mesure d'inclinaison.</p>
+    <p>Monte-le aussi droit que possible, le haut de l'écran vers l'avant et sans rotation sur le côté : un support penché latéralement décale les angles mesurés.</p>
   </div>
 
   <div class="tipsCard">
     <h3>🎯 Calibre avant de partir</h3>
     <p>Appuie sur "FAIRE LE ZÉRO" une fois le téléphone fixé, moto à la verticale et à l'arrêt (ou en ligne droite stabilisée). Recommence si tu changes la position du support.</p>
+  </div>
+
+  <div class="tipsCard">
+    <h3>↔️ Gauche / droite : correction automatique</h3>
+    <p>Les iPhone et les téléphones Android ne renvoient pas leurs capteurs dans le même sens. Sans correction, un Android affiche "gauche" quand tu penches à droite. L'appli mesure ce sens toute seule au démarrage des capteurs et corrige si besoin : la ligne sous les boutons indique ce qui a été détecté.</p>
+    <p>Si malgré tout le sens est inversé sur ton téléphone, le bouton <strong>"Inverser gauche/droite"</strong> le corrige définitivement (le choix est retenu sur ce téléphone). "Revenir à la détection auto" rend la main à la mesure automatique.</p>
   </div>
 
   <div class="tipsCard">
@@ -7136,6 +7192,418 @@ document.getElementById('session').addEventListener('click', () => {
   }
 
 });
+
+
+/* =====================================================
+   CONVENTION DU CAPTEUR (correctif gauche/droite)
+
+   Au repos, l'accelerometre renvoie un vecteur d'intensite
+   9,81 : sur iPhone il pointe vers le BAS (vers le sol), sur
+   Android vers le HAUT (norme W3C). Le moteur a ete regle sur
+   iPhone : son axe vertical vient de la calibration, donc il
+   change de signe en meme temps que le capteur, alors que son
+   axe lateral est fixe (1,0,0). Seule la composante laterale
+   s'inverse d'une plateforme a l'autre, ce qui echange la
+   gauche et la droite sur Android.
+
+   On corrige EN AMONT du moteur, sans le modifier : on
+   intercepte l'evenement devicemotion et, sur un telephone a
+   convention W3C, on le remplace par un evenement dont la
+   composante laterale est inversee. Le moteur recoit donc des
+   mesures "convention iPhone", et tout le reste (affichage,
+   angles max, enregistrement, virages, export CSV) suit
+   naturellement.
+
+   Cet ecouteur est installe au chargement de la page, donc
+   AVANT celui du moteur (ajoute seulement au clic sur
+   "DEMARRER LES CAPTEURS") : il passe donc en premier.
+===================================================== */
+
+const SENSOR_SIGN_STORAGE_KEY = 'incli.sensorSign';
+
+const SENSOR_DETECTION_MIN_SAMPLES = 20;
+
+const isAppleDevice =
+  /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+  (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+
+/*
+   1 = convention iPhone (aucune correction),
+   -1 = convention Android/W3C (mesures inversees).
+*/
+
+let sensorSign = isAppleDevice ? 1 : -1;
+
+let sensorSignManual = false;
+
+let sensorSignSource = 'modèle de téléphone';
+
+let sensorDetectionScore = 0;
+
+let sensorDetectionSamples = 0;
+
+let sensorOrientation = null;
+
+let sensorBarLastText = '';
+
+const sensorConventionText =
+  document.getElementById('sensorConventionText');
+
+const sensorFlipBtn =
+  document.getElementById('sensorFlipBtn');
+
+const sensorAutoBtn =
+  document.getElementById('sensorAutoBtn');
+
+
+function readStoredSensorSign(){
+
+  try{
+
+    const raw =
+      localStorage.getItem(SENSOR_SIGN_STORAGE_KEY);
+
+    if(!raw){
+      return null;
+    }
+
+    const parsed =
+      JSON.parse(raw);
+
+    if(parsed && (parsed.sign === 1 || parsed.sign === -1)){
+      return parsed;
+    }
+
+  }
+  catch(err){
+    /* stockage local indisponible : sans consequence */
+  }
+
+  return null;
+
+}
+
+
+function storeSensorSign(){
+
+  try{
+
+    localStorage.setItem(
+      SENSOR_SIGN_STORAGE_KEY,
+      JSON.stringify({ sign:sensorSign, manual:sensorSignManual })
+    );
+
+  }
+  catch(err){
+    /* stockage local indisponible : sans consequence */
+  }
+
+}
+
+
+{
+
+  const stored =
+    readStoredSensorSign();
+
+  if(stored){
+
+    sensorSign = stored.sign;
+
+    sensorSignManual = !!stored.manual;
+
+    sensorSignSource =
+      sensorSignManual
+      ? 'réglage manuel'
+      : 'détection mémorisée sur cet appareil';
+
+  }
+
+}
+
+
+function updateSensorBar(){
+
+  const text =
+    (sensorSign === -1
+      ? 'Capteur : convention Android détectée, correction gauche/droite active'
+      : 'Capteur : convention iPhone, aucune correction nécessaire') +
+    ' (' + sensorSignSource + ').';
+
+  if(text !== sensorBarLastText){
+
+    sensorConventionText.textContent = text;
+
+    sensorBarLastText = text;
+
+  }
+
+  sensorAutoBtn.classList.toggle('hidden', !sensorSignManual);
+
+}
+
+
+/*
+   Direction du "bas" exprimee dans le repere du telephone, a
+   partir de son orientation (evenement deviceorientation,
+   identique sur les deux plateformes). Sert de reference pour
+   savoir dans quel sens pointe le vecteur de l'accelerometre.
+*/
+
+function downDirectionFromOrientation(betaDeg, gammaDeg){
+
+  const beta = betaDeg * Math.PI / 180;
+
+  const gamma = gammaDeg * Math.PI / 180;
+
+  return {
+    x:Math.cos(beta) * Math.sin(gamma),
+    y:-Math.sin(beta),
+    z:-Math.cos(beta) * Math.cos(gamma)
+  };
+
+}
+
+
+window.addEventListener('deviceorientation', event => {
+
+  if(event.beta === null || event.gamma === null){
+    return;
+  }
+
+  sensorOrientation = { beta:event.beta, gamma:event.gamma };
+
+}, { passive:true });
+
+
+function updateSensorDetection(vector){
+
+  /*
+     Pas de detection si le pilote a choisi lui-meme, ni
+     pendant une session (le sens ne doit jamais changer en
+     cours d'enregistrement).
+  */
+
+  if(
+    sensorSignManual ||
+    sessionActive ||
+    !sensorOrientation ||
+    !vector ||
+    vector.x === null ||
+    vector.y === null ||
+    vector.z === null
+  ){
+    return;
+  }
+
+  const length =
+    Math.sqrt(vector.x * vector.x + vector.y * vector.y + vector.z * vector.z);
+
+  if(length < 4){
+    return;
+  }
+
+  const down =
+    downDirectionFromOrientation(sensorOrientation.beta, sensorOrientation.gamma);
+
+  const alignment =
+    (vector.x * down.x + vector.y * down.y + vector.z * down.z) / length;
+
+  /*
+     On ne garde que les mesures franches : telephone pas
+     secoue, direction nette.
+  */
+
+  if(Math.abs(alignment) < 0.6){
+    return;
+  }
+
+  sensorDetectionScore += alignment;
+
+  sensorDetectionSamples++;
+
+  if(sensorDetectionSamples < SENSOR_DETECTION_MIN_SAMPLES){
+    return;
+  }
+
+  /*
+     Pendant la calibration du support, l'axe vertical est en
+     train d'etre moyenne : on continue a accumuler des
+     mesures mais on n'applique le changement qu'ensuite, pour
+     que la reference et les mesures soient dans la meme
+     convention.
+  */
+
+  if(calibrating){
+    return;
+  }
+
+  const detected =
+    sensorDetectionScore >= 0 ? 1 : -1;
+
+  sensorSignSource = 'mesure des capteurs';
+
+  if(detected !== sensorSign){
+
+    sensorSign = detected;
+
+    storeSensorSign();
+
+  }
+
+  updateSensorBar();
+
+}
+
+
+/*
+   On inverse UNIQUEMENT l'axe lateral (x), c'est a dire l'axe
+   que le moteur utilise tel quel : lateralAxis = (1,0,0).
+   C'est l'effet miroir gauche/droite exact.
+
+   Inverser les trois axes donnerait le meme angle tant que la
+   calibration et la mesure utilisent la meme convention, mais
+   ferait tourner le repere de 180 deg si la convention change
+   apres la calibration (bouton "Inverser gauche/droite" en
+   cours d'utilisation) : l'angle afficherait alors 150 deg au
+   lieu de 30 deg. En n'inversant que x, l'axe vertical issu de
+   la calibration reste valable et le basculement manuel donne
+   toujours l'angle oppose.
+*/
+
+function flipSensorVector(vector){
+
+  if(!vector){
+    return vector;
+  }
+
+  return {
+    x:
+      (vector.x === null || vector.x === undefined)
+      ? vector.x
+      : -vector.x,
+    y:vector.y,
+    z:vector.z
+  };
+
+}
+
+
+function buildCorrectedMotionEvent(event){
+
+  const init = {
+
+    acceleration:
+      flipSensorVector(event.acceleration),
+
+    accelerationIncludingGravity:
+      flipSensorVector(event.accelerationIncludingGravity),
+
+    rotationRate:
+      event.rotationRate
+      ? {
+          alpha:event.rotationRate.alpha,
+          beta:event.rotationRate.beta,
+          gamma:event.rotationRate.gamma
+        }
+      : null,
+
+    interval:event.interval
+
+  };
+
+  let corrected;
+
+  try{
+
+    corrected =
+      new DeviceMotionEvent('devicemotion', init);
+
+  }
+  catch(err){
+
+    /*
+       Navigateur qui n'accepte pas de construire l'evenement :
+       un evenement simple portant les memes proprietes suffit
+       au moteur, qui ne fait que les lire.
+    */
+
+    corrected = new Event('devicemotion');
+
+    corrected.acceleration = init.acceleration;
+
+    corrected.accelerationIncludingGravity = init.accelerationIncludingGravity;
+
+    corrected.rotationRate = init.rotationRate;
+
+    corrected.interval = init.interval;
+
+  }
+
+  corrected.inclinoCorrected = true;
+
+  return corrected;
+
+}
+
+
+window.addEventListener('devicemotion', event => {
+
+  if(event.inclinoCorrected){
+    return;
+  }
+
+  updateSensorDetection(event.accelerationIncludingGravity);
+
+  if(sensorSign === 1){
+    return;
+  }
+
+  event.stopImmediatePropagation();
+
+  window.dispatchEvent(buildCorrectedMotionEvent(event));
+
+}, true);
+
+
+sensorFlipBtn.addEventListener('click', () => {
+
+  sensorSign = -sensorSign;
+
+  sensorSignManual = true;
+
+  sensorSignSource = 'réglage manuel';
+
+  storeSensorSign();
+
+  updateSensorBar();
+
+});
+
+
+sensorAutoBtn.addEventListener('click', () => {
+
+  sensorSignManual = false;
+
+  sensorDetectionScore = 0;
+
+  sensorDetectionSamples = 0;
+
+  sensorSignSource =
+    sensorOrientation ? 'détection en cours...' : 'modèle de téléphone';
+
+  if(!sensorOrientation){
+    sensorSign = isAppleDevice ? 1 : -1;
+  }
+
+  storeSensorSign();
+
+  updateSensorBar();
+
+});
+
+
+updateSensorBar();
 
 
 /* =====================================================
