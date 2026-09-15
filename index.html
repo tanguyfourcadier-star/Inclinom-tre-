@@ -21,7 +21,7 @@
       content="0">
 
 <meta name="build-id"
-      content="2026-09-15T08:52:13Z">
+      content="2026-09-15T16:35:36Z">
 
 <title>Inclinomètre Moto</title>
 
@@ -817,6 +817,242 @@ details{
 .viewTitle{
   font-size:15px;
   font-weight:700;
+}
+
+
+/* =====================================================
+   SEGMENTS
+===================================================== */
+
+.segmentsIntro{
+  font-size:13px;
+  line-height:1.55;
+  color:#9ba8b7;
+  margin:0 0 12px;
+}
+
+.segmentsIntro strong{
+  color:#e6edf5;
+}
+
+/*
+   Quatre colonnes seulement : la table tient dans la largeur du
+   telephone, sans le defilement horizontal des tableaux de
+   virages (six colonnes).
+*/
+
+.segmentsTable{
+  min-width:0;
+  font-size:11px;
+}
+
+.segmentsTable th,
+.segmentsTable td{
+  padding:8px 4px;
+  vertical-align:top;
+}
+
+.segmentsTable th:first-child,
+.segmentsTable td:first-child{
+  text-align:left;
+}
+
+.segmentRow{
+  cursor:pointer;
+}
+
+.segmentRow:hover{
+  background:#1a2331;
+}
+
+.segmentRowSelected{
+  background:#22304a;
+}
+
+.segmentRowMine .segmentRowName{
+  color:#ffcc33;
+}
+
+.segmentRowName{
+  font-weight:600;
+}
+
+.segmentRowSub{
+  display:block;
+  font-size:10px;
+  color:#8b98a8;
+  margin-top:2px;
+}
+
+.segmentsEmptyCell{
+  color:#8b98a8;
+  font-style:italic;
+  text-align:center;
+  padding:14px 8px;
+}
+
+.segmentBoardMine td{
+  color:#ffcc33;
+  font-weight:600;
+}
+
+.segmentsRescanCard{
+  margin-top:18px;
+  padding:14px;
+  border:1px solid #243044;
+  border-radius:12px;
+  background:#141c27;
+}
+
+.segmentsRescanText{
+  font-size:12px;
+  line-height:1.5;
+  color:#9ba8b7;
+  margin-bottom:10px;
+}
+
+/* ----- Création d'un segment depuis un trajet ----- */
+
+.segmentCreateCard{
+  margin-top:18px;
+  padding:14px;
+  border:1px solid #243044;
+  border-radius:12px;
+  background:#141c27;
+}
+
+button.segmentCreateToggle{
+  width:100%;
+  padding:11px 12px;
+  border:1px solid #2f3d52;
+  border-radius:10px;
+  background:#1d2836;
+  color:#e6edf5;
+  font-size:13px;
+  font-weight:600;
+  font-family:inherit;
+  cursor:pointer;
+}
+
+button.segmentCreateToggle:active{
+  background:#243044;
+}
+
+.segmentCreateBody{
+  margin-top:14px;
+}
+
+.segmentCreateHint{
+  font-size:12px;
+  line-height:1.5;
+  color:#9ba8b7;
+  margin-bottom:12px;
+}
+
+.segmentCreateHint strong{
+  color:#e6edf5;
+}
+
+.segmentRangeLabel{
+  display:block;
+  font-size:11px;
+  letter-spacing:0.08em;
+  text-transform:uppercase;
+  color:#8b98a8;
+  margin:12px 0 4px;
+}
+
+input.segmentRange{
+  width:100%;
+  margin:0;
+  accent-color:#4ade80;
+}
+
+.segmentPickInfo{
+  margin-top:12px;
+  font-size:12px;
+  color:#9ba8b7;
+  min-height:18px;
+}
+
+input.segmentNameInput{
+  width:100%;
+  margin-top:12px;
+  padding:11px 12px;
+  border:1px solid #2f3d52;
+  border-radius:10px;
+  background:#0f151d;
+  color:#e6edf5;
+  font-size:14px;
+  font-family:inherit;
+  box-sizing:border-box;
+}
+
+input.segmentNameInput:focus{
+  outline:none;
+  border-color:#4ade80;
+}
+
+button.segmentSaveBtn{
+  width:100%;
+  margin-top:12px;
+  padding:12px;
+  border:none;
+  border-radius:10px;
+  background:#2f6f4a;
+  color:#eafff2;
+  font-size:14px;
+  font-weight:700;
+  font-family:inherit;
+  cursor:pointer;
+}
+
+button.segmentSaveBtn:disabled{
+  background:#26313f;
+  color:#6b7889;
+  cursor:default;
+}
+
+/* ----- Résumé des segments après enregistrement ----- */
+
+.segmentResultCard{
+  margin-top:12px;
+  padding:12px 14px;
+  border:1px solid #2f6f4a;
+  border-radius:12px;
+  background:#16241d;
+}
+
+.segmentResultTitle{
+  font-size:12px;
+  letter-spacing:0.06em;
+  text-transform:uppercase;
+  color:#7fd4a2;
+  margin-bottom:8px;
+}
+
+.segmentResultItem{
+  font-size:13px;
+  color:#e6edf5;
+  line-height:1.5;
+  padding:4px 0;
+  border-top:1px solid #1f3a2b;
+}
+
+.segmentResultItem:first-of-type{
+  border-top:none;
+}
+
+.segmentResultItem .segmentResultName{
+  font-weight:600;
+}
+
+.segmentResultItem .segmentResultRank{
+  color:#7fd4a2;
+}
+
+#segmentsMap .leaflet-tile-pane{
+  filter:invert(1) hue-rotate(180deg) brightness(0.92) contrast(0.95);
 }
 
 
@@ -1633,6 +1869,19 @@ button.turnsMapResyncBtn{
 
     </button>
 
+    <button id="navSegments"
+            class="menuCard"
+            type="button">
+
+      <span class="menuIcon">🏁</span>
+
+      <span class="menuText">
+        <span class="menuLabel">Segments</span>
+        <span class="menuDesc">Tes portions chronométrées et le classement des pilotes</span>
+      </span>
+
+    </button>
+
     <button id="navConseils"
             class="menuCard"
             type="button">
@@ -1976,6 +2225,8 @@ button.turnsMapResyncBtn{
   </div>
 
   <div id="cloudSaveStatus" class="small hidden"></div>
+
+  <div id="segmentResultPanel" class="segmentResultCard hidden"></div>
 
   <div id="sensorConventionBar" class="sensorBar">
 
@@ -2375,6 +2626,68 @@ Ne manipule pas le téléphone en roulant.
 
       </div>
 
+      <div id="segmentCreateCard" class="segmentCreateCard hidden">
+
+        <button id="segmentCreateToggle"
+                class="segmentCreateToggle"
+                type="button">
+          ➕ Créer un segment à partir de ce trajet
+        </button>
+
+        <div id="segmentCreateBody" class="segmentCreateBody hidden">
+
+          <div class="segmentCreateHint">
+            Place le départ <strong>D</strong> et l'arrivée <strong>A</strong>
+            sur ton trajet : le tracé du segment suivra exactement la route que
+            tu as prise entre les deux.
+          </div>
+
+          <div class="mapWrap">
+            <canvas id="segmentPickMap"></canvas>
+          </div>
+
+          <label class="segmentRangeLabel" for="segmentStartRange">
+            Départ
+          </label>
+
+          <input type="range"
+                 id="segmentStartRange"
+                 class="segmentRange"
+                 min="0"
+                 max="100"
+                 value="0">
+
+          <label class="segmentRangeLabel" for="segmentEndRange">
+            Arrivée
+          </label>
+
+          <input type="range"
+                 id="segmentEndRange"
+                 class="segmentRange"
+                 min="0"
+                 max="100"
+                 value="100">
+
+          <div id="segmentPickInfo" class="segmentPickInfo"></div>
+
+          <input type="text"
+                 id="segmentNameInput"
+                 class="segmentNameInput"
+                 maxlength="60"
+                 placeholder="Nom du segment (ex : Col de Mounis, montée sud)">
+
+          <button id="segmentSaveBtn"
+                  class="segmentSaveBtn"
+                  type="button">
+            Enregistrer le segment
+          </button>
+
+          <div id="segmentCreateStatus" class="sessionDeleteStatus"></div>
+
+        </div>
+
+      </div>
+
     </div>
 
   </div>
@@ -2583,6 +2896,19 @@ Ne manipule pas le téléphone en roulant.
   </div>
 
   <div class="tipsCard">
+    <h3>🏁 Comment fonctionnent les segments</h3>
+    <ol>
+      <li><strong>Création</strong> : ouvre un de tes trajets dans l'historique, puis « Créer un segment à partir de ce trajet ». Tu places le départ et l'arrivée avec deux curseurs : le tracé du segment suit exactement la route que tu as prise entre les deux. Longueur minimum : 200 m.</li>
+      <li><strong>Sens de parcours</strong> : un segment ne compte que parcouru dans le sens où il a été créé. Pour chronométrer le retour, crée un second segment sur le trajet inverse.</li>
+      <li><strong>Détection d'un passage</strong> : il faut franchir la ligne de départ puis la ligne d'arrivée (à moins de 30 m de chacune, dans le bon sens), et avoir suivi au moins 80 % du tracé à moins de 40 m. Une route parallèle ou un autre itinéraire entre les deux points ne compte pas.</li>
+      <li><strong>Chronométrage</strong> : l'instant exact de franchissement de chaque ligne est interpolé entre deux positions GPS, la précision ne dépend donc pas de la cadence du GPS. La vitesse moyenne est calculée sur la longueur officielle du segment, la même pour tous.</li>
+      <li><strong>Classement</strong> : une seule ligne par pilote, son meilleur temps. Si tu passes plusieurs fois dans un même trajet, seul le passage le plus rapide est retenu.</li>
+      <li><strong>Trajets déjà enregistrés</strong> : le bouton « Chercher mes passages » analyse tes 30 derniers trajets et remplit tes temps rétroactivement.</li>
+      <li><strong>Suppression</strong> : tu peux supprimer les segments que tu as créés. Supprimer un trajet efface aussi les temps de segment qui en venaient.</li>
+    </ol>
+  </div>
+
+  <div class="tipsCard">
     <h3>⚠️ Reste prudent</h3>
     <p>C'est un prototype expérimental. Ne manipule jamais le téléphone en roulant, et ne prends pas les mesures affichées comme une limite de sécurité absolue.</p>
   </div>
@@ -2638,6 +2964,136 @@ Ne manipule pas le téléphone en roulant.
     <p id="supportBtnHint" class="supportBtnHint hidden">
       La cagnotte n'est pas encore ouverte, reviens un peu plus tard 🙂
     </p>
+  </div>
+
+</div>
+
+
+<!-- =====================================================
+     VUE SEGMENTS
+===================================================== -->
+
+<div id="segmentsView" class="hidden">
+
+  <div class="viewHeader">
+
+    <button class="backBtn"
+            data-back
+            type="button">
+      ← Menu
+    </button>
+
+    <div class="viewTitle">
+      Segments
+    </div>
+
+  </div>
+
+  <div class="segmentsIntro">
+    Un segment est une portion de route chronométrée, créée à partir d'un de
+    tes trajets. Dès qu'un trajet enregistré passe dessus <strong>dans le bon
+    sens</strong>, ton temps entre dans le classement. Seul ton meilleur temps
+    est conservé.
+  </div>
+
+  <label class="turnsMapFilter">
+    <input type="checkbox" id="segmentsMineOnly">
+    Afficher uniquement les segments où j'ai un temps
+  </label>
+
+  <div id="segmentsStatus" class="placeholderCard turnsMapStatusCard">
+    Chargement des segments...
+  </div>
+
+  <div id="segmentsMap" class="sharedMapWrap"></div>
+
+  <div class="turnsMapLegend">
+    <span><span class="turnsLegendDot turnsLegendOthers"></span>Segments des autres pilotes</span>
+    <span><span class="turnsLegendDot turnsLegendMine"></span>Segments où j'ai un temps</span>
+  </div>
+
+  <div id="segmentsCount" class="turnsMapCount"></div>
+
+  <div class="tableWrap">
+
+    <table class="turnTable segmentsTable">
+
+      <thead>
+        <tr>
+          <th>Segment</th>
+          <th>Distance</th>
+          <th>Record</th>
+          <th>Mon temps</th>
+        </tr>
+      </thead>
+
+      <tbody id="segmentsListBody"></tbody>
+
+    </table>
+
+  </div>
+
+  <div id="segmentDetailPanel" class="turnDetailCard hidden">
+
+    <div class="turnDetailHeader">
+
+      <div class="turnDetailHeading">
+        <div class="turnDetailTitle" id="segmentDetailTitle"></div>
+        <div class="turnDetailMeta" id="segmentDetailMeta"></div>
+      </div>
+
+      <button id="closeSegmentDetail"
+              class="turnDetailClose"
+              type="button">
+        ✕
+      </button>
+
+    </div>
+
+    <div class="tableWrap">
+
+      <table class="turnTable">
+
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Pilote</th>
+            <th>Temps</th>
+            <th>Moy.</th>
+            <th>Max</th>
+            <th>Date</th>
+          </tr>
+        </thead>
+
+        <tbody id="segmentDetailBoard"></tbody>
+
+      </table>
+
+    </div>
+
+    <button id="segmentDeleteBtn"
+            class="sessionDeleteBtn hidden"
+            type="button">
+      🗑️ Supprimer ce segment
+    </button>
+
+  </div>
+
+  <div class="segmentsRescanCard">
+
+    <div class="segmentsRescanText">
+      Tu viens de créer un segment ? Cherche tes passages dans les trajets
+      déjà enregistrés (tes 30 derniers).
+    </div>
+
+    <button id="segmentsRescanBtn"
+            class="sensorBarBtn"
+            type="button">
+      🔎 Chercher mes passages
+    </button>
+
+    <div id="segmentsRescanStatus" class="sessionDeleteStatus"></div>
+
   </div>
 
 </div>
@@ -7057,6 +7513,8 @@ async function saveCurrentSessionToFirestore(){
        classement partage est reporte au prochain enregistrement.
     */
 
+    runSegmentsAfterSave(snapshot.track, sessionRef.id);
+
     syncTurnsToSharedMap(snapshot, sessionRef.id)
       .then(result => {
 
@@ -10343,8 +10801,9 @@ deleteSessionBtn.addEventListener('click', async () => {
 
   if(!confirm(
     'Supprimer définitivement ce trajet ?\n\n' +
-    'Il disparaîtra de ton historique et ses passages seront ' +
-    'retirés de la carte des virages. Cette action est irréversible.'
+    'Il disparaîtra de ton historique, ses passages seront ' +
+    'retirés de la carte des virages et ses temps de segment ' +
+    'seront effacés. Cette action est irréversible.'
   )){
     return;
   }
@@ -10398,7 +10857,18 @@ deleteSessionBtn.addEventListener('click', async () => {
 
     await resyncMyTurns();
 
-    showSessionsListNotice('Trajet supprimé ✅ Carte des virages mise à jour.', false);
+    const removedSegmentTimes =
+      await removeSegmentTimesForSession(sessionId);
+
+    showSessionsListNotice(
+      'Trajet supprimé ✅ Carte des virages mise à jour.' +
+      (removedSegmentTimes > 0
+        ? ' ' + removedSegmentTimes + ' temps de segment retiré(s) : ' +
+          'lance « Chercher mes passages » dans Segments pour les ' +
+          'recalculer à partir de tes autres trajets.'
+        : ''),
+      false
+    );
 
   }
   catch(err){
@@ -10426,6 +10896,23 @@ document.getElementById('backToSessionsList').addEventListener('click', () => {
 document.getElementById('navHistorique').addEventListener('click', () => {
 
   sessionsListNotice.classList.add('hidden');
+
+});
+
+
+/*
+   Revenir dans l'historique depuis le menu affiche toujours la
+   LISTE des trajets. Sans cela on retombe sur le detail du
+   dernier trajet ouvert, ce qui surprend d'autant plus depuis
+   que l'on fait des aller-retours entre un trajet et la vue
+   Segments pour creer puis verifier un segment.
+*/
+
+document.getElementById('navHistorique').addEventListener('click', () => {
+
+  document.getElementById('sessionDetailPanel').classList.add('hidden');
+
+  document.getElementById('sessionsListPanel').classList.remove('hidden');
 
 });
 
@@ -10486,6 +10973,8 @@ function openSessionDetail(data){
   drawHistoryMapSpeed(track);
 
   drawHistoryMapTurns(track, data.turns || []);
+
+  prepareSegmentPicker(track);
 
   renderHistoryTurns(data.turns || []);
 
@@ -11585,6 +12074,2928 @@ function drawHistoryMapTurns(track, turns){
       ' virage(s) repéré(s) sur la carte.';
 
   }
+
+}
+
+
+
+/* =====================================================
+   SEGMENTS - MOTEUR DE DETECTION
+
+   Modele de donnees (collection "segments", un document par
+   segment) :
+
+     name                    nom donne par son createur
+     createdByUid / createdBy / createdAt / updatedAt
+     startLat / startLon     porte d'entree
+     endLat / endLon         porte de sortie
+     bearingStart            cap (deg) a l'entree, definit le SENS
+     bearingEnd              cap (deg) a la sortie
+     lengthM                 longueur du trace, identique pour tous
+     path                    trace simplifie [{y:lat, x:lon}, ...]
+     bbox                    boite englobante (rejet rapide)
+     riders                  { <uid> : entree du pilote }
+
+   Une seule entree par pilote et par segment, qui conserve SON
+   meilleur temps. Chaque pilote n'ecrit jamais que sa propre
+   entree (chemin "riders.<uid>"), donc plusieurs pilotes sur le
+   meme segment cumulent leurs lignes dans le meme classement
+   sans jamais s'ecraser.
+
+   Un segment a un SENS : il ne compte que parcouru de son point
+   de depart vers son point d'arrivee. Le sens inverse doit etre
+   cree comme un segment a part.
+
+   Cette collection demande de NOUVELLES regles Firestore (voir
+   le guide de deploiement).
+===================================================== */
+
+/*
+   Distance (en metres) en dessous de laquelle le pilote est
+   considere comme ayant franchi la porte d'entree ou de sortie.
+*/
+
+const SEGMENT_GATE_RADIUS_M = 30;
+
+/*
+   Ecart lateral maximum (en metres) entre le trace du segment et
+   celui du pilote. Au-dela, on considere qu'il a pris une autre
+   route entre les deux portes.
+*/
+
+const SEGMENT_CORRIDOR_M = 40;
+
+/*
+   Fraction minimum du trace du segment qui doit avoir ete suivie
+   dans ce corridor pour valider le passage.
+*/
+
+const SEGMENT_MIN_COVERAGE = 0.8;
+
+/*
+   Ecart de cap maximum (en degres) accepte au franchissement
+   d'une porte : c'est ce qui elimine les passages en sens
+   inverse et les routes qui se croisent.
+*/
+
+const SEGMENT_BEARING_TOLERANCE_DEG = 70;
+
+/*
+   Longueur minimum d'un segment. En dessous, le bruit GPS pese
+   trop lourd pour que les temps veuillent dire quelque chose.
+*/
+
+const SEGMENT_MIN_LENGTH_M = 200;
+
+/*
+   Vitesse moyenne minimum (km/h) sur un passage : au-dessous, on
+   considere que le pilote n'a pas vraiment parcouru le segment
+   d'une traite (arret prolonge, detour, demi-tour).
+*/
+
+const SEGMENT_MIN_AVG_KMH = 5;
+
+/*
+   Garde-fous sur le trace stocke.
+*/
+
+const SEGMENT_MAX_PATH_POINTS = 150;
+
+const SEGMENT_SIMPLIFY_TOLERANCE_M = 5;
+
+const SEGMENT_NAME_MAX_LENGTH = 60;
+
+/*
+   Nombre de segments charges pour la carte.
+*/
+
+const SEGMENTS_LIST_LIMIT = 300;
+
+
+/* -----------------------------------------------------
+   Geometrie locale
+
+   Sur les quelques kilometres d'un segment, on projette en
+   metres autour d'un point de reference : la distance point /
+   droite devient un simple calcul plan, sans erreur sensible.
+----------------------------------------------------- */
+
+function segLocalXY(lat, lon, refLat, refLon){
+
+  const mPerDegLat = 111320;
+
+  const mPerDegLon =
+    111320 * Math.cos(refLat * Math.PI / 180);
+
+  return {
+    x:(lon - refLon) * mPerDegLon,
+    y:(lat - refLat) * mPerDegLat
+  };
+
+}
+
+
+function segBearingDeg(lat1, lon1, lat2, lon2){
+
+  const toRad =
+    d => d * Math.PI / 180;
+
+  const dLon =
+    toRad(lon2 - lon1);
+
+  const y =
+    Math.sin(dLon) * Math.cos(toRad(lat2));
+
+  const x =
+    Math.cos(toRad(lat1)) * Math.sin(toRad(lat2)) -
+    Math.sin(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.cos(dLon);
+
+  const deg =
+    Math.atan2(y, x) * 180 / Math.PI;
+
+  return (deg + 360) % 360;
+
+}
+
+
+function segBearingDiffDeg(a, b){
+
+  const diff =
+    Math.abs(((a - b) % 360 + 540) % 360 - 180);
+
+  return diff;
+
+}
+
+
+/*
+   Distance (metres) entre un point et le SEGMENT [a, b], pas la
+   droite : les points GPS sont espaces de plusieurs dizaines de
+   metres a vitesse elevee, il faut donc mesurer par rapport au
+   trajet reel entre deux points, pas par rapport aux points.
+*/
+
+function segPointToSegmentM(px, py, ax, ay, bx, by){
+
+  const dx = bx - ax;
+
+  const dy = by - ay;
+
+  const lengthSq = dx * dx + dy * dy;
+
+  if(lengthSq < 1e-9){
+
+    return Math.hypot(px - ax, py - ay);
+
+  }
+
+  let t =
+    ((px - ax) * dx + (py - ay) * dy) / lengthSq;
+
+  t = Math.max(0, Math.min(1, t));
+
+  return Math.hypot(
+    px - (ax + t * dx),
+    py - (ay + t * dy)
+  );
+
+}
+
+
+/*
+   Distance d'un point a une polyligne (liste de {lat, lon}).
+*/
+
+function segPointToPathM(lat, lon, points, refLat, refLon){
+
+  if(!Array.isArray(points) || points.length === 0){
+    return Infinity;
+  }
+
+  const p =
+    segLocalXY(lat, lon, refLat, refLon);
+
+  if(points.length === 1){
+
+    const only =
+      segLocalXY(points[0].lat, points[0].lon, refLat, refLon);
+
+    return Math.hypot(p.x - only.x, p.y - only.y);
+
+  }
+
+  let best = Infinity;
+
+  let prev =
+    segLocalXY(points[0].lat, points[0].lon, refLat, refLon);
+
+  for(let i = 1; i < points.length; i++){
+
+    const cur =
+      segLocalXY(points[i].lat, points[i].lon, refLat, refLon);
+
+    const d =
+      segPointToSegmentM(p.x, p.y, prev.x, prev.y, cur.x, cur.y);
+
+    if(d < best){
+      best = d;
+    }
+
+    prev = cur;
+
+  }
+
+  return best;
+
+}
+
+
+/* -----------------------------------------------------
+   Simplification du trace (Douglas-Peucker)
+
+   Un trajet peut contenir plusieurs milliers de points ; on n'en
+   garde que ceux qui portent la forme de la route, pour que le
+   document reste petit tout en restant fidele.
+----------------------------------------------------- */
+
+function segSimplifyPath(points, toleranceM){
+
+  if(!Array.isArray(points) || points.length <= 2){
+    return Array.isArray(points) ? points.slice() : [];
+  }
+
+  const refLat = points[0].lat;
+
+  const refLon = points[0].lon;
+
+  const xy =
+    points.map(p => segLocalXY(p.lat, p.lon, refLat, refLon));
+
+  const keep =
+    new Array(points.length).fill(false);
+
+  keep[0] = true;
+
+  keep[points.length - 1] = true;
+
+  const stack = [[0, points.length - 1]];
+
+  while(stack.length > 0){
+
+    const [first, last] = stack.pop();
+
+    if(last <= first + 1){
+      continue;
+    }
+
+    let maxDist = -1;
+
+    let maxIndex = -1;
+
+    for(let i = first + 1; i < last; i++){
+
+      const d =
+        segPointToSegmentM(
+          xy[i].x, xy[i].y,
+          xy[first].x, xy[first].y,
+          xy[last].x, xy[last].y
+        );
+
+      if(d > maxDist){
+        maxDist = d;
+        maxIndex = i;
+      }
+
+    }
+
+    if(maxDist > toleranceM && maxIndex > first){
+
+      keep[maxIndex] = true;
+
+      stack.push([first, maxIndex]);
+
+      stack.push([maxIndex, last]);
+
+    }
+
+  }
+
+  const simplified = [];
+
+  for(let i = 0; i < points.length; i++){
+
+    if(keep[i]){
+      simplified.push(points[i]);
+    }
+
+  }
+
+  return simplified;
+
+}
+
+
+/*
+   Dernier filet de securite : si la simplification laisse encore
+   trop de points, on echantillonne regulierement en gardant
+   toujours le premier et le dernier.
+*/
+
+function segLimitPathPoints(points, maxPoints){
+
+  if(points.length <= maxPoints){
+    return points;
+  }
+
+  const step =
+    (points.length - 1) / (maxPoints - 1);
+
+  const limited = [];
+
+  for(let i = 0; i < maxPoints; i++){
+
+    limited.push(points[Math.round(i * step)]);
+
+  }
+
+  limited[limited.length - 1] =
+    points[points.length - 1];
+
+  return limited;
+
+}
+
+
+/* -----------------------------------------------------
+   Points GPS exploitables d'un trajet
+
+   Le telephone enregistre jusqu'a 10 points par seconde mais le
+   GPS ne se rafraichit qu'environ une fois par seconde : la meme
+   position est donc repetee plusieurs fois de suite. On ne garde
+   qu'une entree par position REELLE, horodatee au moment ou elle
+   est apparue.
+
+   Le petit retard du GPS est identique a l'entree et a la sortie
+   du segment : il s'annule dans la duree, qui est la seule chose
+   que l'on chronometre.
+----------------------------------------------------- */
+
+function segDistinctFixes(track){
+
+  const fixes = [];
+
+  if(!Array.isArray(track)){
+    return fixes;
+  }
+
+  let last = null;
+
+  for(let i = 0; i < track.length; i++){
+
+    const p = track[i];
+
+    if(
+      !p ||
+      !Number.isFinite(p.lat) ||
+      !Number.isFinite(p.lon)
+    ){
+      continue;
+    }
+
+    if(
+      last &&
+      last.lat === p.lat &&
+      last.lon === p.lon
+    ){
+      continue;
+    }
+
+    last = p;
+
+    fixes.push({
+      lat:p.lat,
+      lon:p.lon,
+      time:p.time,
+      index:i
+    });
+
+  }
+
+  return fixes;
+
+}
+
+
+/* -----------------------------------------------------
+   Franchissement d'une porte
+
+   La porte est la droite perpendiculaire au cap du segment,
+   passant par son point de depart (ou d'arrivee). On cherche
+   entre quels deux points GPS le pilote est passe de l'autre
+   cote, et on interpole l'instant exact : la precision ne depend
+   donc plus de la cadence du GPS.
+----------------------------------------------------- */
+
+function segFindGateCrossing(fixes, gate, fromIndex){
+
+  const refLat = gate.lat;
+
+  const refLon = gate.lon;
+
+  const heading =
+    gate.bearing * Math.PI / 180;
+
+  /*
+     Vecteur unitaire dans le sens de parcours (x vers l'est,
+     y vers le nord).
+  */
+
+  const dirX = Math.sin(heading);
+
+  const dirY = Math.cos(heading);
+
+  const start =
+    Math.max(1, fromIndex);
+
+  if(start >= fixes.length){
+    return null;
+  }
+
+  let prev =
+    segLocalXY(fixes[start - 1].lat, fixes[start - 1].lon, refLat, refLon);
+
+  for(let i = start; i < fixes.length; i++){
+
+    const cur =
+      segLocalXY(fixes[i].lat, fixes[i].lon, refLat, refLon);
+
+    if(prev){
+
+      const sPrev = prev.x * dirX + prev.y * dirY;
+
+      const sCur = cur.x * dirX + cur.y * dirY;
+
+      /*
+         On accepte aussi le point qui tombe PILE sur la porte
+         (sCur == 0) : c'est le cas du dernier point GPS d'un
+         trajet quand le segment a justement ete cree a partir de
+         ce trajet. Sans cela, un segment ne reconnaitrait pas le
+         trajet dont il est issu.
+      */
+
+      if(sPrev <= 0 && sCur >= 0 && sCur > sPrev){
+
+        const span = sCur - sPrev;
+
+        const f =
+          span > 1e-9 ? (0 - sPrev) / span : 0;
+
+        const crossX = prev.x + f * (cur.x - prev.x);
+
+        const crossY = prev.y + f * (cur.y - prev.y);
+
+        /*
+           Ecart lateral au point de la porte : elimine les
+           routes paralleles et les croisements.
+        */
+
+        const lateral =
+          Math.abs(crossX * dirY - crossY * dirX);
+
+        if(lateral <= SEGMENT_GATE_RADIUS_M){
+
+          const travelBearing =
+            segBearingDeg(
+              fixes[i - 1].lat, fixes[i - 1].lon,
+              fixes[i].lat, fixes[i].lon
+            );
+
+          if(
+            segBearingDiffDeg(travelBearing, gate.bearing) <=
+            SEGMENT_BEARING_TOLERANCE_DEG
+          ){
+
+            return {
+
+              index:i,
+
+              time:
+                fixes[i - 1].time +
+                f * (fixes[i].time - fixes[i - 1].time),
+
+              bearing:travelBearing
+
+            };
+
+          }
+
+        }
+
+      }
+
+    }
+
+    prev = cur;
+
+  }
+
+  return null;
+
+}
+
+
+/*
+   Cas particulier de la porte d'ENTREE : la premiere position
+   GPS du trajet est deja quelques metres APRES la porte, donc le
+   balayage ne voit jamais de franchissement. Cela arrive des que
+   l'enregistrement demarre en roulant, et systematiquement quand
+   le segment part du premier point GPS d'un trajet : le pilote
+   qui redemarre au meme endroit serait alors refuse.
+
+   On accepte l'entree et on extrapole l'instant en arriere a
+   partir de la vitesse des deux premiers points. Il faut tout de
+   meme etre a moins de SEGMENT_GATE_RADIUS_M de la porte : on ne
+   peut pas prendre un segment en cours de route.
+*/
+
+function segStartOfTrackCrossing(fixes, gate){
+
+  if(fixes.length < 2){
+    return null;
+  }
+
+  const first = fixes[0];
+
+  const next = fixes[1];
+
+  const heading =
+    gate.bearing * Math.PI / 180;
+
+  const dirX = Math.sin(heading);
+
+  const dirY = Math.cos(heading);
+
+  const p =
+    segLocalXY(first.lat, first.lon, gate.lat, gate.lon);
+
+  const along = p.x * dirX + p.y * dirY;
+
+  /*
+     Pas encore franchie : c'est le balayage normal qui s'en
+     charge.
+  */
+
+  if(along < 0){
+    return null;
+  }
+
+  if(along > SEGMENT_GATE_RADIUS_M){
+    return null;
+  }
+
+  const lateral =
+    Math.abs(p.x * dirY - p.y * dirX);
+
+  if(lateral > SEGMENT_GATE_RADIUS_M){
+    return null;
+  }
+
+  const travelBearing =
+    segBearingDeg(first.lat, first.lon, next.lat, next.lon);
+
+  if(
+    segBearingDiffDeg(travelBearing, gate.bearing) >
+    SEGMENT_BEARING_TOLERANCE_DEG
+  ){
+    return null;
+  }
+
+  const dt =
+    next.time - first.time;
+
+  const step =
+    haversineMeters(first.lat, first.lon, next.lat, next.lon);
+
+  const speed =
+    dt > 0 ? step / dt : 0;
+
+  return {
+
+    index:0,
+
+    time:
+      first.time - (speed > 1 ? along / speed : 0),
+
+    bearing:travelBearing
+
+  };
+
+}
+
+
+/*
+   Cas particulier de la porte de SORTIE : le trajet s'arrete a
+   quelques metres de la porte sans jamais la franchir. Cela
+   arrive des que l'enregistrement est coupe en arrivant, et
+   systematiquement quand le segment a ete cree jusqu'au dernier
+   point GPS d'un trajet : les autres pilotes qui s'arretent au
+   meme endroit seraient alors refuses.
+
+   On accepte le passage et on extrapole l'instant d'arrivee a
+   partir de la vitesse des deux derniers points. L'ecart reste
+   inferieur a la seconde, et cela ne relache rien ailleurs : un
+   pilote qui s'arrete au milieu du segment est toujours a des
+   centaines de metres de la porte.
+*/
+
+function segEndOfTrackCrossing(fixes, gate, fromIndex){
+
+  const count = fixes.length;
+
+  if(count < 2 || fromIndex > count - 1){
+    return null;
+  }
+
+  const last = fixes[count - 1];
+
+  const prev = fixes[count - 2];
+
+  const heading =
+    gate.bearing * Math.PI / 180;
+
+  const dirX = Math.sin(heading);
+
+  const dirY = Math.cos(heading);
+
+  const p =
+    segLocalXY(last.lat, last.lon, gate.lat, gate.lon);
+
+  const along = p.x * dirX + p.y * dirY;
+
+  /*
+     Deja franchie : c'est le balayage normal qui s'en charge.
+  */
+
+  if(along > 0){
+    return null;
+  }
+
+  if(-along > SEGMENT_GATE_RADIUS_M){
+    return null;
+  }
+
+  const lateral =
+    Math.abs(p.x * dirY - p.y * dirX);
+
+  if(lateral > SEGMENT_GATE_RADIUS_M){
+    return null;
+  }
+
+  const travelBearing =
+    segBearingDeg(prev.lat, prev.lon, last.lat, last.lon);
+
+  if(
+    segBearingDiffDeg(travelBearing, gate.bearing) >
+    SEGMENT_BEARING_TOLERANCE_DEG
+  ){
+    return null;
+  }
+
+  const dt =
+    last.time - prev.time;
+
+  const step =
+    haversineMeters(prev.lat, prev.lon, last.lat, last.lon);
+
+  const speed =
+    dt > 0 ? step / dt : 0;
+
+  return {
+
+    index:count - 1,
+
+    time:
+      last.time + (speed > 1 ? (-along) / speed : 0),
+
+    bearing:travelBearing
+
+  };
+
+}
+
+
+/* -----------------------------------------------------
+   Taux de suivi du trace
+
+   Fraction des points du segment pour lesquels le pilote est
+   passe a moins de SEGMENT_CORRIDOR_M. C'est ce qui distingue
+   "il a fait le segment" de "il est arrive au meme endroit par
+   une autre route".
+----------------------------------------------------- */
+
+function segCoverage(fixes, fromIndex, toIndex, path){
+
+  if(!Array.isArray(path) || path.length === 0){
+    return 0;
+  }
+
+  const ridden =
+    fixes.slice(
+      Math.max(0, fromIndex - 1),
+      Math.min(fixes.length, toIndex + 1)
+    );
+
+  if(ridden.length < 2){
+    return 0;
+  }
+
+  const refLat = ridden[0].lat;
+
+  const refLon = ridden[0].lon;
+
+  let covered = 0;
+
+  for(let i = 0; i < path.length; i++){
+
+    const d =
+      segPointToPathM(path[i].lat, path[i].lon, ridden, refLat, refLon);
+
+    if(d <= SEGMENT_CORRIDOR_M){
+      covered++;
+    }
+
+  }
+
+  return covered / path.length;
+
+}
+
+
+/* -----------------------------------------------------
+   Longueur d'une suite de points
+----------------------------------------------------- */
+
+function segPathLengthM(points){
+
+  let total = 0;
+
+  for(let i = 1; i < points.length; i++){
+
+    total +=
+      haversineMeters(
+        points[i - 1].lat, points[i - 1].lon,
+        points[i].lat, points[i].lon
+      );
+
+  }
+
+  return total;
+
+}
+
+
+/*
+   Cap moyen sur les premiers (ou les derniers) metres du trace :
+   plus stable que le cap entre deux points GPS consecutifs, qui
+   peut sauter avec le bruit.
+*/
+
+function segEdgeBearing(points, atEnd){
+
+  const SPAN_M = 40;
+
+  if(points.length < 2){
+    return 0;
+  }
+
+  if(atEnd){
+
+    const last = points[points.length - 1];
+
+    for(let i = points.length - 2; i >= 0; i--){
+
+      if(
+        haversineMeters(points[i].lat, points[i].lon, last.lat, last.lon) >=
+        SPAN_M
+      ){
+
+        return segBearingDeg(
+          points[i].lat, points[i].lon,
+          last.lat, last.lon
+        );
+
+      }
+
+    }
+
+    return segBearingDeg(
+      points[0].lat, points[0].lon,
+      last.lat, last.lon
+    );
+
+  }
+
+  const first = points[0];
+
+  for(let i = 1; i < points.length; i++){
+
+    if(
+      haversineMeters(first.lat, first.lon, points[i].lat, points[i].lon) >=
+      SPAN_M
+    ){
+
+      return segBearingDeg(
+        first.lat, first.lon,
+        points[i].lat, points[i].lon
+      );
+
+    }
+
+  }
+
+  return segBearingDeg(
+    first.lat, first.lon,
+    points[points.length - 1].lat, points[points.length - 1].lon
+  );
+
+}
+
+
+/* -----------------------------------------------------
+   Construction d'un segment a partir d'une portion de trajet
+----------------------------------------------------- */
+
+function buildSegmentFromTrack(track, startIndex, endIndex){
+
+  if(!Array.isArray(track)){
+    return null;
+  }
+
+  const from =
+    Math.max(0, Math.min(startIndex, endIndex));
+
+  const to =
+    Math.min(track.length - 1, Math.max(startIndex, endIndex));
+
+  const fixes =
+    segDistinctFixes(track.slice(from, to + 1));
+
+  if(fixes.length < 2){
+    return null;
+  }
+
+  const fullLength =
+    segPathLengthM(fixes);
+
+  if(fullLength < SEGMENT_MIN_LENGTH_M){
+    return null;
+  }
+
+  const simplified =
+    segLimitPathPoints(
+      segSimplifyPath(fixes, SEGMENT_SIMPLIFY_TOLERANCE_M),
+      SEGMENT_MAX_PATH_POINTS
+    );
+
+  if(simplified.length < 2){
+    return null;
+  }
+
+  let minLat = Infinity;
+
+  let maxLat = -Infinity;
+
+  let minLon = Infinity;
+
+  let maxLon = -Infinity;
+
+  simplified.forEach(p => {
+
+    minLat = Math.min(minLat, p.lat);
+
+    maxLat = Math.max(maxLat, p.lat);
+
+    minLon = Math.min(minLon, p.lon);
+
+    maxLon = Math.max(maxLon, p.lon);
+
+  });
+
+  const first = simplified[0];
+
+  const last = simplified[simplified.length - 1];
+
+  return {
+
+    startLat:first.lat,
+
+    startLon:first.lon,
+
+    endLat:last.lat,
+
+    endLon:last.lon,
+
+    bearingStart:
+      Math.round(segEdgeBearing(fixes, false) * 10) / 10,
+
+    bearingEnd:
+      Math.round(segEdgeBearing(fixes, true) * 10) / 10,
+
+    lengthM:
+      Math.round(fullLength),
+
+    path:
+      simplified.map(p => ({
+        y:Math.round(p.lat * 1e6) / 1e6,
+        x:Math.round(p.lon * 1e6) / 1e6
+      })),
+
+    bbox:{
+      minLat:minLat,
+      maxLat:maxLat,
+      minLon:minLon,
+      maxLon:maxLon
+    },
+
+    durationSec:
+      Math.round((fixes[fixes.length - 1].time - fixes[0].time) * 10) / 10
+
+  };
+
+}
+
+
+/* -----------------------------------------------------
+   Lecture d'un document segment
+----------------------------------------------------- */
+
+function segmentPathPoints(segment){
+
+  if(!segment || !Array.isArray(segment.path)){
+    return [];
+  }
+
+  return segment.path
+    .filter(p =>
+      p &&
+      Number.isFinite(p.y) &&
+      Number.isFinite(p.x)
+    )
+    .map(p => ({ lat:p.y, lon:p.x }));
+
+}
+
+
+function segmentIsUsable(segment){
+
+  return (
+    !!segment &&
+    Number.isFinite(segment.startLat) &&
+    Number.isFinite(segment.startLon) &&
+    Number.isFinite(segment.endLat) &&
+    Number.isFinite(segment.endLon) &&
+    Number.isFinite(segment.lengthM) &&
+    segment.lengthM > 0 &&
+    segmentPathPoints(segment).length >= 2
+  );
+
+}
+
+
+/*
+   Rejet immediat si le trajet ne passe meme pas dans la zone du
+   segment : evite de derouler l'analyse complete sur des dizaines
+   de segments a l'autre bout de la France.
+*/
+
+function segBoxesOverlap(segment, trackBox){
+
+  const margin = 0.01;
+
+  const box =
+    segment.bbox && Number.isFinite(segment.bbox.minLat)
+    ? segment.bbox
+    : null;
+
+  if(!box || !trackBox){
+    return true;
+  }
+
+  return !(
+    box.minLat - margin > trackBox.maxLat ||
+    box.maxLat + margin < trackBox.minLat ||
+    box.minLon - margin > trackBox.maxLon ||
+    box.maxLon + margin < trackBox.minLon
+  );
+
+}
+
+
+function segTrackBoundingBox(track){
+
+  let minLat = Infinity;
+
+  let maxLat = -Infinity;
+
+  let minLon = Infinity;
+
+  let maxLon = -Infinity;
+
+  let found = false;
+
+  (Array.isArray(track) ? track : []).forEach(p => {
+
+    if(
+      !p ||
+      !Number.isFinite(p.lat) ||
+      !Number.isFinite(p.lon)
+    ){
+      return;
+    }
+
+    found = true;
+
+    minLat = Math.min(minLat, p.lat);
+
+    maxLat = Math.max(maxLat, p.lat);
+
+    minLon = Math.min(minLon, p.lon);
+
+    maxLon = Math.max(maxLon, p.lon);
+
+  });
+
+  return found
+    ? { minLat:minLat, maxLat:maxLat, minLon:minLon, maxLon:maxLon }
+    : null;
+
+}
+
+
+/* -----------------------------------------------------
+   Detection des passages d'un trajet sur un segment
+
+   Renvoie le MEILLEUR passage (le plus rapide) trouve dans ce
+   trajet, ou null. Un trajet peut passer plusieurs fois sur le
+   meme segment (aller-retour repetes) : on les parcourt tous.
+----------------------------------------------------- */
+
+function detectSegmentPass(track, segment){
+
+  if(!segmentIsUsable(segment)){
+    return null;
+  }
+
+  const fixes =
+    segDistinctFixes(track);
+
+  if(fixes.length < 3){
+    return null;
+  }
+
+  const path =
+    segmentPathPoints(segment);
+
+  const startGate = {
+    lat:segment.startLat,
+    lon:segment.startLon,
+    bearing:segment.bearingStart || 0
+  };
+
+  const endGate = {
+    lat:segment.endLat,
+    lon:segment.endLon,
+    bearing:segment.bearingEnd || 0
+  };
+
+  const maxDurationSec =
+    segment.lengthM / (SEGMENT_MIN_AVG_KMH / 3.6);
+
+  let best = null;
+
+  let searchFrom = 1;
+
+  let guard = 0;
+
+  while(searchFrom < fixes.length && guard < 200){
+
+    guard++;
+
+    const startCross =
+      segFindGateCrossing(fixes, startGate, searchFrom) ||
+      (searchFrom <= 1
+        ? segStartOfTrackCrossing(fixes, startGate)
+        : null);
+
+    if(!startCross){
+      break;
+    }
+
+    const endCross =
+      segFindGateCrossing(fixes, endGate, startCross.index + 1) ||
+      segEndOfTrackCrossing(fixes, endGate, startCross.index + 1);
+
+    if(!endCross){
+      break;
+    }
+
+    const durationSec =
+      endCross.time - startCross.time;
+
+    const coverage =
+      segCoverage(fixes, startCross.index, endCross.index, path);
+
+    if(
+      durationSec > 1 &&
+      durationSec <= maxDurationSec &&
+      coverage >= SEGMENT_MIN_COVERAGE
+    ){
+
+      const pass =
+        buildSegmentPass(
+          track,
+          segment,
+          startCross.time,
+          endCross.time,
+          coverage
+        );
+
+      if(pass && (!best || pass.timeSec < best.timeSec)){
+        best = pass;
+      }
+
+      searchFrom =
+        Math.max(searchFrom + 1, endCross.index + 1);
+
+    }
+    else{
+
+      /*
+         On avance toujours d'au moins un point, meme quand
+         l'entree vient du tout debut du trajet (indice 0), pour
+         ne jamais repasser sur le meme candidat.
+      */
+
+      searchFrom =
+        Math.max(searchFrom + 1, startCross.index + 1);
+
+    }
+
+  }
+
+  return best;
+
+}
+
+
+function buildSegmentPass(track, segment, startTime, endTime, coverage){
+
+  const durationSec =
+    endTime - startTime;
+
+  if(!(durationSec > 0)){
+    return null;
+  }
+
+  let maxSpeed = 0;
+
+  for(let i = 0; i < track.length; i++){
+
+    const p = track[i];
+
+    if(!p || p.time < startTime || p.time > endTime){
+      continue;
+    }
+
+    if(Number.isFinite(p.speed) && p.speed > maxSpeed){
+
+      maxSpeed = p.speed;
+
+    }
+
+  }
+
+  /*
+     La vitesse moyenne est calculee sur la longueur OFFICIELLE
+     du segment, la meme pour tout le monde, et non sur le trace
+     GPS du pilote : deux pilotes qui mettent le meme temps ont
+     ainsi exactement la meme moyenne.
+  */
+
+  const avgKmh =
+    (segment.lengthM / durationSec) * 3.6;
+
+  if(avgKmh < SEGMENT_MIN_AVG_KMH){
+    return null;
+  }
+
+  return {
+
+    timeSec:Math.round(durationSec * 100) / 100,
+
+    avgKmh:Math.round(avgKmh * 10) / 10,
+
+    maxKmh:Math.round(maxSpeed * 10) / 10,
+
+    startTime:Math.round(startTime * 100) / 100,
+
+    endTime:Math.round(endTime * 100) / 100,
+
+    coverage:Math.round(coverage * 100) / 100
+
+  };
+
+}
+
+
+/*
+   Tous les passages d'un trajet, tous segments confondus.
+*/
+
+function detectSegmentPassesForTrack(track, segments){
+
+  const box =
+    segTrackBoundingBox(track);
+
+  const results = [];
+
+  (Array.isArray(segments) ? segments : []).forEach(segment => {
+
+    if(!segBoxesOverlap(segment, box)){
+      return;
+    }
+
+    const pass =
+      detectSegmentPass(track, segment);
+
+    if(pass){
+
+      results.push({
+        segment:segment,
+        pass:pass
+      });
+
+    }
+
+  });
+
+  return results;
+
+}
+
+
+
+/* =====================================================
+   SEGMENTS - NAVIGATION
+
+   Le menu principal et le basculement des vues vivent dans le
+   script classique, qui n'est pas modifie : on se contente
+   d'ajouter la nouvelle vue a sa liste (le tableau reste
+   modifiable meme si sa liaison est constante) et de brancher
+   le bouton du menu.
+===================================================== */
+
+allNavViews.push(
+  document.getElementById('segmentsView')
+);
+
+document.getElementById('navSegments').addEventListener('click', () => {
+
+  showNavView(document.getElementById('segmentsView'));
+
+  loadSegmentsView(false);
+
+});
+
+
+/* =====================================================
+   SEGMENTS - ACCES FIRESTORE
+===================================================== */
+
+let segmentsCache = [];
+
+let segmentsLoadedOnce = false;
+
+let segmentsLoadSeq = 0;
+
+
+function segmentDocToObject(docSnap){
+
+  const data =
+    docSnap.data() || {};
+
+  return Object.assign({}, data, { id:docSnap.id });
+
+}
+
+
+async function loadAllSegments(){
+
+  const snap =
+    await getDocs(
+      query(
+        collection(db, 'segments'),
+        limit(SEGMENTS_LIST_LIMIT)
+      )
+    );
+
+  const list = [];
+
+  snap.forEach(docSnap => {
+    list.push(segmentDocToObject(docSnap));
+  });
+
+  list.sort((a, b) =>
+    segmentBestTime(a) - segmentBestTime(b)
+  );
+
+  return list;
+
+}
+
+
+function segmentRiders(segment){
+
+  return (
+    segment &&
+    segment.riders &&
+    typeof segment.riders === 'object'
+  )
+    ? segment.riders
+    : {};
+
+}
+
+
+function segmentLeaderboard(segment){
+
+  const riders =
+    segmentRiders(segment);
+
+  return Object.keys(riders)
+    .map(uid => Object.assign({ uid:uid }, riders[uid]))
+    .filter(entry => Number.isFinite(entry.timeSec) && entry.timeSec > 0)
+    .sort((a, b) => a.timeSec - b.timeSec);
+
+}
+
+
+function segmentBestTime(segment){
+
+  const board =
+    segmentLeaderboard(segment);
+
+  return board.length ? board[0].timeSec : Infinity;
+
+}
+
+
+function segmentMyRank(segment, uid){
+
+  const board =
+    segmentLeaderboard(segment);
+
+  for(let i = 0; i < board.length; i++){
+
+    if(board[i].uid === uid){
+
+      return { rank:i + 1, total:board.length, entry:board[i] };
+
+    }
+
+  }
+
+  return null;
+
+}
+
+
+/*
+   Enregistrement des passages.
+
+   Chaque pilote n'ecrit que SA propre entree (chemin
+   "riders.<uid>") : deux pilotes qui enregistrent en meme temps
+   sur le meme segment ne s'ecrasent jamais. La transaction lit
+   d'abord tous les documents concernes, puis ecrit - c'est
+   l'ordre impose par Firestore.
+*/
+
+async function recordSegmentPasses(matches, sessionId, dateMs, countAttempt){
+
+  const user =
+    window.FirebaseBridge.currentUser;
+
+  if(!user || !Array.isArray(matches) || matches.length === 0){
+    return [];
+  }
+
+  const uid = user.uid;
+
+  const pseudo =
+    user.displayName || user.email;
+
+  let outcome = [];
+
+  await runTransaction(db, async tx => {
+
+    outcome = [];
+
+    const reads = [];
+
+    for(const match of matches){
+
+      const ref =
+        doc(db, 'segments', match.segment.id);
+
+      reads.push({
+        match:match,
+        ref:ref,
+        snap:await tx.get(ref)
+      });
+
+    }
+
+    for(const read of reads){
+
+      if(!read.snap.exists()){
+        continue;
+      }
+
+      const data =
+        read.snap.data() || {};
+
+      const riders =
+        data.riders && typeof data.riders === 'object'
+        ? data.riders
+        : {};
+
+      const mine = riders[uid];
+
+      const pass = read.match.pass;
+
+      const improved =
+        !mine ||
+        !Number.isFinite(mine.timeSec) ||
+        pass.timeSec < mine.timeSec;
+
+      if(!improved && !countAttempt){
+
+        /*
+           Rien de neuf (rescan d'un trajet deja pris en compte) :
+           on ne touche pas au document.
+        */
+
+        outcome.push({
+          segmentId:read.match.segment.id,
+          name:data.name || '',
+          pass:pass,
+          improved:false,
+          riders:riders
+        });
+
+        continue;
+
+      }
+
+      const attempts =
+        (mine && Number.isFinite(mine.attempts) ? mine.attempts : 0) +
+        (countAttempt ? 1 : 0);
+
+      const entry =
+        improved
+        ? {
+            pseudo:pseudo,
+            timeSec:pass.timeSec,
+            avgKmh:pass.avgKmh,
+            maxKmh:pass.maxKmh,
+            dateMs:dateMs,
+            sessionId:sessionId || null,
+            attempts:attempts
+          }
+        : Object.assign({}, mine, { pseudo:pseudo, attempts:attempts });
+
+      tx.update(read.ref, {
+        ['riders.' + uid]:entry,
+        updatedAt:serverTimestamp()
+      });
+
+      const merged =
+        Object.assign({}, riders);
+
+      merged[uid] = entry;
+
+      outcome.push({
+        segmentId:read.match.segment.id,
+        name:data.name || '',
+        pass:pass,
+        improved:improved,
+        riders:merged
+      });
+
+    }
+
+  });
+
+  return outcome;
+
+}
+
+
+/*
+   Analyse d'un trajet contre tous les segments connus, puis
+   enregistrement. Renvoie de quoi afficher un resume.
+*/
+
+async function processSegmentsForTrack(track, sessionId, dateMs, countAttempt){
+
+  const segments =
+    await loadAllSegments();
+
+  segmentsCache = segments;
+
+  const matches =
+    detectSegmentPassesForTrack(track, segments);
+
+  if(matches.length === 0){
+    return [];
+  }
+
+  const recorded =
+    await recordSegmentPasses(matches, sessionId, dateMs, countAttempt);
+
+  return recorded.map(item => {
+
+    const board =
+      Object.keys(item.riders)
+        .map(uid => Object.assign({ uid:uid }, item.riders[uid]))
+        .filter(e => Number.isFinite(e.timeSec) && e.timeSec > 0)
+        .sort((a, b) => a.timeSec - b.timeSec);
+
+    const user =
+      window.FirebaseBridge.currentUser;
+
+    let rank = 0;
+
+    for(let i = 0; i < board.length; i++){
+
+      if(user && board[i].uid === user.uid){
+        rank = i + 1;
+      }
+
+    }
+
+    return {
+      segmentId:item.segmentId,
+      name:item.name,
+      pass:item.pass,
+      improved:item.improved,
+      rank:rank,
+      total:board.length
+    };
+
+  });
+
+}
+
+
+/* =====================================================
+   SEGMENTS - CREATION DEPUIS UN TRAJET
+===================================================== */
+
+const segmentCreateCard =
+  document.getElementById('segmentCreateCard');
+
+const segmentCreateToggle =
+  document.getElementById('segmentCreateToggle');
+
+const segmentCreateBody =
+  document.getElementById('segmentCreateBody');
+
+const segmentPickCanvas =
+  document.getElementById('segmentPickMap');
+
+const segmentStartRange =
+  document.getElementById('segmentStartRange');
+
+const segmentEndRange =
+  document.getElementById('segmentEndRange');
+
+const segmentPickInfo =
+  document.getElementById('segmentPickInfo');
+
+const segmentNameInput =
+  document.getElementById('segmentNameInput');
+
+const segmentSaveBtn =
+  document.getElementById('segmentSaveBtn');
+
+const segmentCreateStatus =
+  document.getElementById('segmentCreateStatus');
+
+
+let segmentPickTrack = [];
+
+let segmentPickIndexes = [];
+
+
+/*
+   Les curseurs se deplacent sur les POINTS GPS du trajet, pas
+   sur les echantillons : c'est ce qui rend le reglage precis au
+   doigt (une centaine de crans pour un trajet, pas plusieurs
+   milliers).
+*/
+
+function prepareSegmentPicker(track){
+
+  segmentPickTrack = Array.isArray(track) ? track : [];
+
+  segmentPickIndexes = [];
+
+  let last = null;
+
+  for(let i = 0; i < segmentPickTrack.length; i++){
+
+    const p = segmentPickTrack[i];
+
+    if(
+      !p ||
+      !Number.isFinite(p.lat) ||
+      !Number.isFinite(p.lon)
+    ){
+      continue;
+    }
+
+    if(last && last.lat === p.lat && last.lon === p.lon){
+      continue;
+    }
+
+    last = p;
+
+    segmentPickIndexes.push(i);
+
+  }
+
+  const usable =
+    segmentPickIndexes.length >= 4;
+
+  segmentCreateCard.classList.toggle('hidden', !usable);
+
+  if(!usable){
+    return;
+  }
+
+  segmentCreateBody.classList.add('hidden');
+
+  segmentCreateToggle.textContent =
+    '➕ Créer un segment à partir de ce trajet';
+
+  segmentCreateStatus.textContent = '';
+
+  segmentNameInput.value = '';
+
+  const lastIndex =
+    segmentPickIndexes.length - 1;
+
+  segmentStartRange.min = 0;
+
+  segmentStartRange.max = String(lastIndex);
+
+  segmentEndRange.min = 0;
+
+  segmentEndRange.max = String(lastIndex);
+
+  segmentStartRange.value = '0';
+
+  segmentEndRange.value = String(lastIndex);
+
+}
+
+
+function segmentPickBounds(){
+
+  let a = parseInt(segmentStartRange.value, 10) || 0;
+
+  let b = parseInt(segmentEndRange.value, 10) || 0;
+
+  if(a > b){
+
+    const swap = a;
+
+    a = b;
+
+    b = swap;
+
+  }
+
+  return {
+    from:segmentPickIndexes[a],
+    to:segmentPickIndexes[b]
+  };
+
+}
+
+
+function drawSegmentPicker(){
+
+  if(!segmentPickCanvas || segmentPickIndexes.length < 2){
+    return;
+  }
+
+  const rect =
+    segmentPickCanvas.getBoundingClientRect();
+
+  if(rect.width < 2 || rect.height < 2){
+    return;
+  }
+
+  const dpr =
+    window.devicePixelRatio || 1;
+
+  segmentPickCanvas.width = rect.width * dpr;
+
+  segmentPickCanvas.height = rect.height * dpr;
+
+  const ctx =
+    segmentPickCanvas.getContext('2d');
+
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+  const W = rect.width;
+
+  const H = rect.height;
+
+  ctx.clearRect(0, 0, W, H);
+
+  const points =
+    segmentPickIndexes.map(i => segmentPickTrack[i]);
+
+  let minLat = Infinity;
+
+  let maxLat = -Infinity;
+
+  let minLon = Infinity;
+
+  let maxLon = -Infinity;
+
+  points.forEach(p => {
+
+    minLat = Math.min(minLat, p.lat);
+
+    maxLat = Math.max(maxLat, p.lat);
+
+    minLon = Math.min(minLon, p.lon);
+
+    maxLon = Math.max(maxLon, p.lon);
+
+  });
+
+  if(maxLat - minLat < 0.000001){
+
+    maxLat += 0.00001;
+
+    minLat -= 0.00001;
+
+  }
+
+  if(maxLon - minLon < 0.000001){
+
+    maxLon += 0.00001;
+
+    minLon -= 0.00001;
+
+  }
+
+  const padding = 18;
+
+  const midLat = (minLat + maxLat) / 2;
+
+  const lonScale =
+    Math.cos(midLat * Math.PI / 180);
+
+  const scale =
+    Math.min(
+      (W - padding * 2) / ((maxLon - minLon) * lonScale),
+      (H - padding * 2) / (maxLat - minLat)
+    );
+
+  const project = p => ({
+    x:W / 2 + (p.lon - (minLon + maxLon) / 2) * lonScale * scale,
+    y:H / 2 - (p.lat - (minLat + maxLat) / 2) * scale
+  });
+
+  ctx.lineCap = 'round';
+
+  ctx.lineJoin = 'round';
+
+  ctx.strokeStyle = '#3a4757';
+
+  ctx.lineWidth = 3;
+
+  ctx.beginPath();
+
+  points.forEach((p, i) => {
+
+    const xy = project(p);
+
+    if(i === 0){
+      ctx.moveTo(xy.x, xy.y);
+    }
+    else{
+      ctx.lineTo(xy.x, xy.y);
+    }
+
+  });
+
+  ctx.stroke();
+
+  let a = parseInt(segmentStartRange.value, 10) || 0;
+
+  let b = parseInt(segmentEndRange.value, 10) || 0;
+
+  if(a > b){
+
+    const swap = a;
+
+    a = b;
+
+    b = swap;
+
+  }
+
+  ctx.strokeStyle = '#4ade80';
+
+  ctx.lineWidth = 5;
+
+  ctx.beginPath();
+
+  for(let i = a; i <= b; i++){
+
+    const xy = project(points[i]);
+
+    if(i === a){
+      ctx.moveTo(xy.x, xy.y);
+    }
+    else{
+      ctx.lineTo(xy.x, xy.y);
+    }
+
+  }
+
+  ctx.stroke();
+
+  const drawDot = (index, color, label) => {
+
+    const xy = project(points[index]);
+
+    ctx.fillStyle = color;
+
+    ctx.beginPath();
+
+    ctx.arc(xy.x, xy.y, 7, 0, Math.PI * 2);
+
+    ctx.fill();
+
+    ctx.fillStyle = '#0d1219';
+
+    ctx.font = 'bold 10px system-ui';
+
+    ctx.textAlign = 'center';
+
+    ctx.textBaseline = 'middle';
+
+    ctx.fillText(label, xy.x, xy.y);
+
+  };
+
+  drawDot(a, '#4ade80', 'D');
+
+  drawDot(b, '#f87171', 'A');
+
+}
+
+
+function updateSegmentPickInfo(){
+
+  drawSegmentPicker();
+
+  const bounds =
+    segmentPickBounds();
+
+  const built =
+    buildSegmentFromTrack(segmentPickTrack, bounds.from, bounds.to);
+
+  if(!built){
+
+    segmentPickInfo.textContent =
+      'Portion trop courte : un segment doit faire au moins ' +
+      SEGMENT_MIN_LENGTH_M +
+      ' m.';
+
+    segmentSaveBtn.disabled = true;
+
+    return;
+
+  }
+
+  const avgKmh =
+    built.durationSec > 0
+    ? (built.lengthM / built.durationSec) * 3.6
+    : 0;
+
+  segmentPickInfo.textContent =
+    (built.lengthM / 1000).toFixed(2) + ' km · ' +
+    formatHistoryDuration(built.durationSec) + ' sur ce trajet · ' +
+    Math.round(avgKmh) + ' km/h de moyenne';
+
+  segmentSaveBtn.disabled = false;
+
+}
+
+
+async function saveNewSegment(){
+
+  const user =
+    window.FirebaseBridge.currentUser;
+
+  if(!user){
+    return;
+  }
+
+  const name =
+    segmentNameInput.value.trim().slice(0, SEGMENT_NAME_MAX_LENGTH);
+
+  if(name.length < 2){
+
+    segmentCreateStatus.textContent =
+      'Donne un nom à ton segment (2 caractères minimum).';
+
+    return;
+
+  }
+
+  const bounds =
+    segmentPickBounds();
+
+  const built =
+    buildSegmentFromTrack(segmentPickTrack, bounds.from, bounds.to);
+
+  if(!built){
+
+    segmentCreateStatus.textContent =
+      'Portion trop courte pour faire un segment.';
+
+    return;
+
+  }
+
+  segmentSaveBtn.disabled = true;
+
+  segmentCreateStatus.textContent =
+    'Enregistrement du segment...';
+
+  try{
+
+    const created =
+      await addDoc(collection(db, 'segments'), {
+
+        name:name,
+
+        createdBy:user.displayName || user.email,
+
+        createdByUid:user.uid,
+
+        createdAt:serverTimestamp(),
+
+        updatedAt:serverTimestamp(),
+
+        startLat:built.startLat,
+
+        startLon:built.startLon,
+
+        endLat:built.endLat,
+
+        endLon:built.endLon,
+
+        bearingStart:built.bearingStart,
+
+        bearingEnd:built.bearingEnd,
+
+        lengthM:built.lengthM,
+
+        path:built.path,
+
+        bbox:built.bbox,
+
+        riders:{}
+
+      });
+
+    segmentCreateStatus.textContent =
+      'Segment « ' + name + ' » créé ✅ — analyse de ce trajet...';
+
+    /*
+       Le trajet qui a servi a creer le segment compte comme un
+       premier passage : c'est ce que le pilote attend.
+    */
+
+    const summary =
+      await processSegmentsForTrack(
+        segmentPickTrack,
+        currentHistorySessionId,
+        Date.now(),
+        true
+      );
+
+    const mine =
+      summary.find(s => s.segmentId === created.id);
+
+    segmentCreateStatus.textContent =
+      mine
+      ? 'Segment « ' + name + ' » créé ✅ — ton temps : ' +
+        formatSegmentTime(mine.pass.timeSec) +
+        ' (' + Math.round(mine.pass.avgKmh) + ' km/h de moyenne)'
+      : 'Segment « ' + name + ' » créé ✅';
+
+    segmentsLoadedOnce = false;
+
+    segmentNameInput.value = '';
+
+  }
+  catch(error){
+
+    console.error('[Segments] Création impossible :', error);
+
+    segmentCreateStatus.textContent =
+      'Impossible de créer le segment (règles Firestore non publiées ?). Réessaie plus tard.';
+
+  }
+
+  segmentSaveBtn.disabled = false;
+
+}
+
+
+/* =====================================================
+   SEGMENTS - AFFICHAGE
+===================================================== */
+
+const segmentsView =
+  document.getElementById('segmentsView');
+
+const segmentsStatus =
+  document.getElementById('segmentsStatus');
+
+const segmentsMapEl =
+  document.getElementById('segmentsMap');
+
+const segmentsCountEl =
+  document.getElementById('segmentsCount');
+
+const segmentsListBody =
+  document.getElementById('segmentsListBody');
+
+const segmentsMineOnly =
+  document.getElementById('segmentsMineOnly');
+
+const segmentDetailPanel =
+  document.getElementById('segmentDetailPanel');
+
+const segmentDetailTitle =
+  document.getElementById('segmentDetailTitle');
+
+const segmentDetailMeta =
+  document.getElementById('segmentDetailMeta');
+
+const segmentDetailBoard =
+  document.getElementById('segmentDetailBoard');
+
+const segmentDeleteBtn =
+  document.getElementById('segmentDeleteBtn');
+
+const segmentsRescanBtn =
+  document.getElementById('segmentsRescanBtn');
+
+const segmentsRescanStatus =
+  document.getElementById('segmentsRescanStatus');
+
+
+let segmentsMapInstance = null;
+
+let segmentsMapLayer = null;
+
+let segmentsSelectedId = null;
+
+const segmentsLines =
+  new Map();
+
+
+function formatSegmentTime(seconds){
+
+  if(!Number.isFinite(seconds)){
+    return '--';
+  }
+
+  const total =
+    Math.round(seconds * 10) / 10;
+
+  const minutes =
+    Math.floor(total / 60);
+
+  const rest =
+    total - minutes * 60;
+
+  if(minutes === 0){
+    return rest.toFixed(1) + ' s';
+  }
+
+  return (
+    minutes +
+    ' min ' +
+    String(Math.round(rest)).padStart(2, '0') +
+    ' s'
+  );
+
+}
+
+
+function ensureSegmentsMap(){
+
+  if(segmentsMapInstance){
+    return segmentsMapInstance;
+  }
+
+  if(typeof L === 'undefined'){
+    return null;
+  }
+
+  segmentsMapInstance =
+    L.map(segmentsMapEl, {
+      center:[46.6, 2.4],
+      zoom:5,
+      zoomControl:true,
+      attributionControl:true
+    });
+
+  L.tileLayer(
+    'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+    {
+      maxZoom:19,
+      attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    }
+  ).addTo(segmentsMapInstance);
+
+  segmentsMapLayer =
+    L.layerGroup().addTo(segmentsMapInstance);
+
+  if(typeof ResizeObserver === 'function'){
+
+    const observer =
+      new ResizeObserver(entries => {
+
+        const box =
+          entries[0] && entries[0].contentRect;
+
+        if(!box || box.width < 2 || box.height < 2){
+          return;
+        }
+
+        segmentsMapInstance.invalidateSize(false);
+
+      });
+
+    observer.observe(segmentsMapEl);
+
+  }
+
+  return segmentsMapInstance;
+
+}
+
+
+function visibleSegments(){
+
+  const user =
+    window.FirebaseBridge.currentUser;
+
+  const uid =
+    user ? user.uid : null;
+
+  const all =
+    segmentsCache.filter(segmentIsUsable);
+
+  const shown =
+    segmentsMineOnly.checked && uid
+    ? all.filter(s => !!segmentRiders(s)[uid])
+    : all;
+
+  return { all:all, shown:shown, uid:uid };
+
+}
+
+
+function renderSegmentsMap(){
+
+  const map =
+    ensureSegmentsMap();
+
+  if(!map || !segmentsMapLayer){
+    return;
+  }
+
+  segmentsMapLayer.clearLayers();
+
+  segmentsLines.clear();
+
+  const view =
+    visibleSegments();
+
+  const allLatLngs = [];
+
+  view.shown.forEach(segment => {
+
+    const points =
+      segmentPathPoints(segment)
+        .map(p => [p.lat, p.lon]);
+
+    if(points.length < 2){
+      return;
+    }
+
+    const mine =
+      view.uid && !!segmentRiders(segment)[view.uid];
+
+    const selected =
+      segment.id === segmentsSelectedId;
+
+    const line =
+      L.polyline(points, {
+        color:selected ? '#ffffff' : (mine ? '#ffcc33' : '#60a5fa'),
+        weight:selected ? 8 : 5,
+        opacity:selected ? 1 : 0.85
+      });
+
+    line.on('click', () => {
+      openSegmentDetail(segment.id);
+    });
+
+    line.addTo(segmentsMapLayer);
+
+    segmentsLines.set(segment.id, line);
+
+    /*
+       Un petit repere au depart pour lever l'ambiguite sur le
+       sens de parcours.
+    */
+
+    L.circleMarker(points[0], {
+      radius:selected ? 8 : 6,
+      color:'#0d1219',
+      weight:2,
+      fillColor:selected ? '#ffffff' : (mine ? '#ffcc33' : '#60a5fa'),
+      fillOpacity:1
+    })
+      .on('click', () => {
+        openSegmentDetail(segment.id);
+      })
+      .addTo(segmentsMapLayer);
+
+    points.forEach(p => allLatLngs.push(p));
+
+  });
+
+  segmentsCountEl.textContent =
+    view.shown.length === view.all.length
+    ? view.all.length + ' segment(s) sur la carte'
+    : view.shown.length + ' segment(s) affiché(s) sur ' + view.all.length;
+
+  if(allLatLngs.length > 0){
+
+    map.invalidateSize(false);
+
+    map.fitBounds(L.latLngBounds(allLatLngs), {
+      padding:[24, 24],
+      maxZoom:15,
+      animate:false
+    });
+
+  }
+
+}
+
+
+function renderSegmentsList(){
+
+  const view =
+    visibleSegments();
+
+  segmentsListBody.innerHTML = '';
+
+  if(view.shown.length === 0){
+
+    const row =
+      document.createElement('tr');
+
+    row.innerHTML =
+      '<td colspan="4" class="segmentsEmptyCell">' +
+      (view.all.length === 0
+        ? 'Aucun segment pour l\'instant. Ouvre un trajet dans l\'historique pour en créer un.'
+        : 'Aucun segment où tu as un temps.') +
+      '</td>';
+
+    segmentsListBody.appendChild(row);
+
+    return;
+
+  }
+
+  view.shown.forEach(segment => {
+
+    const board =
+      segmentLeaderboard(segment);
+
+    const mine =
+      view.uid ? segmentMyRank(segment, view.uid) : null;
+
+    const row =
+      document.createElement('tr');
+
+    row.className =
+      'segmentRow' +
+      (segment.id === segmentsSelectedId ? ' segmentRowSelected' : '') +
+      (mine ? ' segmentRowMine' : '');
+
+    row.innerHTML =
+
+      '<td class="segmentRowName">' +
+      turnsHtml(segment.name || 'Segment') +
+      '</td>' +
+
+      '<td>' +
+      (segment.lengthM / 1000).toFixed(2) + ' km' +
+      '</td>' +
+
+      '<td>' +
+      (board.length
+        ? formatSegmentTime(board[0].timeSec) +
+          '<span class="segmentRowSub">' + turnsHtml(board[0].pseudo || '') + '</span>'
+        : '--') +
+      '</td>' +
+
+      '<td>' +
+      (mine
+        ? formatSegmentTime(mine.entry.timeSec) +
+          '<span class="segmentRowSub">' + mine.rank + '<sup>e</sup> / ' + mine.total + '</span>'
+        : '--') +
+      '</td>';
+
+    row.addEventListener('click', () => {
+      openSegmentDetail(segment.id);
+    });
+
+    segmentsListBody.appendChild(row);
+
+  });
+
+}
+
+
+function openSegmentDetail(segmentId){
+
+  const segment =
+    segmentsCache.find(s => s.id === segmentId);
+
+  if(!segment){
+    return;
+  }
+
+  segmentsSelectedId = segmentId;
+
+  const user =
+    window.FirebaseBridge.currentUser;
+
+  const uid =
+    user ? user.uid : null;
+
+  const board =
+    segmentLeaderboard(segment);
+
+  segmentDetailTitle.textContent =
+    segment.name || 'Segment';
+
+  segmentDetailMeta.textContent =
+    (segment.lengthM / 1000).toFixed(2) + ' km · créé par ' +
+    (segment.createdBy || 'un pilote') + ' · ' +
+    board.length + ' pilote(s) classé(s)';
+
+  segmentDetailBoard.innerHTML = '';
+
+  if(board.length === 0){
+
+    const row =
+      document.createElement('tr');
+
+    row.innerHTML =
+      '<td colspan="6" class="segmentsEmptyCell">' +
+      'Personne n\'a encore de temps sur ce segment.' +
+      '</td>';
+
+    segmentDetailBoard.appendChild(row);
+
+  }
+  else{
+
+    board.forEach((entry, index) => {
+
+      const row =
+        document.createElement('tr');
+
+      row.className =
+        entry.uid === uid ? 'segmentBoardMine' : '';
+
+      const date =
+        Number.isFinite(entry.dateMs)
+        ? new Date(entry.dateMs).toLocaleDateString('fr-FR')
+        : '--';
+
+      row.innerHTML =
+
+        '<td>' + (index + 1) + '</td>' +
+
+        '<td>' + turnsHtml(entry.pseudo || 'Pilote') + '</td>' +
+
+        '<td>' + formatSegmentTime(entry.timeSec) + '</td>' +
+
+        '<td>' + Math.round(entry.avgKmh || 0) + '</td>' +
+
+        '<td>' + Math.round(entry.maxKmh || 0) + '</td>' +
+
+        '<td>' + date + '</td>';
+
+      segmentDetailBoard.appendChild(row);
+
+    });
+
+  }
+
+  const canDelete =
+    !!user &&
+    (segment.createdByUid === uid || isFeedbackAdmin(user));
+
+  segmentDeleteBtn.classList.toggle('hidden', !canDelete);
+
+  segmentDeleteBtn.dataset.segmentId = segmentId;
+
+  segmentDetailPanel.classList.remove('hidden');
+
+  renderSegmentsMap();
+
+  renderSegmentsList();
+
+  segmentDetailPanel.scrollIntoView({ behavior:'smooth', block:'nearest' });
+
+}
+
+
+async function loadSegmentsView(force){
+
+  if(segmentsLoadedOnce && !force){
+
+    renderSegmentsMap();
+
+    renderSegmentsList();
+
+    return;
+
+  }
+
+  const seq =
+    ++segmentsLoadSeq;
+
+  segmentsStatus.textContent =
+    'Chargement des segments...';
+
+  segmentsStatus.classList.remove('hidden');
+
+  try{
+
+    const list =
+      await loadAllSegments();
+
+    if(seq !== segmentsLoadSeq){
+      return;
+    }
+
+    segmentsCache = list;
+
+    segmentsLoadedOnce = true;
+
+    segmentsStatus.classList.add('hidden');
+
+    renderSegmentsMap();
+
+    renderSegmentsList();
+
+  }
+  catch(error){
+
+    console.error('[Segments] Chargement impossible :', error);
+
+    if(seq !== segmentsLoadSeq){
+      return;
+    }
+
+    segmentsStatus.textContent =
+      'Impossible de charger les segments. Si tu viens d\'ajouter ' +
+      'cette fonctionnalité, vérifie que les règles Firestore de la ' +
+      'collection « segments » ont bien été publiées.';
+
+  }
+
+}
+
+
+/*
+   Recherche des passages dans les trajets deja enregistres.
+*/
+
+async function rescanMySegments(){
+
+  const user =
+    window.FirebaseBridge.currentUser;
+
+  if(!user){
+    return;
+  }
+
+  segmentsRescanBtn.disabled = true;
+
+  segmentsRescanStatus.textContent =
+    'Analyse de tes trajets enregistrés...';
+
+  try{
+
+    const segments =
+      await loadAllSegments();
+
+    segmentsCache = segments;
+
+    if(segments.length === 0){
+
+      segmentsRescanStatus.textContent =
+        'Aucun segment à chercher pour l\'instant.';
+
+      segmentsRescanBtn.disabled = false;
+
+      return;
+
+    }
+
+    const snap =
+      await getDocs(
+        query(
+          collection(db, 'users', user.uid, 'sessions'),
+          orderBy('createdAt', 'desc'),
+          limit(30)
+        )
+      );
+
+    let improved = 0;
+
+    let scanned = 0;
+
+    for(const docSnap of snap.docs){
+
+      const data =
+        docSnap.data() || {};
+
+      const track =
+        decompressTrack(Array.isArray(data.track) ? data.track : []);
+
+      if(track.length < 3){
+        continue;
+      }
+
+      scanned++;
+
+      const dateMs =
+        data.createdAt && data.createdAt.toDate
+        ? data.createdAt.toDate().getTime()
+        : Date.now();
+
+      const summary =
+        await processSegmentsForTrack(track, docSnap.id, dateMs, false);
+
+      summary.forEach(item => {
+
+        if(item.improved){
+          improved++;
+        }
+
+      });
+
+    }
+
+    segmentsRescanStatus.textContent =
+      scanned === 0
+      ? 'Aucun trajet exploitable dans ton historique.'
+      : scanned + ' trajet(s) analysé(s) · ' +
+        (improved > 0
+          ? improved + ' temps ajouté(s) ou amélioré(s) ✅'
+          : 'aucun nouveau temps');
+
+    await loadSegmentsView(true);
+
+  }
+  catch(error){
+
+    console.error('[Segments] Rescan impossible :', error);
+
+    segmentsRescanStatus.textContent =
+      'Analyse impossible pour le moment.';
+
+  }
+
+  segmentsRescanBtn.disabled = false;
+
+}
+
+
+/* =====================================================
+   SEGMENTS - EVENEMENTS
+===================================================== */
+
+if(segmentCreateToggle){
+
+  segmentCreateToggle.addEventListener('click', () => {
+
+    const hidden =
+      segmentCreateBody.classList.toggle('hidden');
+
+    segmentCreateToggle.textContent =
+      hidden
+      ? '➕ Créer un segment à partir de ce trajet'
+      : '✕ Fermer la création de segment';
+
+    if(!hidden){
+
+      requestAnimationFrame(() => {
+        updateSegmentPickInfo();
+      });
+
+    }
+
+  });
+
+}
+
+if(segmentStartRange){
+
+  segmentStartRange.addEventListener('input', updateSegmentPickInfo);
+
+  segmentEndRange.addEventListener('input', updateSegmentPickInfo);
+
+  segmentSaveBtn.addEventListener('click', saveNewSegment);
+
+}
+
+if(segmentsMineOnly){
+
+  segmentsMineOnly.addEventListener('change', () => {
+
+    renderSegmentsMap();
+
+    renderSegmentsList();
+
+  });
+
+}
+
+if(segmentsRescanBtn){
+
+  segmentsRescanBtn.addEventListener('click', rescanMySegments);
+
+}
+
+if(segmentDeleteBtn){
+
+  segmentDeleteBtn.addEventListener('click', async () => {
+
+    const segmentId =
+      segmentDeleteBtn.dataset.segmentId;
+
+    if(!segmentId){
+      return;
+    }
+
+    const segment =
+      segmentsCache.find(s => s.id === segmentId);
+
+    const confirmed =
+      window.confirm(
+        'Supprimer définitivement le segment « ' +
+        ((segment && segment.name) || 'Segment') +
+        ' » et tous ses temps ?'
+      );
+
+    if(!confirmed){
+      return;
+    }
+
+    segmentDeleteBtn.disabled = true;
+
+    try{
+
+      await deleteDoc(doc(db, 'segments', segmentId));
+
+      segmentsSelectedId = null;
+
+      segmentDetailPanel.classList.add('hidden');
+
+      await loadSegmentsView(true);
+
+    }
+    catch(error){
+
+      console.error('[Segments] Suppression impossible :', error);
+
+      segmentDetailMeta.textContent =
+        'Suppression impossible pour le moment.';
+
+    }
+
+    segmentDeleteBtn.disabled = false;
+
+  });
+
+}
+
+const closeSegmentDetailBtn =
+  document.getElementById('closeSegmentDetail');
+
+if(closeSegmentDetailBtn){
+
+  closeSegmentDetailBtn.addEventListener('click', () => {
+
+    segmentsSelectedId = null;
+
+    segmentDetailPanel.classList.add('hidden');
+
+    renderSegmentsMap();
+
+    renderSegmentsList();
+
+  });
+
+}
+
+
+/* =====================================================
+   SEGMENTS - RESUME APRES ENREGISTREMENT D'UNE SESSION
+===================================================== */
+
+const segmentResultPanel =
+  document.getElementById('segmentResultPanel');
+
+
+function renderSegmentResults(summary){
+
+  if(!segmentResultPanel){
+    return;
+  }
+
+  if(!Array.isArray(summary) || summary.length === 0){
+
+    segmentResultPanel.classList.add('hidden');
+
+    segmentResultPanel.innerHTML = '';
+
+    return;
+
+  }
+
+  const ordinal =
+    rank => (rank === 1 ? '1er' : rank + 'e');
+
+  segmentResultPanel.innerHTML =
+
+    '<div class="segmentResultTitle">' +
+    'Segments parcourus' +
+    '</div>' +
+
+    summary
+      .slice()
+      .sort((a, b) => a.name.localeCompare(b.name))
+      .map(item =>
+
+        '<div class="segmentResultItem">' +
+
+        '<span class="segmentResultName">' +
+        turnsHtml(item.name || 'Segment') +
+        '</span> · ' +
+
+        formatSegmentTime(item.pass.timeSec) +
+        ' · ' +
+        Math.round(item.pass.avgKmh) + ' km/h moy. · ' +
+        Math.round(item.pass.maxKmh) + ' km/h max' +
+
+        (item.rank > 0
+          ? ' · <span class="segmentResultRank">' +
+            ordinal(item.rank) + ' sur ' + item.total + ' pilote(s)' +
+            (item.improved ? ' — nouveau record perso 🎉' : '') +
+            '</span>'
+          : '') +
+
+        '</div>'
+
+      )
+      .join('');
+
+  segmentResultPanel.classList.remove('hidden');
+
+}
+
+
+/*
+   Appelee juste apres l'enregistrement d'une session. Ne bloque
+   rien : si l'analyse echoue, la session est deja sauvegardee.
+*/
+
+function runSegmentsAfterSave(track, sessionId){
+
+  if(segmentResultPanel){
+
+    segmentResultPanel.classList.add('hidden');
+
+    segmentResultPanel.innerHTML = '';
+
+  }
+
+  processSegmentsForTrack(track, sessionId, Date.now(), true)
+    .then(summary => {
+
+      segmentsLoadedOnce = false;
+
+      renderSegmentResults(summary);
+
+    })
+    .catch(error => {
+
+      console.error(
+        '[Segments] Analyse du trajet impossible :',
+        error
+      );
+
+    });
+
+}
+
+
+/*
+   Suppression d'un trajet : les temps de segment qui venaient de
+   ce trajet n'ont plus de source, on les retire. Le pilote peut
+   ensuite relancer "Chercher mes passages" pour recuperer son
+   meilleur temps sur ses autres trajets.
+*/
+
+async function removeSegmentTimesForSession(sessionId){
+
+  const user =
+    window.FirebaseBridge.currentUser;
+
+  if(!user || !sessionId){
+    return 0;
+  }
+
+  const segments =
+    await loadAllSegments();
+
+  segmentsCache = segments;
+
+  let removed = 0;
+
+  for(const segment of segments){
+
+    const mine =
+      segmentRiders(segment)[user.uid];
+
+    if(!mine || mine.sessionId !== sessionId){
+      continue;
+    }
+
+    await updateDoc(doc(db, 'segments', segment.id), {
+      ['riders.' + user.uid]:deleteField(),
+      updatedAt:serverTimestamp()
+    });
+
+    removed++;
+
+  }
+
+  if(removed > 0){
+    segmentsLoadedOnce = false;
+  }
+
+  return removed;
 
 }
 
