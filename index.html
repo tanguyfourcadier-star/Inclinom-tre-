@@ -21,7 +21,7 @@
       content="0">
 
 <meta name="build-id"
-      content="2026-09-17T15:59:58Z">
+      content="2026-09-17T17:45:26Z">
 
 <title>Inclinomètre Moto</title>
 
@@ -851,6 +851,314 @@ details{
 .viewTitle{
   font-size:15px;
   font-weight:700;
+}
+
+
+/* =====================================================
+   GARAGE
+===================================================== */
+
+.garageList{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  margin:12px 0;
+}
+
+button.garageCard{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  width:100%;
+  padding:10px;
+  text-align:left;
+  border:1px solid var(--line);
+  border-radius:14px;
+  background:var(--card);
+  font-family:inherit;
+  font-size:14px;
+  font-weight:400;
+}
+
+button.garageCard:active{
+  background:#1a2331;
+}
+
+.garageCardThumb{
+  width:58px;
+  height:58px;
+  flex:0 0 58px;
+  border-radius:11px;
+  background:#0f151d;
+  border:1px solid var(--line);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:24px;
+  overflow:hidden;
+}
+
+.garageCardThumb img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+.garageCardText{
+  min-width:0;
+  flex:1;
+}
+
+/* Des <span> : sans display:block, le nom et les
+   caracteristiques se retrouvent colles sur la meme ligne. */
+
+.garageCardName{
+  display:block;
+  font-weight:700;
+  color:var(--text);
+}
+
+.garageCardSpecs{
+  display:block;
+  font-size:11px;
+  color:var(--muted);
+  margin-top:3px;
+  line-height:1.45;
+}
+
+.garageEmpty{
+  padding:16px;
+  border:1px dashed var(--line);
+  border-radius:14px;
+  text-align:center;
+  color:var(--muted);
+  font-size:12px;
+  line-height:1.5;
+}
+
+button.garageAddBtn{
+  margin-top:4px;
+}
+
+
+/* ----- Formulaire ----- */
+
+.garageForm{
+  margin-top:14px;
+  padding:14px;
+  border:1px solid #243044;
+  border-radius:14px;
+  background:#141c27;
+}
+
+.garageFormTitle{
+  font-size:14px;
+  font-weight:700;
+  margin-bottom:12px;
+}
+
+.garageTypeChooser{
+  justify-content:flex-start;
+  margin:6px 0 14px;
+}
+
+.garageFieldRow{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+
+.garageField{
+  display:block;
+  margin-bottom:12px;
+}
+
+.garageFieldLabel{
+  display:block;
+  font-size:10px;
+  letter-spacing:0.07em;
+  text-transform:uppercase;
+  color:var(--muted);
+  margin-bottom:4px;
+}
+
+.garageForm input[type="text"],
+.garageForm input[type="number"],
+.garageForm textarea{
+  width:100%;
+  padding:10px 11px;
+  border:1px solid #2f3d52;
+  border-radius:10px;
+  background:#0f151d;
+  color:var(--text);
+  font-size:14px;
+  font-family:inherit;
+  box-sizing:border-box;
+}
+
+.garageForm textarea{
+  resize:vertical;
+  min-height:70px;
+}
+
+.garageForm input:focus,
+.garageForm textarea:focus{
+  outline:none;
+  border-color:var(--accent);
+}
+
+.garageRatio{
+  font-size:12px;
+  color:var(--accent);
+  margin:-4px 0 12px;
+  min-height:16px;
+}
+
+
+/* ----- Photo ----- */
+
+.garagePhotoRow{
+  display:flex;
+  gap:12px;
+  align-items:flex-start;
+  margin:6px 0 14px;
+}
+
+.garagePhotoPreview{
+  width:96px;
+  height:96px;
+  flex:0 0 96px;
+  border:1px solid var(--line);
+  border-radius:12px;
+  background:#0f151d;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+}
+
+.garagePhotoPreview img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+.garagePhotoEmpty{
+  font-size:10px;
+  color:var(--muted);
+  text-align:center;
+  padding:0 6px;
+}
+
+.garagePhotoActions{
+  flex:1;
+  min-width:0;
+}
+
+.garagePhotoInput{
+  display:none;
+}
+
+label.garagePhotoBtn{
+  display:inline-block;
+  padding:9px 13px;
+  border-radius:10px;
+  background:#202a35;
+  color:var(--text);
+  font-size:12px;
+  font-weight:600;
+  cursor:pointer;
+}
+
+label.garagePhotoBtn:active{
+  background:#2a3746;
+}
+
+.garagePhotoInfo{
+  font-size:11px;
+  color:var(--muted);
+  margin-top:8px;
+  line-height:1.45;
+}
+
+.garageFormActions{
+  display:flex;
+  gap:10px;
+  margin-top:6px;
+}
+
+.garageFormActions button{
+  flex:1;
+}
+
+
+/* ----- Fiche d'un véhicule ----- */
+
+.vehicleDetailPhoto{
+  width:100%;
+  border-radius:12px;
+  overflow:hidden;
+  background:#0f151d;
+  margin-bottom:12px;
+  min-height:0;
+}
+
+.vehicleDetailPhoto img{
+  width:100%;
+  display:block;
+}
+
+.vehicleDetailPhotoEmpty{
+  padding:22px;
+  text-align:center;
+  font-size:12px;
+  color:var(--muted);
+}
+
+.vehicleDetailNotes{
+  font-size:13px;
+  line-height:1.55;
+  color:#9ba8b7;
+  white-space:pre-wrap;
+  margin:4px 0 12px;
+}
+
+
+/* ----- Attribution d'un véhicule à un trajet ----- */
+
+.rideVehiclePicker{
+  margin-top:10px;
+}
+
+.rideVehiclePicker select{
+  width:100%;
+  padding:10px 11px;
+  border:1px solid #2f3d52;
+  border-radius:10px;
+  background:#0f151d;
+  color:var(--text);
+  font-size:13px;
+  font-family:inherit;
+  box-sizing:border-box;
+}
+
+.historyVehicleCard{
+  margin-top:14px;
+  padding:12px 14px;
+  border:1px solid #243044;
+  border-radius:12px;
+  background:#141c27;
+}
+
+.historyVehicleCard .garageFieldLabel{
+  margin-bottom:6px;
+}
+
+.segmentRowVehicle{
+  display:block;
+  font-size:10px;
+  color:#8b98a8;
+  margin-top:2px;
 }
 
 
@@ -2152,6 +2460,19 @@ button.turnsMapResyncBtn{
 
     </button>
 
+    <button id="navGarage"
+            class="menuCard"
+            type="button">
+
+      <span class="menuIcon">🔧</span>
+
+      <span class="menuText">
+        <span class="menuLabel">Garage</span>
+        <span class="menuDesc">Tes véhicules, et ceux des autres pilotes</span>
+      </span>
+
+    </button>
+
     <button id="navSegments"
             class="menuCard"
             type="button">
@@ -2518,6 +2839,12 @@ button.turnsMapResyncBtn{
 
     </button>
 
+  </div>
+
+  <div class="rideVehiclePicker">
+    <select id="rideVehicleSelect" aria-label="Véhicule de ce trajet">
+      <option value="">— Aucun véhicule —</option>
+    </select>
   </div>
 
   <div id="rideVehicleChooser" class="vehicleChooser">
@@ -2952,6 +3279,18 @@ Ne manipule pas le téléphone en roulant.
 
       </div>
 
+      <div class="historyVehicleCard" id="historyVehicleCard">
+
+        <div class="garageFieldLabel">Véhicule de ce trajet</div>
+
+        <select id="historyVehicleSelect">
+          <option value="">— Aucun véhicule —</option>
+        </select>
+
+        <div id="historyVehicleStatus" class="sessionDeleteStatus"></div>
+
+      </div>
+
       <div id="segmentCreateCard" class="segmentCreateCard hidden">
 
         <button id="segmentCreateToggle"
@@ -3230,6 +3569,20 @@ Ne manipule pas le téléphone en roulant.
       <li><strong>Trajets déjà enregistrés</strong> : le bouton « Chercher mes passages » analyse tes 30 derniers trajets et remplit tes temps rétroactivement.</li>
       <li><strong>Suppression</strong> : tu peux supprimer les segments que tu as créés. Supprimer un trajet efface aussi les temps de segment qui en venaient.</li>
     </ol>
+  </div>
+
+  <div class="tipsCard">
+    <h3>🔧 Le garage</h3>
+    <p>Saisis tes véhicules dans <strong>Garage → Mon garage</strong> : type, marque, modèle, année, cylindrée, puissance, poids, commentaires et une photo. Le rapport poids/puissance est calculé tout seul.</p>
+    <ol>
+      <li><strong>Attribuer un véhicule à un trajet</strong> : soit au moment d'enregistrer, dans la liste déroulante au-dessus des boutons Moto/Voiture, soit plus tard depuis le détail du trajet dans l'historique. Ce n'est jamais obligatoire.</li>
+      <li><strong>Le véhicule décide du mode</strong> : choisir une moto coche Moto, choisir une voiture ou un quad coche Voiture. Si tu changes ensuite le bouton à la main, le véhicule se détache plutôt que de te contredire.</li>
+      <li><strong>Le quad</strong> compte comme une voiture : il ne s'incline pas en virage, donc son inclinaison n'est ni mesurée ni ajoutée à la carte des virages.</li>
+      <li><strong>Dans les classements</strong> : le nom du véhicule s'affiche sous ton pseudo, sur les segments comme sur les virages. Pour un virage, c'est le véhicule du passage où tu as pris le plus d'angle.</li>
+      <li><strong>Correction rétroactive</strong> : attribuer un véhicule à un ancien trajet met aussi à jour ses temps de segment et ses passages en virage.</li>
+      <li><strong>Entrepôt</strong> : l'onglet d'à côté montre les garages de tous les pilotes. Touche un pilote, puis un véhicule, pour voir sa fiche et sa photo.</li>
+    </ol>
+    <p>La photo est <strong>réduite à 600 px dans ton téléphone avant l'envoi</strong> : une cinquantaine de kilo-octets au lieu de plusieurs mégaoctets. Elle est stockée à part de la fiche et n'est chargée qu'à l'ouverture d'un véhicule, pour que l'entrepôt reste instantané.</p>
   </div>
 
   <div class="tipsCard">
@@ -3583,6 +3936,12 @@ Ne manipule pas le téléphone en roulant.
 
     </div>
 
+    <div class="rideVehiclePicker">
+      <select id="suiviVehicleSelect" aria-label="Véhicule de ce trajet">
+        <option value="">— Aucun véhicule —</option>
+      </select>
+    </div>
+
     <div id="suiviVehicleChooser" class="vehicleChooser">
 
       <span class="vehicleChooserLabel">Ce trajet :</span>
@@ -3696,6 +4055,295 @@ Ne manipule pas le téléphone en conduisant.
           type="button">
     ↻ Actualiser
   </button>
+
+</div>
+
+
+<!-- =====================================================
+     VUE GARAGE
+===================================================== -->
+
+<div id="garageView" class="hidden">
+
+  <div class="viewHeader">
+
+    <button class="backBtn"
+            data-back
+            type="button">
+      ← Menu
+    </button>
+
+    <div class="viewTitle">
+      Garage
+    </div>
+
+  </div>
+
+  <div class="subTabs" id="garageSubTabs">
+
+    <button id="subTabMyGarage"
+            class="subTab active"
+            type="button">
+      Mon garage
+    </button>
+
+    <button id="subTabWarehouse"
+            class="subTab"
+            type="button">
+      Entrepôt
+    </button>
+
+  </div>
+
+
+  <!-- ===== Panneau : mon garage ===== -->
+
+  <div id="myGaragePanel">
+
+    <div class="segmentsIntro">
+      Tes véhicules. Une fois enregistrés, tu peux en attribuer un à chaque
+      trajet — au moment de l'enregistrer ou plus tard depuis l'historique — et
+      il apparaîtra sous ton pseudo dans les classements.
+    </div>
+
+    <div id="myGarageStatus" class="placeholderCard turnsMapStatusCard">
+      Chargement de ton garage...
+    </div>
+
+    <div id="myGarageList" class="garageList"></div>
+
+    <button id="garageAddBtn"
+            class="primary garageAddBtn"
+            type="button">
+      ➕ Ajouter un véhicule
+    </button>
+
+    <div id="garageForm" class="garageForm hidden">
+
+      <div class="garageFormTitle" id="garageFormTitle">
+        Nouveau véhicule
+      </div>
+
+      <div class="garageFieldLabel">Type</div>
+
+      <div class="vehicleChooser garageTypeChooser">
+
+        <button class="vehicleBtn vehicleBtnActive"
+                type="button"
+                data-garage-type="moto">🏍️ Moto</button>
+
+        <button class="vehicleBtn"
+                type="button"
+                data-garage-type="car">🚗 Voiture</button>
+
+        <button class="vehicleBtn"
+                type="button"
+                data-garage-type="quad">🛞 Quad</button>
+
+      </div>
+
+      <div class="garageFieldRow">
+
+        <label class="garageField">
+          <span class="garageFieldLabel">Marque</span>
+          <input type="text" id="garageBrand" maxlength="30" placeholder="Yamaha">
+        </label>
+
+        <label class="garageField">
+          <span class="garageFieldLabel">Modèle</span>
+          <input type="text" id="garageModel" maxlength="40" placeholder="MT-09">
+        </label>
+
+      </div>
+
+      <div class="garageFieldRow">
+
+        <label class="garageField">
+          <span class="garageFieldLabel">Année</span>
+          <input type="number" id="garageYear" min="1900" max="2100" placeholder="2021">
+        </label>
+
+        <label class="garageField">
+          <span class="garageFieldLabel">Cylindrée (cm³)</span>
+          <input type="number" id="garageDisplacement" min="0" max="10000" placeholder="889">
+        </label>
+
+      </div>
+
+      <div class="garageFieldRow">
+
+        <label class="garageField">
+          <span class="garageFieldLabel">Puissance (ch)</span>
+          <input type="number" id="garagePower" min="0" max="2000" placeholder="119">
+        </label>
+
+        <label class="garageField">
+          <span class="garageFieldLabel">Poids (kg)</span>
+          <input type="number" id="garageWeight" min="0" max="5000" placeholder="189">
+        </label>
+
+      </div>
+
+      <div id="garageRatio" class="garageRatio"></div>
+
+      <label class="garageField">
+        <span class="garageFieldLabel">Commentaires</span>
+        <textarea id="garageNotes"
+                  maxlength="500"
+                  rows="3"
+                  placeholder="Préparation, pneus, réglages, anecdotes..."></textarea>
+      </label>
+
+      <div class="garageFieldLabel">Photo</div>
+
+      <div class="garagePhotoRow">
+
+        <div id="garagePhotoPreview" class="garagePhotoPreview">
+          <span class="garagePhotoEmpty">Aucune photo</span>
+        </div>
+
+        <div class="garagePhotoActions">
+
+          <label class="garagePhotoBtn" for="garagePhotoInput">
+            📷 Choisir une photo
+          </label>
+
+          <input type="file"
+                 id="garagePhotoInput"
+                 accept="image/*"
+                 class="garagePhotoInput">
+
+          <button id="garagePhotoRemove"
+                  class="sensorBarBtn hidden"
+                  type="button">
+            Retirer la photo
+          </button>
+
+          <div id="garagePhotoInfo" class="garagePhotoInfo"></div>
+
+        </div>
+
+      </div>
+
+      <div class="garageFormActions">
+
+        <button id="garageSaveBtn"
+                class="primary"
+                type="button">
+          Enregistrer le véhicule
+        </button>
+
+        <button id="garageCancelBtn"
+                type="button">
+          Annuler
+        </button>
+
+      </div>
+
+      <div id="garageFormStatus" class="sessionDeleteStatus"></div>
+
+    </div>
+
+  </div>
+
+
+  <!-- ===== Panneau : entrepôt ===== -->
+
+  <div id="warehousePanel" class="hidden">
+
+    <div class="segmentsIntro">
+      Les garages de tous les pilotes. Touche un pilote pour voir ses véhicules,
+      puis un véhicule pour sa fiche complète.
+    </div>
+
+    <div id="warehouseStatus" class="placeholderCard turnsMapStatusCard">
+      Chargement de l'entrepôt...
+    </div>
+
+    <div class="tableWrap">
+
+      <table class="turnTable accountsTable">
+
+        <thead>
+          <tr>
+            <th>Pilote</th>
+            <th>🏍️</th>
+            <th>🚗</th>
+            <th>🛞</th>
+          </tr>
+        </thead>
+
+        <tbody id="warehouseListBody"></tbody>
+
+      </table>
+
+    </div>
+
+    <div id="warehouseOwnerPanel" class="turnDetailCard hidden">
+
+      <div class="turnDetailHeader">
+
+        <div class="turnDetailHeading">
+          <div class="turnDetailTitle" id="warehouseOwnerTitle"></div>
+          <div class="turnDetailMeta" id="warehouseOwnerMeta"></div>
+        </div>
+
+        <button id="closeWarehouseOwner"
+                class="turnDetailClose"
+                type="button">
+          ✕
+        </button>
+
+      </div>
+
+      <div id="warehouseOwnerList" class="garageList"></div>
+
+    </div>
+
+  </div>
+
+
+  <!-- ===== Fiche d'un véhicule ===== -->
+
+  <div id="vehicleDetailPanel" class="turnDetailCard hidden">
+
+    <div class="turnDetailHeader">
+
+      <div class="turnDetailHeading">
+        <div class="turnDetailTitle" id="vehicleDetailTitle"></div>
+        <div class="turnDetailMeta" id="vehicleDetailMeta"></div>
+      </div>
+
+      <button id="closeVehicleDetail"
+              class="turnDetailClose"
+              type="button">
+        ✕
+      </button>
+
+    </div>
+
+    <div id="vehicleDetailPhoto" class="vehicleDetailPhoto"></div>
+
+    <div class="sessionStatsGrid" id="vehicleDetailStats"></div>
+
+    <div id="vehicleDetailNotes" class="vehicleDetailNotes"></div>
+
+    <div class="garageFormActions" id="vehicleDetailActions">
+
+      <button id="vehicleEditBtn"
+              type="button">
+        ✏️ Modifier
+      </button>
+
+      <button id="vehicleDeleteBtn"
+              class="danger"
+              type="button">
+        🗑️ Supprimer
+      </button>
+
+    </div>
+
+  </div>
 
 </div>
 
@@ -8032,6 +8680,8 @@ async function saveCurrentSessionToFirestore(){
 
   applyVehicleToSnapshot(snapshot);
 
+  applyGarageToSnapshot(snapshot);
+
   showSaveStatus('Enregistrement de la session...', false);
 
   try{
@@ -8124,6 +8774,10 @@ async function saveCurrentSessionToFirestore(){
 
           vehicle:snapshot.vehicle || 'moto',
 
+          vehicleId:snapshot.vehicleId || null,
+
+          vehicleLabel:snapshot.vehicleLabel || '',
+
           track:compressTrack(snapshot.track),
 
           turns:turnsForDoc
@@ -8145,7 +8799,9 @@ async function saveCurrentSessionToFirestore(){
        classement partage est reporte au prochain enregistrement.
     */
 
-    runSegmentsAfterSave(snapshot.track, sessionRef.id, snapshot.vehicle);
+    runSegmentsAfterSave(
+      snapshot.track, sessionRef.id, snapshot.vehicle, snapshot.vehicleLabel
+    );
 
     syncTurnsIfMoto(snapshot, sessionRef.id)
       .then(result => {
@@ -9348,7 +10004,14 @@ function emptyRiderEntry(pseudo){
     bestSpeed:0,
     bestSpeedAngle:0,
     bestSpeedAt:0,
-    lastPassAt:0
+    lastPassAt:0,
+
+    /*
+       Vehicule utilise lors du meilleur angle : c'est ce
+       passage-la que le classement affiche.
+    */
+
+    vehicleLabel:''
   };
 
 }
@@ -9375,6 +10038,10 @@ function normalizeRiderEntry(raw, pseudo){
 
   });
 
+  if(typeof raw.vehicleLabel === 'string'){
+    entry.vehicleLabel = raw.vehicleLabel;
+  }
+
   if(typeof raw.pseudo === 'string' && !pseudo){
     entry.pseudo = raw.pseudo;
   }
@@ -9384,7 +10051,7 @@ function normalizeRiderEntry(raw, pseudo){
 }
 
 
-function addPassToRiderEntry(entry, pass, passAt){
+function addPassToRiderEntry(entry, pass, passAt, vehicleLabel){
 
   const first =
     !(entry.passCount > 0);
@@ -9398,6 +10065,7 @@ function addPassToRiderEntry(entry, pass, passAt){
     entry.bestAngleSigned = pass.a;
     entry.bestAngleSpeed = pass.s;
     entry.bestAngleAt = passAt;
+    entry.vehicleLabel = vehicleLabel || '';
 
   }
 
@@ -9719,7 +10387,12 @@ async function syncTurnsToSharedMap(snapshot, sessionId){
         normalizeRiderEntry(current, pseudo);
 
       g.passes.forEach(pass =>
-        addPassToRiderEntry(entry, pass, Math.round(startMs + pass.t * 1000))
+        addPassToRiderEntry(
+          entry,
+          pass,
+          Math.round(startMs + pass.t * 1000),
+          snapshot.vehicleLabel
+        )
       );
 
       if(exists){
@@ -9886,7 +10559,8 @@ async function doResyncMyTurns(){
         addPassToRiderEntry(
           entries.get(turn.id),
           pass,
-          Math.round(startMs + pass.t * 1000)
+          Math.round(startMs + pass.t * 1000),
+          s.data.vehicleLabel
         );
 
         passTotal++;
@@ -10952,7 +11626,12 @@ function renderTurnLeaderboard(tbody, rows, mode){
 
     tr.innerHTML =
       '<td>' + (index + 1) + '</td>' +
-      '<td>' + turnsHtml(r.pseudo || '?') + '</td>' +
+      '<td>' + turnsHtml(r.pseudo || '?') +
+      (r.vehicleLabel
+        ? '<span class="segmentRowVehicle">' +
+          turnsHtml(r.vehicleLabel) + '</span>'
+        : '') +
+      '</td>' +
       cells +
       '<td>' + (r.passCount || 0) + '</td>';
 
@@ -14318,7 +14997,7 @@ function segmentMyRank(segment, uid){
    l'ordre impose par Firestore.
 */
 
-async function recordSegmentPasses(matches, sessionId, dateMs, countAttempt, vehicle){
+async function recordSegmentPasses(matches, sessionId, dateMs, countAttempt, vehicle, vehicleLabel){
 
   const user =
     window.FirebaseBridge.currentUser;
@@ -14408,6 +15087,7 @@ async function recordSegmentPasses(matches, sessionId, dateMs, countAttempt, veh
             maxKmh:pass.maxKmh,
             dateMs:dateMs,
             sessionId:sessionId || null,
+            vehicleLabel:vehicleLabel || '',
             vehicle:normalizeVehicle(vehicle),
             attempts:attempts
           }
@@ -14445,7 +15125,7 @@ async function recordSegmentPasses(matches, sessionId, dateMs, countAttempt, veh
    enregistrement. Renvoie de quoi afficher un resume.
 */
 
-async function processSegmentsForTrack(track, sessionId, dateMs, countAttempt, vehicle){
+async function processSegmentsForTrack(track, sessionId, dateMs, countAttempt, vehicle, vehicleLabel){
 
   const segments =
     await loadAllSegments();
@@ -14460,7 +15140,7 @@ async function processSegmentsForTrack(track, sessionId, dateMs, countAttempt, v
   }
 
   const recorded =
-    await recordSegmentPasses(matches, sessionId, dateMs, countAttempt, vehicle);
+    await recordSegmentPasses(matches, sessionId, dateMs, countAttempt, vehicle, vehicleLabel);
 
   return recorded.map(item => {
 
@@ -14926,7 +15606,8 @@ async function saveNewSegment(){
         currentHistorySessionId,
         Date.now(),
         true,
-        currentHistorySessionVehicle
+        currentHistorySessionVehicle,
+        currentHistorySessionVehicleLabel
       );
 
     const mine =
@@ -15351,6 +16032,10 @@ function openSegmentDetail(segmentId){
         '<td>' +
         vehicleIcon(entry.vehicle) + ' ' +
         turnsHtml(entry.pseudo || 'Pilote') +
+        (entry.vehicleLabel
+          ? '<span class="segmentRowVehicle">' +
+            turnsHtml(entry.vehicleLabel) + '</span>'
+          : '') +
         '</td>' +
 
         '<td>' + formatSegmentTime(entry.timeSec) + '</td>' +
@@ -15513,7 +16198,9 @@ async function rescanMySegments(){
         : Date.now();
 
       const summary =
-        await processSegmentsForTrack(track, docSnap.id, dateMs, false, data.vehicle);
+        await processSegmentsForTrack(
+          track, docSnap.id, dateMs, false, data.vehicle, data.vehicleLabel
+        );
 
       summary.forEach(item => {
 
@@ -15750,7 +16437,7 @@ function renderSegmentResults(summary){
    rien : si l'analyse echoue, la session est deja sauvegardee.
 */
 
-function runSegmentsAfterSave(track, sessionId, vehicle){
+function runSegmentsAfterSave(track, sessionId, vehicle, vehicleLabel){
 
   if(segmentResultPanel){
 
@@ -15760,7 +16447,7 @@ function runSegmentsAfterSave(track, sessionId, vehicle){
 
   }
 
-  processSegmentsForTrack(track, sessionId, Date.now(), true, vehicle)
+  processSegmentsForTrack(track, sessionId, Date.now(), true, vehicle, vehicleLabel)
     .then(summary => {
 
       segmentsLoadedOnce = false;
@@ -16113,6 +16800,8 @@ document.addEventListener('click', event => {
 
   setSessionVehicle(btn.dataset.vehicle);
 
+  clearRideVehicleIfInconsistent();
+
 });
 
 /* =====================================================
@@ -16416,11 +17105,18 @@ async function saveAccountVehicle(vehicle){
 
 let currentHistorySessionVehicle = VEHICLE_MOTO;
 
+let currentHistorySessionVehicleLabel = '';
+
 
 function applyVehicleToSessionDetail(data){
 
   currentHistorySessionVehicle =
     normalizeVehicle(data && data.vehicle);
+
+  currentHistorySessionVehicleLabel =
+    (data && data.vehicleLabel) || '';
+
+  renderHistoryVehiclePicker(data);
 
   const isCar =
     currentHistorySessionVehicle === VEHICLE_CAR;
@@ -17154,6 +17850,1637 @@ window.addEventListener('firebase-user-ready', event => {
     .classList.toggle('hidden', !isFeedbackAdmin(user));
 
   touchAccountProfile(user);
+
+});
+
+
+/* =====================================================
+   GARAGE - DONNEES
+
+   Deux collections, separees a dessein :
+
+     vehicles/<id>       la fiche : proprietaire, type, marque,
+                         modele, annee, cylindree, puissance,
+                         poids, commentaires. Legere, donc la
+                         liste de l'Entrepot se charge d'un coup.
+
+     vehiclePhotos/<id>  la photo seule, chargee UNIQUEMENT quand
+                         on ouvre la fiche d'un vehicule. Sans
+                         cette separation, ouvrir l'Entrepot
+                         telechargerait les photos de tout le
+                         monde.
+
+   La photo est redimensionnee dans le navigateur avant d'etre
+   envoyee (600 px, JPEG). On passe ainsi de 2-5 Mo bruts a une
+   cinquantaine de kilo-octets, tres loin de la limite de 1 Mo
+   d'un document Firestore - et sans avoir besoin de Firebase
+   Storage, qui demanderait un plan payant.
+===================================================== */
+
+const VEHICLE_TYPE_MOTO = 'moto';
+
+const VEHICLE_TYPE_CAR = 'car';
+
+const VEHICLE_TYPE_QUAD = 'quad';
+
+const VEHICLE_TYPE_LABELS = {
+  moto:'Moto',
+  car:'Voiture',
+  quad:'Quad'
+};
+
+/*
+   Icone affichee DANS LE GARAGE. Dans les classements, c'est la
+   classe de comportement qui compte (un quad y apparait comme
+   une voiture), et le nom du vehicule leve l'ambiguite.
+*/
+
+const VEHICLE_TYPE_ICONS = {
+  moto:'🏍️',
+  car:'🚗',
+  quad:'🛞'
+};
+
+/*
+   Un quad ne s'incline pas dans un virage : cote enregistrement
+   il se comporte comme une voiture (pas d'inclinaison, absent de
+   la carte des virages).
+*/
+
+function vehicleTypeToRideClass(type){
+
+  return type === VEHICLE_TYPE_MOTO ? VEHICLE_MOTO : VEHICLE_CAR;
+
+}
+
+
+function normalizeVehicleType(value){
+
+  if(value === VEHICLE_TYPE_CAR || value === VEHICLE_TYPE_QUAD){
+    return value;
+  }
+
+  return VEHICLE_TYPE_MOTO;
+
+}
+
+
+/*
+   Taille visee pour la chaine data:URL stockee. 90 000
+   caracteres de base64 valent environ 67 Ko de JPEG : net en
+   plein ecran sur un telephone, instantane a charger.
+*/
+
+const VEHICLE_PHOTO_MAX_SIDE = 600;
+
+const VEHICLE_PHOTO_MAX_CHARS = 90000;
+
+const VEHICLE_NOTES_MAX = 500;
+
+
+let garageVehicles = [];
+
+let garageLoadedOnce = false;
+
+const vehiclePhotoCache = new Map();
+
+
+function vehicleLabel(vehicle){
+
+  if(!vehicle){
+    return '';
+  }
+
+  const parts =
+    [vehicle.brand, vehicle.model]
+      .filter(part => typeof part === 'string' && part.trim().length > 0)
+      .map(part => part.trim());
+
+  if(parts.length > 0){
+    return parts.join(' ');
+  }
+
+  return VEHICLE_TYPE_LABELS[normalizeVehicleType(vehicle.type)];
+
+}
+
+
+function vehiclePowerToWeight(vehicle){
+
+  const weight = Number(vehicle && vehicle.weight);
+
+  const power = Number(vehicle && vehicle.power);
+
+  if(!(weight > 0) || !(power > 0)){
+    return null;
+  }
+
+  return Math.round((weight / power) * 100) / 100;
+
+}
+
+
+function myVehicles(){
+
+  const user =
+    window.FirebaseBridge.currentUser;
+
+  if(!user){
+    return [];
+  }
+
+  return garageVehicles.filter(v => v.ownerUid === user.uid);
+
+}
+
+
+function findVehicle(vehicleId){
+
+  return garageVehicles.find(v => v.id === vehicleId) || null;
+
+}
+
+
+async function loadGarage(force){
+
+  if(garageLoadedOnce && !force){
+    return garageVehicles;
+  }
+
+  const snap =
+    await getDocs(collection(db, 'vehicles'));
+
+  const list = [];
+
+  snap.forEach(docSnap => {
+
+    list.push(
+      Object.assign({ id:docSnap.id }, docSnap.data() || {})
+    );
+
+  });
+
+  list.sort((a, b) =>
+    vehicleLabel(a).localeCompare(vehicleLabel(b))
+  );
+
+  garageVehicles = list;
+
+  garageLoadedOnce = true;
+
+  return garageVehicles;
+
+}
+
+
+/* -----------------------------------------------------
+   Photo : redimensionnement dans le navigateur
+----------------------------------------------------- */
+
+function loadImageFromFile(file){
+
+  return new Promise((resolve, reject) => {
+
+    /*
+       createImageBitmap redresse les photos prises en mode
+       portrait (donnee EXIF) la ou un <img> les laisse parfois
+       couchees. On garde le <img> en secours pour les
+       navigateurs qui ne le proposent pas.
+    */
+
+    if(typeof createImageBitmap === 'function'){
+
+      createImageBitmap(file, { imageOrientation:'from-image' })
+        .then(resolve)
+        .catch(() => fallback());
+
+      return;
+
+    }
+
+    fallback();
+
+    function fallback(){
+
+      const reader = new FileReader();
+
+      reader.onload = () => {
+
+        const img = new Image();
+
+        img.onload = () => resolve(img);
+
+        img.onerror = () => reject(new Error('image illisible'));
+
+        img.src = reader.result;
+
+      };
+
+      reader.onerror = () => reject(new Error('fichier illisible'));
+
+      reader.readAsDataURL(file);
+
+    }
+
+  });
+
+}
+
+
+async function compressVehiclePhoto(file){
+
+  const image =
+    await loadImageFromFile(file);
+
+  const width =
+    image.width || image.naturalWidth;
+
+  const height =
+    image.height || image.naturalHeight;
+
+  if(!(width > 0) || !(height > 0)){
+    throw new Error('image vide');
+  }
+
+  const scale =
+    Math.min(1, VEHICLE_PHOTO_MAX_SIDE / Math.max(width, height));
+
+  const canvas =
+    document.createElement('canvas');
+
+  canvas.width = Math.max(1, Math.round(width * scale));
+
+  canvas.height = Math.max(1, Math.round(height * scale));
+
+  const ctx =
+    canvas.getContext('2d');
+
+  /*
+     Fond blanc : un PNG transparent deviendrait noir en JPEG.
+  */
+
+  ctx.fillStyle = '#ffffff';
+
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+
+  if(typeof image.close === 'function'){
+    image.close();
+  }
+
+  let quality = 0.72;
+
+  let dataUrl =
+    canvas.toDataURL('image/jpeg', quality);
+
+  /*
+     Photo tres chargee (feuillages, gravier) : on redescend la
+     qualite par paliers jusqu'a tenir dans la cible.
+  */
+
+  while(dataUrl.length > VEHICLE_PHOTO_MAX_CHARS && quality > 0.32){
+
+    quality -= 0.1;
+
+    dataUrl = canvas.toDataURL('image/jpeg', quality);
+
+  }
+
+  if(dataUrl.length > VEHICLE_PHOTO_MAX_CHARS){
+
+    throw new Error('photo trop lourde');
+
+  }
+
+  return dataUrl;
+
+}
+
+
+async function loadVehiclePhoto(vehicleId){
+
+  if(vehiclePhotoCache.has(vehicleId)){
+    return vehiclePhotoCache.get(vehicleId);
+  }
+
+  try{
+
+    const snap =
+      await getDoc(doc(db, 'vehiclePhotos', vehicleId));
+
+    const url =
+      snap.exists() && typeof snap.data().dataUrl === 'string'
+      ? snap.data().dataUrl
+      : null;
+
+    vehiclePhotoCache.set(vehicleId, url);
+
+    return url;
+
+  }
+  catch(error){
+
+    console.warn('[Garage] Photo illisible :', error);
+
+    return null;
+
+  }
+
+}
+
+
+async function saveVehiclePhoto(vehicleId, dataUrl){
+
+  const user =
+    window.FirebaseBridge.currentUser;
+
+  if(!user){
+    return;
+  }
+
+  await setDoc(doc(db, 'vehiclePhotos', vehicleId), {
+    ownerUid:user.uid,
+    dataUrl:dataUrl,
+    updatedAt:serverTimestamp()
+  });
+
+  vehiclePhotoCache.set(vehicleId, dataUrl);
+
+}
+
+
+async function deleteVehiclePhoto(vehicleId){
+
+  try{
+
+    await deleteDoc(doc(db, 'vehiclePhotos', vehicleId));
+
+  }
+  catch(error){
+
+    /*
+       Pas de photo a supprimer : sans importance.
+    */
+
+  }
+
+  vehiclePhotoCache.delete(vehicleId);
+
+}
+
+/* =====================================================
+   GARAGE - MON GARAGE
+===================================================== */
+
+const garageView = document.getElementById('garageView');
+const myGaragePanel = document.getElementById('myGaragePanel');
+const warehousePanel = document.getElementById('warehousePanel');
+const subTabMyGarage = document.getElementById('subTabMyGarage');
+const subTabWarehouse = document.getElementById('subTabWarehouse');
+
+const myGarageStatus = document.getElementById('myGarageStatus');
+const myGarageList = document.getElementById('myGarageList');
+const garageAddBtn = document.getElementById('garageAddBtn');
+
+const garageForm = document.getElementById('garageForm');
+const garageFormTitle = document.getElementById('garageFormTitle');
+const garageBrand = document.getElementById('garageBrand');
+const garageModel = document.getElementById('garageModel');
+const garageYear = document.getElementById('garageYear');
+const garageDisplacement = document.getElementById('garageDisplacement');
+const garagePower = document.getElementById('garagePower');
+const garageWeight = document.getElementById('garageWeight');
+const garageNotes = document.getElementById('garageNotes');
+const garageRatio = document.getElementById('garageRatio');
+const garageSaveBtn = document.getElementById('garageSaveBtn');
+const garageCancelBtn = document.getElementById('garageCancelBtn');
+const garageFormStatus = document.getElementById('garageFormStatus');
+
+const garagePhotoInput = document.getElementById('garagePhotoInput');
+const garagePhotoPreview = document.getElementById('garagePhotoPreview');
+const garagePhotoRemove = document.getElementById('garagePhotoRemove');
+const garagePhotoInfo = document.getElementById('garagePhotoInfo');
+
+const vehicleDetailPanel = document.getElementById('vehicleDetailPanel');
+const vehicleDetailTitle = document.getElementById('vehicleDetailTitle');
+const vehicleDetailMeta = document.getElementById('vehicleDetailMeta');
+const vehicleDetailPhoto = document.getElementById('vehicleDetailPhoto');
+const vehicleDetailStats = document.getElementById('vehicleDetailStats');
+const vehicleDetailNotes = document.getElementById('vehicleDetailNotes');
+const vehicleDetailActions = document.getElementById('vehicleDetailActions');
+const vehicleEditBtn = document.getElementById('vehicleEditBtn');
+const vehicleDeleteBtn = document.getElementById('vehicleDeleteBtn');
+
+const warehouseStatus = document.getElementById('warehouseStatus');
+const warehouseListBody = document.getElementById('warehouseListBody');
+const warehouseOwnerPanel = document.getElementById('warehouseOwnerPanel');
+const warehouseOwnerTitle = document.getElementById('warehouseOwnerTitle');
+const warehouseOwnerMeta = document.getElementById('warehouseOwnerMeta');
+const warehouseOwnerList = document.getElementById('warehouseOwnerList');
+
+
+let garageFormType = VEHICLE_TYPE_MOTO;
+
+let garageEditingId = null;
+
+/*
+   Photo en cours d'edition : undefined = inchangee,
+   null = a supprimer, chaine = nouvelle photo.
+*/
+
+let garagePendingPhoto;
+
+let vehicleDetailId = null;
+
+
+function garageSpecsLine(vehicle){
+
+  const bits = [];
+
+  if(vehicle.year){
+    bits.push(vehicle.year);
+  }
+
+  if(vehicle.displacement){
+    bits.push(vehicle.displacement + ' cm³');
+  }
+
+  if(vehicle.power){
+    bits.push(vehicle.power + ' ch');
+  }
+
+  if(vehicle.weight){
+    bits.push(vehicle.weight + ' kg');
+  }
+
+  const ratio =
+    vehiclePowerToWeight(vehicle);
+
+  if(ratio !== null){
+    bits.push(ratio.toFixed(2) + ' kg/ch');
+  }
+
+  return bits.join(' · ');
+
+}
+
+
+function vehicleCardHtml(vehicle){
+
+  const type =
+    normalizeVehicleType(vehicle.type);
+
+  return (
+    '<span class="garageCardThumb" data-thumb="' + turnsHtml(vehicle.id) + '">' +
+    VEHICLE_TYPE_ICONS[type] +
+    '</span>' +
+
+    '<span class="garageCardText">' +
+    '<span class="garageCardName">' +
+    turnsHtml(vehicleLabel(vehicle)) +
+    '</span>' +
+    '<span class="garageCardSpecs">' +
+    VEHICLE_TYPE_LABELS[type] +
+    (garageSpecsLine(vehicle) ? ' · ' + turnsHtml(garageSpecsLine(vehicle)) : '') +
+    '</span>' +
+    '</span>'
+  );
+
+}
+
+
+/*
+   Les vignettes sont chargees apres coup, une par une : la liste
+   s'affiche tout de suite et les photos arrivent ensuite.
+*/
+
+function fillVehicleThumbs(container){
+
+  container.querySelectorAll('[data-thumb]').forEach(el => {
+
+    const vehicle =
+      findVehicle(el.dataset.thumb);
+
+    if(!vehicle || !vehicle.hasPhoto){
+      return;
+    }
+
+    loadVehiclePhoto(vehicle.id).then(url => {
+
+      if(url && el.isConnected){
+
+        el.innerHTML =
+          '<img alt="" src="' + url + '">';
+
+      }
+
+    });
+
+  });
+
+}
+
+
+function renderMyGarage(){
+
+  const mine = myVehicles();
+
+  myGarageList.innerHTML = '';
+
+  if(mine.length === 0){
+
+    const empty = document.createElement('div');
+
+    empty.className = 'garageEmpty';
+
+    empty.textContent =
+      'Ton garage est vide. Ajoute ta moto, ta voiture ou ton quad : ' +
+      'tu pourras ensuite l\'attribuer à tes trajets.';
+
+    myGarageList.appendChild(empty);
+
+    return;
+
+  }
+
+  mine.forEach(vehicle => {
+
+    const card = document.createElement('button');
+
+    card.type = 'button';
+
+    card.className = 'garageCard';
+
+    card.innerHTML = vehicleCardHtml(vehicle);
+
+    card.addEventListener('click', () => openVehicleDetail(vehicle.id));
+
+    myGarageList.appendChild(card);
+
+  });
+
+  fillVehicleThumbs(myGarageList);
+
+}
+
+
+function setGarageFormType(type){
+
+  garageFormType = normalizeVehicleType(type);
+
+  document.querySelectorAll('[data-garage-type]').forEach(btn => {
+
+    btn.classList.toggle(
+      'vehicleBtnActive',
+      btn.dataset.garageType === garageFormType
+    );
+
+  });
+
+}
+
+
+function updateGarageRatio(){
+
+  const ratio =
+    vehiclePowerToWeight({
+      weight:Number(garageWeight.value),
+      power:Number(garagePower.value)
+    });
+
+  garageRatio.textContent =
+    ratio === null
+    ? ''
+    : 'Rapport poids/puissance : ' + ratio.toFixed(2) + ' kg/ch';
+
+}
+
+
+function showGaragePhoto(url){
+
+  if(url){
+
+    garagePhotoPreview.innerHTML =
+      '<img alt="" src="' + url + '">';
+
+    garagePhotoRemove.classList.remove('hidden');
+
+  }
+  else{
+
+    garagePhotoPreview.innerHTML =
+      '<span class="garagePhotoEmpty">Aucune photo</span>';
+
+    garagePhotoRemove.classList.add('hidden');
+
+  }
+
+}
+
+
+function openGarageForm(vehicle){
+
+  garageEditingId = vehicle ? vehicle.id : null;
+
+  garagePendingPhoto = undefined;
+
+  garageFormTitle.textContent =
+    vehicle ? 'Modifier le véhicule' : 'Nouveau véhicule';
+
+  setGarageFormType(vehicle ? vehicle.type : VEHICLE_TYPE_MOTO);
+
+  garageBrand.value = (vehicle && vehicle.brand) || '';
+  garageModel.value = (vehicle && vehicle.model) || '';
+  garageYear.value = (vehicle && vehicle.year) || '';
+  garageDisplacement.value = (vehicle && vehicle.displacement) || '';
+  garagePower.value = (vehicle && vehicle.power) || '';
+  garageWeight.value = (vehicle && vehicle.weight) || '';
+  garageNotes.value = (vehicle && vehicle.notes) || '';
+
+  garageFormStatus.textContent = '';
+
+  garagePhotoInfo.textContent =
+    'La photo est réduite à ' + VEHICLE_PHOTO_MAX_SIDE +
+    ' px avant l\'envoi, soit une cinquantaine de kilo-octets.';
+
+  updateGarageRatio();
+
+  showGaragePhoto(null);
+
+  if(vehicle && vehicle.hasPhoto){
+
+    loadVehiclePhoto(vehicle.id).then(url => {
+
+      if(garageEditingId === vehicle.id && garagePendingPhoto === undefined){
+        showGaragePhoto(url);
+      }
+
+    });
+
+  }
+
+  garageForm.classList.remove('hidden');
+
+  garageAddBtn.classList.add('hidden');
+
+  vehicleDetailPanel.classList.add('hidden');
+
+  garageForm.scrollIntoView({ behavior:'smooth', block:'nearest' });
+
+}
+
+
+function closeGarageForm(){
+
+  garageForm.classList.add('hidden');
+
+  garageAddBtn.classList.remove('hidden');
+
+  garageEditingId = null;
+
+  garagePendingPhoto = undefined;
+
+  garagePhotoInput.value = '';
+
+}
+
+
+async function saveVehicle(){
+
+  const user =
+    window.FirebaseBridge.currentUser;
+
+  if(!user){
+    return;
+  }
+
+  const brand = garageBrand.value.trim();
+
+  const model = garageModel.value.trim();
+
+  if(brand.length === 0 && model.length === 0){
+
+    garageFormStatus.textContent =
+      'Donne au moins une marque ou un modèle.';
+
+    return;
+
+  }
+
+  const numberOrNull = input => {
+
+    const value = Number(input.value);
+
+    return Number.isFinite(value) && value > 0 ? Math.round(value) : null;
+
+  };
+
+  const payload = {
+
+    ownerUid:user.uid,
+
+    ownerPseudo:user.displayName || user.email,
+
+    type:garageFormType,
+
+    brand:brand,
+
+    model:model,
+
+    year:numberOrNull(garageYear),
+
+    displacement:numberOrNull(garageDisplacement),
+
+    power:numberOrNull(garagePower),
+
+    weight:numberOrNull(garageWeight),
+
+    notes:garageNotes.value.trim().slice(0, VEHICLE_NOTES_MAX),
+
+    updatedAt:serverTimestamp()
+
+  };
+
+  garageSaveBtn.disabled = true;
+
+  garageFormStatus.textContent = 'Enregistrement...';
+
+  try{
+
+    let vehicleId = garageEditingId;
+
+    if(vehicleId){
+
+      const existing = findVehicle(vehicleId);
+
+      payload.hasPhoto =
+        garagePendingPhoto === undefined
+        ? !!(existing && existing.hasPhoto)
+        : garagePendingPhoto !== null;
+
+      await updateDoc(doc(db, 'vehicles', vehicleId), payload);
+
+    }
+    else{
+
+      payload.hasPhoto = !!garagePendingPhoto;
+
+      payload.createdAt = serverTimestamp();
+
+      const created =
+        await addDoc(collection(db, 'vehicles'), payload);
+
+      vehicleId = created.id;
+
+    }
+
+    if(typeof garagePendingPhoto === 'string'){
+
+      await saveVehiclePhoto(vehicleId, garagePendingPhoto);
+
+    }
+    else if(garagePendingPhoto === null){
+
+      await deleteVehiclePhoto(vehicleId);
+
+    }
+
+    await loadGarage(true);
+
+    renderMyGarage();
+
+    refreshRideVehicleOptions();
+
+    closeGarageForm();
+
+  }
+  catch(error){
+
+    console.error('[Garage] Enregistrement impossible :', error);
+
+    garageFormStatus.textContent =
+      'Impossible d\'enregistrer ce véhicule (règles Firestore non publiées ?).';
+
+  }
+
+  garageSaveBtn.disabled = false;
+
+}
+
+
+/* =====================================================
+   GARAGE - FICHE D'UN VEHICULE
+===================================================== */
+
+async function openVehicleDetail(vehicleId){
+
+  const vehicle =
+    findVehicle(vehicleId);
+
+  if(!vehicle){
+    return;
+  }
+
+  vehicleDetailId = vehicleId;
+
+  const user =
+    window.FirebaseBridge.currentUser;
+
+  const mine =
+    !!user && vehicle.ownerUid === user.uid;
+
+  const type =
+    normalizeVehicleType(vehicle.type);
+
+  vehicleDetailTitle.textContent =
+    vehicleLabel(vehicle);
+
+  vehicleDetailMeta.textContent =
+    VEHICLE_TYPE_ICONS[type] + ' ' + VEHICLE_TYPE_LABELS[type] +
+    ' · ' + (vehicle.ownerPseudo || 'pilote inconnu');
+
+  const ratio =
+    vehiclePowerToWeight(vehicle);
+
+  vehicleDetailStats.innerHTML =
+
+    statBoxHtml('Année', vehicle.year ? String(vehicle.year) : '--') +
+    statBoxHtml('Cylindrée', vehicle.displacement ? vehicle.displacement + ' cm³' : '--') +
+    statBoxHtml('Puissance', vehicle.power ? vehicle.power + ' ch' : '--') +
+    statBoxHtml('Poids', vehicle.weight ? vehicle.weight + ' kg' : '--') +
+    statBoxHtml('Poids/puissance', ratio === null ? '--' : ratio.toFixed(2) + ' kg/ch');
+
+  vehicleDetailNotes.textContent =
+    vehicle.notes || '';
+
+  vehicleDetailActions.classList.toggle('hidden', !mine);
+
+  vehicleDetailPhoto.innerHTML =
+    vehicle.hasPhoto
+    ? '<div class="vehicleDetailPhotoEmpty">Chargement de la photo...</div>'
+    : '<div class="vehicleDetailPhotoEmpty">Pas de photo</div>';
+
+  vehicleDetailPanel.classList.remove('hidden');
+
+  vehicleDetailPanel.scrollIntoView({ behavior:'smooth', block:'nearest' });
+
+  if(vehicle.hasPhoto){
+
+    const url =
+      await loadVehiclePhoto(vehicleId);
+
+    if(vehicleDetailId !== vehicleId){
+      return;
+    }
+
+    vehicleDetailPhoto.innerHTML =
+      url
+      ? '<img alt="" src="' + url + '">'
+      : '<div class="vehicleDetailPhotoEmpty">Photo indisponible</div>';
+
+  }
+
+}
+
+
+/* =====================================================
+   GARAGE - ENTREPOT
+===================================================== */
+
+function garageOwners(){
+
+  const byOwner =
+    new Map();
+
+  garageVehicles.forEach(vehicle => {
+
+    const uid = vehicle.ownerUid;
+
+    if(!uid){
+      return;
+    }
+
+    if(!byOwner.has(uid)){
+
+      byOwner.set(uid, {
+        uid:uid,
+        pseudo:vehicle.ownerPseudo || 'Pilote',
+        moto:0,
+        car:0,
+        quad:0,
+        vehicles:[]
+      });
+
+    }
+
+    const owner = byOwner.get(uid);
+
+    owner.vehicles.push(vehicle);
+
+    owner[normalizeVehicleType(vehicle.type)]++;
+
+    if(vehicle.ownerPseudo){
+      owner.pseudo = vehicle.ownerPseudo;
+    }
+
+  });
+
+  return [...byOwner.values()].sort((a, b) =>
+    b.vehicles.length - a.vehicles.length ||
+    a.pseudo.localeCompare(b.pseudo)
+  );
+
+}
+
+
+function renderWarehouse(){
+
+  const owners = garageOwners();
+
+  warehouseListBody.innerHTML = '';
+
+  if(owners.length === 0){
+
+    const row = document.createElement('tr');
+
+    row.innerHTML =
+      '<td colspan="4" class="segmentsEmptyCell">' +
+      'Aucun véhicule enregistré pour l\'instant.' +
+      '</td>';
+
+    warehouseListBody.appendChild(row);
+
+    return;
+
+  }
+
+  owners.forEach(owner => {
+
+    const row = document.createElement('tr');
+
+    row.className = 'segmentRow';
+
+    row.innerHTML =
+
+      '<td class="segmentRowName">' +
+      turnsHtml(owner.pseudo) +
+      '<span class="segmentRowSub">' +
+      owner.vehicles.length + ' véhicule(s)' +
+      '</span></td>' +
+
+      '<td>' + (owner.moto || '–') + '</td>' +
+      '<td>' + (owner.car || '–') + '</td>' +
+      '<td>' + (owner.quad || '–') + '</td>';
+
+    row.addEventListener('click', () => openWarehouseOwner(owner.uid));
+
+    warehouseListBody.appendChild(row);
+
+  });
+
+}
+
+
+function openWarehouseOwner(uid){
+
+  const owner =
+    garageOwners().find(o => o.uid === uid);
+
+  if(!owner){
+    return;
+  }
+
+  warehouseOwnerTitle.textContent = owner.pseudo;
+
+  warehouseOwnerMeta.textContent =
+    owner.moto + ' 🏍️ · ' + owner.car + ' 🚗 · ' + owner.quad + ' 🛞';
+
+  warehouseOwnerList.innerHTML = '';
+
+  owner.vehicles.forEach(vehicle => {
+
+    const card = document.createElement('button');
+
+    card.type = 'button';
+
+    card.className = 'garageCard';
+
+    card.innerHTML = vehicleCardHtml(vehicle);
+
+    card.addEventListener('click', () => openVehicleDetail(vehicle.id));
+
+    warehouseOwnerList.appendChild(card);
+
+  });
+
+  fillVehicleThumbs(warehouseOwnerList);
+
+  warehouseOwnerPanel.classList.remove('hidden');
+
+  warehouseOwnerPanel.scrollIntoView({ behavior:'smooth', block:'nearest' });
+
+}
+
+
+async function loadGarageView(force){
+
+  myGarageStatus.classList.remove('hidden');
+
+  warehouseStatus.classList.remove('hidden');
+
+  try{
+
+    await loadGarage(force);
+
+    myGarageStatus.classList.add('hidden');
+
+    warehouseStatus.classList.add('hidden');
+
+    renderMyGarage();
+
+    renderWarehouse();
+
+    refreshRideVehicleOptions();
+
+  }
+  catch(error){
+
+    console.error('[Garage] Chargement impossible :', error);
+
+    const message =
+      'Impossible de charger le garage. Si tu viens d\'ajouter cette ' +
+      'fonctionnalité, vérifie que les règles Firestore des collections ' +
+      '« vehicles » et « vehiclePhotos » ont bien été publiées.';
+
+    myGarageStatus.textContent = message;
+
+    warehouseStatus.textContent = message;
+
+  }
+
+}
+
+
+/* =====================================================
+   GARAGE - EVENEMENTS
+===================================================== */
+
+subTabMyGarage.addEventListener('click', () => {
+
+  subTabMyGarage.classList.add('active');
+  subTabWarehouse.classList.remove('active');
+
+  myGaragePanel.classList.remove('hidden');
+  warehousePanel.classList.add('hidden');
+
+});
+
+subTabWarehouse.addEventListener('click', () => {
+
+  subTabWarehouse.classList.add('active');
+  subTabMyGarage.classList.remove('active');
+
+  warehousePanel.classList.remove('hidden');
+  myGaragePanel.classList.add('hidden');
+
+});
+
+garageAddBtn.addEventListener('click', () => openGarageForm(null));
+
+garageCancelBtn.addEventListener('click', closeGarageForm);
+
+garageSaveBtn.addEventListener('click', saveVehicle);
+
+garagePower.addEventListener('input', updateGarageRatio);
+
+garageWeight.addEventListener('input', updateGarageRatio);
+
+document.querySelectorAll('[data-garage-type]').forEach(btn => {
+
+  btn.addEventListener('click', () => setGarageFormType(btn.dataset.garageType));
+
+});
+
+garagePhotoInput.addEventListener('change', async () => {
+
+  const file =
+    garagePhotoInput.files && garagePhotoInput.files[0];
+
+  if(!file){
+    return;
+  }
+
+  garagePhotoInfo.textContent = 'Préparation de la photo...';
+
+  try{
+
+    const dataUrl =
+      await compressVehiclePhoto(file);
+
+    garagePendingPhoto = dataUrl;
+
+    showGaragePhoto(dataUrl);
+
+    garagePhotoInfo.textContent =
+      'Photo prête : ' + Math.round(dataUrl.length / 1024) + ' Ko ' +
+      '(réduite depuis ' + Math.round(file.size / 1024) + ' Ko).';
+
+  }
+  catch(error){
+
+    console.error('[Garage] Photo refusée :', error);
+
+    garagePhotoInfo.textContent =
+      'Cette photo n\'a pas pu être préparée. Essaie une autre image.';
+
+  }
+
+  garagePhotoInput.value = '';
+
+});
+
+garagePhotoRemove.addEventListener('click', () => {
+
+  garagePendingPhoto = null;
+
+  showGaragePhoto(null);
+
+  garagePhotoInfo.textContent = 'La photo sera retirée à l\'enregistrement.';
+
+});
+
+document.getElementById('closeVehicleDetail').addEventListener('click', () => {
+
+  vehicleDetailPanel.classList.add('hidden');
+
+  vehicleDetailId = null;
+
+});
+
+document.getElementById('closeWarehouseOwner').addEventListener('click', () => {
+
+  warehouseOwnerPanel.classList.add('hidden');
+
+});
+
+vehicleEditBtn.addEventListener('click', () => {
+
+  const vehicle =
+    findVehicle(vehicleDetailId);
+
+  if(!vehicle){
+    return;
+  }
+
+  subTabMyGarage.click();
+
+  openGarageForm(vehicle);
+
+});
+
+vehicleDeleteBtn.addEventListener('click', async () => {
+
+  const vehicle =
+    findVehicle(vehicleDetailId);
+
+  if(!vehicle){
+    return;
+  }
+
+  if(!window.confirm(
+    'Supprimer « ' + vehicleLabel(vehicle) + ' » du garage ?\n\n' +
+    'Les trajets déjà enregistrés gardent son nom, mais tu ne pourras ' +
+    'plus l\'attribuer à de nouveaux trajets.'
+  )){
+    return;
+  }
+
+  vehicleDeleteBtn.disabled = true;
+
+  try{
+
+    await deleteVehiclePhoto(vehicle.id);
+
+    await deleteDoc(doc(db, 'vehicles', vehicle.id));
+
+    vehicleDetailPanel.classList.add('hidden');
+
+    vehicleDetailId = null;
+
+    await loadGarage(true);
+
+    renderMyGarage();
+
+    renderWarehouse();
+
+    refreshRideVehicleOptions();
+
+  }
+  catch(error){
+
+    console.error('[Garage] Suppression impossible :', error);
+
+    vehicleDetailMeta.textContent =
+      'Suppression impossible pour le moment.';
+
+  }
+
+  vehicleDeleteBtn.disabled = false;
+
+});
+
+/* =====================================================
+   GARAGE - ATTRIBUTION D'UN VEHICULE A UN TRAJET
+
+   Deux moments :
+
+   - a l'enregistrement : une liste deroulante propose les
+     vehicules du garage. En choisir un regle tout seul
+     moto / voiture d'apres son type. Si le garage est vide, ou
+     si le vehicule n'a pas encore ete saisi, les boutons
+     Moto / Voiture restent utilisables comme avant.
+
+   - plus tard : depuis le detail d'un trajet dans l'historique.
+     Le trajet, ses temps de segment et ses virages sont alors
+     remis a jour avec le nouveau nom.
+===================================================== */
+
+const rideVehicleSelects = [
+  document.getElementById('rideVehicleSelect'),
+  document.getElementById('suiviVehicleSelect')
+].filter(Boolean);
+
+const historyVehicleCard =
+  document.getElementById('historyVehicleCard');
+
+const historyVehicleSelect =
+  document.getElementById('historyVehicleSelect');
+
+const historyVehicleStatus =
+  document.getElementById('historyVehicleStatus');
+
+
+/*
+   Vehicule retenu pour le prochain enregistrement (null = aucun,
+   on s'en tient alors aux boutons Moto / Voiture).
+*/
+
+let rideVehicleId = null;
+
+
+function vehicleOptionsHtml(selectedId){
+
+  const mine = myVehicles();
+
+  let html =
+    '<option value="">— Aucun véhicule —</option>';
+
+  mine.forEach(vehicle => {
+
+    const type =
+      normalizeVehicleType(vehicle.type);
+
+    html +=
+      '<option value="' + turnsHtml(vehicle.id) + '"' +
+      (vehicle.id === selectedId ? ' selected' : '') + '>' +
+      VEHICLE_TYPE_ICONS[type] + ' ' +
+      turnsHtml(vehicleLabel(vehicle)) +
+      '</option>';
+
+  });
+
+  return html;
+
+}
+
+
+function refreshRideVehicleOptions(){
+
+  rideVehicleSelects.forEach(select => {
+
+    select.innerHTML = vehicleOptionsHtml(rideVehicleId);
+
+  });
+
+}
+
+
+function setRideVehicle(vehicleId){
+
+  const vehicle =
+    vehicleId ? findVehicle(vehicleId) : null;
+
+  rideVehicleId = vehicle ? vehicle.id : null;
+
+  rideVehicleSelects.forEach(select => {
+
+    select.value = rideVehicleId || '';
+
+  });
+
+  /*
+     Le type du vehicule decide du mode d'enregistrement : un
+     quad, comme une voiture, n'a pas d'inclinaison exploitable.
+  */
+
+  if(vehicle){
+
+    setSessionVehicle(vehicleTypeToRideClass(normalizeVehicleType(vehicle.type)));
+
+  }
+
+}
+
+
+rideVehicleSelects.forEach(select => {
+
+  select.addEventListener('change', () => setRideVehicle(select.value));
+
+});
+
+
+/*
+   Si le pilote change ensuite Moto / Voiture a la main alors que
+   le vehicule choisi dit le contraire, c'est son choix manuel
+   qui gagne : on detache le vehicule plutot que de laisser les
+   deux se contredire.
+*/
+
+function clearRideVehicleIfInconsistent(){
+
+  const vehicle =
+    rideVehicleId ? findVehicle(rideVehicleId) : null;
+
+  if(!vehicle){
+    return;
+  }
+
+  if(vehicleTypeToRideClass(normalizeVehicleType(vehicle.type)) !== sessionVehicle){
+
+    rideVehicleId = null;
+
+    rideVehicleSelects.forEach(select => {
+      select.value = '';
+    });
+
+  }
+
+}
+
+
+/*
+   Complete l'instantane de session juste avant l'enregistrement.
+   Appele APRES applyVehicleToSnapshot, qui a deja fixe la classe
+   moto / voiture.
+*/
+
+function applyGarageToSnapshot(snapshot){
+
+  const vehicle =
+    rideVehicleId ? findVehicle(rideVehicleId) : null;
+
+  snapshot.vehicleId = vehicle ? vehicle.id : null;
+
+  snapshot.vehicleLabel = vehicle ? vehicleLabel(vehicle) : '';
+
+  return snapshot;
+
+}
+
+
+/* -----------------------------------------------------
+   Attribution depuis l'historique
+----------------------------------------------------- */
+
+function renderHistoryVehiclePicker(data){
+
+  if(!historyVehicleCard){
+    return;
+  }
+
+  const mine = myVehicles();
+
+  historyVehicleStatus.textContent = '';
+
+  if(mine.length === 0){
+
+    historyVehicleSelect.innerHTML =
+      '<option value="">— Aucun véhicule dans ton garage —</option>';
+
+    historyVehicleSelect.disabled = true;
+
+    return;
+
+  }
+
+  historyVehicleSelect.disabled = false;
+
+  historyVehicleSelect.innerHTML =
+    vehicleOptionsHtml(data && data.vehicleId ? data.vehicleId : null);
+
+  historyVehicleSelect.value =
+    (data && data.vehicleId) || '';
+
+  /*
+     Vehicule supprime du garage depuis : on garde son nom
+     visible plutot que de faire croire qu'il n'y en avait pas.
+  */
+
+  if(
+    data &&
+    data.vehicleLabel &&
+    !findVehicle(data.vehicleId)
+  ){
+
+    historyVehicleStatus.textContent =
+      'Trajet fait avec « ' + data.vehicleLabel +
+      ' », qui n\'est plus dans ton garage.';
+
+  }
+
+}
+
+
+async function assignVehicleToOpenSession(vehicleId){
+
+  const user =
+    window.FirebaseBridge.currentUser;
+
+  const sessionId =
+    currentHistorySessionId;
+
+  if(!user || !sessionId){
+    return;
+  }
+
+  const vehicle =
+    vehicleId ? findVehicle(vehicleId) : null;
+
+  const label =
+    vehicle ? vehicleLabel(vehicle) : '';
+
+  historyVehicleSelect.disabled = true;
+
+  historyVehicleStatus.textContent = 'Attribution en cours...';
+
+  try{
+
+    await updateDoc(
+      doc(db, 'users', user.uid, 'sessions', sessionId),
+      {
+        vehicleId:vehicle ? vehicle.id : null,
+        vehicleLabel:label
+      }
+    );
+
+    const touched =
+      await updateSegmentVehicleForSession(sessionId, label);
+
+    historyVehicleStatus.textContent =
+      (label
+        ? 'Trajet attribué à « ' + label + ' ». '
+        : 'Véhicule retiré de ce trajet. ') +
+      (touched > 0
+        ? touched + ' temps de segment mis à jour, '
+        : '') +
+      'mise à jour de la carte des virages...';
+
+    await resyncMyTurns();
+
+    historyVehicleStatus.textContent =
+      label
+      ? 'Trajet attribué à « ' + label + '  » ✅'
+      : 'Véhicule retiré de ce trajet ✅';
+
+    segmentsLoadedOnce = false;
+
+  }
+  catch(error){
+
+    console.error('[Garage] Attribution impossible :', error);
+
+    historyVehicleStatus.textContent =
+      'Attribution impossible pour le moment.';
+
+  }
+
+  historyVehicleSelect.disabled = false;
+
+}
+
+
+/*
+   Les temps de segment issus de ce trajet portent le nom du
+   vehicule : on les corrige sans toucher aux temps eux-memes.
+*/
+
+async function updateSegmentVehicleForSession(sessionId, label){
+
+  const user =
+    window.FirebaseBridge.currentUser;
+
+  if(!user){
+    return 0;
+  }
+
+  const segments =
+    await loadAllSegments();
+
+  segmentsCache = segments;
+
+  let touched = 0;
+
+  for(const segment of segments){
+
+    const mine =
+      segmentRiders(segment)[user.uid];
+
+    if(!mine || mine.sessionId !== sessionId){
+      continue;
+    }
+
+    await updateDoc(doc(db, 'segments', segment.id), {
+      ['riders.' + user.uid + '.vehicleLabel']:label,
+      updatedAt:serverTimestamp()
+    });
+
+    touched++;
+
+  }
+
+  return touched;
+
+}
+
+
+if(historyVehicleSelect){
+
+  historyVehicleSelect.addEventListener('change', () => {
+
+    assignVehicleToOpenSession(historyVehicleSelect.value);
+
+  });
+
+}
+
+/* =====================================================
+   GARAGE - NAVIGATION
+===================================================== */
+
+allNavViews.push(garageView);
+
+
+document.getElementById('navGarage').addEventListener('click', () => {
+
+  showNavView(garageView);
+
+  /*
+     On repart toujours de "Mon garage" : sans cela on retombe
+     sur l'onglet Entrepot laisse ouvert la derniere fois, ce qui
+     surprend - surtout apres un changement de compte.
+  */
+
+  subTabMyGarage.click();
+
+  vehicleDetailPanel.classList.add('hidden');
+
+  warehouseOwnerPanel.classList.add('hidden');
+
+  closeGarageForm();
+
+  /*
+     Rechargement force : le garage tient dans une seule requete
+     legere (les photos sont ailleurs), et un ami qui ajoute un
+     vehicule doit apparaitre a la prochaine ouverture, pas au
+     prochain rechargement de la page.
+  */
+
+  loadGarageView(true);
+
+});
+
+
+/*
+   A la connexion, on charge le garage en tache de fond : la
+   liste deroulante d'attribution est ainsi deja remplie au
+   premier enregistrement, sans attendre que le pilote ouvre le
+   menu Garage.
+*/
+
+window.addEventListener('firebase-user-ready', () => {
+
+  loadGarage(true)
+    .then(() => {
+
+      refreshRideVehicleOptions();
+
+    })
+    .catch(error => {
+
+      console.warn('[Garage] Chargement differe :', error);
+
+    });
 
 });
 
