@@ -21,9 +21,43 @@
       content="0">
 
 <meta name="build-id"
-      content="2026-09-15T16:35:36Z">
+      content="2026-09-17T15:59:58Z">
 
 <title>Inclinomètre Moto</title>
+
+<!-- =====================================================
+     ICONE (ecran d'accueil du telephone)
+
+     icon-180.png et icon-512.png doivent etre deposes a cote
+     de index.html dans le depot. iOS n'accepte pas d'icone
+     integree au HTML : sans ces fichiers, il met une capture
+     d'ecran de la page sur l'ecran d'accueil.
+===================================================== -->
+
+<link rel="apple-touch-icon"
+      href="icon-180.png">
+
+<link rel="icon"
+      type="image/png"
+      sizes="512x512"
+      href="icon-512.png">
+
+<link rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="icon-32.png">
+
+<meta name="apple-mobile-web-app-capable"
+      content="yes">
+
+<meta name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent">
+
+<meta name="apple-mobile-web-app-title"
+      content="Inclinomètre">
+
+<meta name="application-name"
+      content="Inclinomètre Moto">
 
 <link rel="stylesheet"
       href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
@@ -817,6 +851,214 @@ details{
 .viewTitle{
   font-size:15px;
   font-weight:700;
+}
+
+
+/* =====================================================
+   VUE SUIVI
+===================================================== */
+
+.suiviSpeedValue{
+  font-size:88px;
+  font-weight:800;
+  line-height:1;
+  text-align:center;
+  color:var(--text);
+  font-variant-numeric:tabular-nums;
+  margin:6px 0 2px;
+}
+
+.suiviSpeedUnit{
+  text-align:center;
+  font-size:14px;
+  color:var(--muted);
+  letter-spacing:0.12em;
+}
+
+.suiviGGrid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+  margin-top:10px;
+}
+
+.suiviGBox{
+  background:#0f151d;
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:10px;
+  text-align:center;
+}
+
+.suiviGLabel{
+  font-size:10px;
+  letter-spacing:0.06em;
+  text-transform:uppercase;
+  color:var(--muted);
+}
+
+.suiviGValue{
+  font-size:26px;
+  font-weight:700;
+  margin:3px 0 1px;
+  font-variant-numeric:tabular-nums;
+}
+
+.suiviGMax{
+  font-size:10px;
+  color:var(--muted);
+  font-variant-numeric:tabular-nums;
+}
+
+.suiviGHelp{
+  margin-top:10px;
+  font-size:11px;
+  line-height:1.5;
+  color:var(--muted);
+}
+
+
+/* =====================================================
+   CHOIX DU VEHICULE
+===================================================== */
+
+.vehicleChooser{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-wrap:wrap;
+  gap:8px;
+  margin-top:12px;
+}
+
+.vehicleChooserLabel{
+  font-size:11px;
+  color:var(--muted);
+}
+
+button.vehicleBtn{
+  width:auto;
+  padding:8px 14px;
+  font-size:12px;
+  font-weight:600;
+  border-radius:9px;
+  background:#202a35;
+  color:var(--muted);
+  border:1px solid transparent;
+}
+
+button.vehicleBtnActive{
+  background:#1d3855;
+  color:#bcdcff;
+  border-color:#2f5d8a;
+}
+
+.menuVehicle{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-wrap:wrap;
+  gap:8px;
+  margin:0 0 14px;
+}
+
+
+/* =====================================================
+   VUE COMPTES (administrateur)
+===================================================== */
+
+.accountsSummary{
+  margin:12px 0;
+  padding:12px 14px;
+  border:1px solid #243044;
+  border-radius:12px;
+  background:#141c27;
+  font-size:12px;
+  line-height:1.7;
+  color:#9ba8b7;
+}
+
+.accountsSummary strong{
+  color:#e6edf5;
+}
+
+.accountsTable{
+  min-width:0;
+  font-size:11px;
+}
+
+.accountsTable th,
+.accountsTable td{
+  padding:8px 4px;
+  vertical-align:top;
+}
+
+.accountsTable th:first-child,
+.accountsTable td:first-child{
+  text-align:left;
+}
+
+button.accountsRefreshBtn{
+  display:block;
+  margin:16px auto 0;
+}
+
+
+/* =====================================================
+   TRAJET EN VOITURE (historique)
+===================================================== */
+
+.historyCarNote{
+  margin:14px 0 0;
+  padding:11px 13px;
+  border:1px solid #243044;
+  border-radius:12px;
+  background:#141c27;
+  font-size:12px;
+  line-height:1.5;
+  color:#9ba8b7;
+}
+
+
+/* =====================================================
+   ECRAN ALLUME
+===================================================== */
+
+.wakeLockBar{
+  margin:10px 0 0;
+  padding:9px 12px;
+  border:1px solid #243044;
+  border-radius:10px;
+  background:#141c27;
+  color:#9ba8b7;
+  font-size:12px;
+  line-height:1.45;
+  text-align:center;
+}
+
+.wakeLockBar.wakeLockWarn{
+  border-color:#5a4520;
+  background:#241d12;
+  color:#f0c674;
+}
+
+
+/* =====================================================
+   CARTE DE DECOUPE D'UN SEGMENT
+===================================================== */
+
+.segmentPickMapWrap{
+  width:100%;
+  height:300px;
+  margin-top:10px;
+  border:1px solid #243044;
+  border-radius:12px;
+  overflow:hidden;
+  background:#0b1017;
+}
+
+#segmentPickMap .leaflet-tile-pane{
+  filter:invert(1) hue-rotate(180deg) brightness(0.92) contrast(0.95);
 }
 
 
@@ -1777,6 +2019,20 @@ button.turnsMapResyncBtn{
              minlength="6"
              required>
 
+      <div class="vehicleChooser" id="signupVehicleChooser">
+
+        <span class="vehicleChooserLabel">Je roule en :</span>
+
+        <button class="vehicleBtn vehicleBtnActive"
+                type="button"
+                data-signup-vehicle="moto">🏍️ Moto</button>
+
+        <button class="vehicleBtn"
+                type="button"
+                data-signup-vehicle="car">🚗 Voiture</button>
+
+      </div>
+
       <button class="primary"
               type="submit">
         CRÉER MON COMPTE
@@ -1841,6 +2097,20 @@ button.turnsMapResyncBtn{
     Que veux-tu faire ?
   </div>
 
+  <div class="menuVehicle" id="menuVehicleChooser">
+
+    <span class="vehicleChooserLabel">Je roule en :</span>
+
+    <button class="vehicleBtn"
+            type="button"
+            data-vehicle="moto">🏍️ Moto</button>
+
+    <button class="vehicleBtn"
+            type="button"
+            data-vehicle="car">🚗 Voiture</button>
+
+  </div>
+
   <div class="menuGrid">
 
     <button id="navInclinometre"
@@ -1852,6 +2122,19 @@ button.turnsMapResyncBtn{
       <span class="menuText">
         <span class="menuLabel">Inclinomètre</span>
         <span class="menuDesc">Lancer une session et suivre ton inclinaison en direct</span>
+      </span>
+
+    </button>
+
+    <button id="navSuivi"
+            class="menuCard"
+            type="button">
+
+      <span class="menuIcon">🚗</span>
+
+      <span class="menuText">
+        <span class="menuLabel">Suivi</span>
+        <span class="menuDesc">Vitesse, temps de trajet et accélérations, sans inclinaison</span>
       </span>
 
     </button>
@@ -1917,6 +2200,19 @@ button.turnsMapResyncBtn{
       <span class="menuText">
         <span class="menuLabel">Commentaires</span>
         <span class="menuDesc">Un bug, une idée ? Laisse-moi un message</span>
+      </span>
+
+    </button>
+
+    <button id="navComptes"
+            class="menuCard hidden"
+            type="button">
+
+      <span class="menuIcon">👥</span>
+
+      <span class="menuText">
+        <span class="menuLabel">Comptes</span>
+        <span class="menuDesc">Les comptes créés et leur activité (administrateur)</span>
       </span>
 
     </button>
@@ -2224,7 +2520,23 @@ button.turnsMapResyncBtn{
 
   </div>
 
+  <div id="rideVehicleChooser" class="vehicleChooser">
+
+    <span class="vehicleChooserLabel">Ce trajet :</span>
+
+    <button class="vehicleBtn"
+            type="button"
+            data-vehicle="moto">🏍️ Moto</button>
+
+    <button class="vehicleBtn"
+            type="button"
+            data-vehicle="car">🚗 Voiture</button>
+
+  </div>
+
   <div id="cloudSaveStatus" class="small hidden"></div>
+
+  <div id="wakeLockBar" class="wakeLockBar hidden"></div>
 
   <div id="segmentResultPanel" class="segmentResultCard hidden"></div>
 
@@ -2575,6 +2887,14 @@ Ne manipule pas le téléphone en roulant.
         Fais glisser le doigt sur le graphique pour parcourir la session.
       </div>
 
+      <div id="historyCarNote" class="historyCarNote hidden">
+        Trajet enregistré en voiture : l'inclinaison n'est pas mesurée, et ce
+        trajet n'apparaît pas sur la carte des virages. Les segments, eux,
+        comptent normalement.
+      </div>
+
+      <div id="historyAngleBlock">
+
       <div class="label" style="margin-top:18px;">
         Tracé par angle
       </div>
@@ -2585,6 +2905,8 @@ Ne manipule pas le téléphone en roulant.
 
       <div id="historyMapInfo" class="mapInfo"></div>
 
+      </div>
+
       <div class="label" style="margin-top:16px;">
         Tracé par vitesse
       </div>
@@ -2594,6 +2916,8 @@ Ne manipule pas le téléphone en roulant.
       </div>
 
       <div id="historyMapSpeedInfo" class="mapInfo"></div>
+
+      <div id="historyTurnsBlock">
 
       <div class="label" style="margin-top:16px;">
         Repères des virages (n° du tableau ci-dessous)
@@ -2626,6 +2950,8 @@ Ne manipule pas le téléphone en roulant.
 
       </div>
 
+      </div>
+
       <div id="segmentCreateCard" class="segmentCreateCard hidden">
 
         <button id="segmentCreateToggle"
@@ -2642,9 +2968,7 @@ Ne manipule pas le téléphone en roulant.
             tu as prise entre les deux.
           </div>
 
-          <div class="mapWrap">
-            <canvas id="segmentPickMap"></canvas>
-          </div>
+          <div id="segmentPickMap" class="segmentPickMapWrap"></div>
 
           <label class="segmentRangeLabel" for="segmentStartRange">
             Départ
@@ -2909,6 +3233,34 @@ Ne manipule pas le téléphone en roulant.
   </div>
 
   <div class="tipsCard">
+    <h3>🚗 Le mode Suivi</h3>
+    <p>Le menu <strong>Suivi</strong> est un tableau de bord sans inclinaison : vitesse en grand, temps de trajet, distance et accélérations. Il utilise exactement le même moteur et le même enregistrement que l'inclinomètre, et ses trajets comptent pour les segments.</p>
+    <ol>
+      <li><strong>Accélération / Freinage</strong> : la poussée dans l'axe du véhicule, en g. Environ 0,3 g pour une accélération franche, 0,8 g pour un freinage appuyé.</li>
+      <li><strong>Latéral</strong> : la poussée en virage, droite + et gauche −, comme l'inclinaison. Une voiture de route dépasse rarement 0,8 g.</li>
+      <li><strong>Vertical</strong> : 1,00 g à plat, monte sur une bosse et descend dans un creux.</li>
+      <li><strong>Précision</strong> : ces valeurs supposent le zéro fait véhicule à l'arrêt et à plat, téléphone bien fixé. Un support qui bouge ou un zéro fait en roulant fausse les trois axes.</li>
+    </ol>
+  </div>
+
+  <div class="tipsCard">
+    <h3>🏍️ 🚗 Moto ou voiture</h3>
+    <p>Le choix « Je roule en » dans le menu décide de ce que tu vois : un compte voiture n'a ni inclinomètre ni carte des virages, qui n'ont pas de sens avec un téléphone posé dans un vide-poche.</p>
+    <p>Au moment d'enregistrer, tu confirmes le véhicule de <strong>ce trajet</strong>. Un trajet marqué voiture est enregistré <strong>sans inclinaison</strong> (angles à zéro, aucun virage) et n'alimente jamais la carte des virages. Il compte en revanche normalement pour les segments, où il apparaît avec son icône 🚗.</p>
+  </div>
+
+  <div class="tipsCard">
+    <h3>🔆 Garder l'écran allumé</h3>
+    <p>Dès que tu démarres les capteurs, l'appli demande au téléphone de ne pas se mettre en veille tout seul. Une ligne sous les boutons te dit si c'est accepté.</p>
+    <p>Ce que ça ne fait pas : empêcher un appui volontaire sur le bouton de verrouillage. Et le <strong>mode économie d'énergie</strong> peut refuser — l'appli te le dit alors clairement. Une page web ne peut pas enregistrer écran éteint : les capteurs et le GPS s'arrêtent, et il y aura un trou dans le trajet.</p>
+  </div>
+
+  <div class="tipsCard">
+    <h3>📲 Mettre l'appli sur l'écran d'accueil</h3>
+    <p>Sur iPhone : bouton Partager, puis « Sur l'écran d'accueil ». Sur Android : menu ⋮, puis « Ajouter à l'écran d'accueil ». L'appli s'ouvre alors en plein écran avec son icône, comme une vraie application — sans rien installer.</p>
+  </div>
+
+  <div class="tipsCard">
     <h3>⚠️ Reste prudent</h3>
     <p>C'est un prototype expérimental. Ne manipule jamais le téléphone en roulant, et ne prends pas les mesures affichées comme une limite de sécurité absolue.</p>
   </div>
@@ -3095,6 +3447,255 @@ Ne manipule pas le téléphone en roulant.
     <div id="segmentsRescanStatus" class="sessionDeleteStatus"></div>
 
   </div>
+
+</div>
+
+
+<!-- =====================================================
+     VUE SUIVI (tableau de bord sans inclinaison)
+===================================================== -->
+
+<div id="suiviView" class="hidden">
+
+  <div class="viewHeader">
+
+    <button class="backBtn"
+            data-back
+            type="button">
+      ← Menu
+    </button>
+
+    <div class="viewTitle">
+      Suivi
+    </div>
+
+  </div>
+
+  <section class="card">
+
+    <div class="label">
+      VITESSE GPS
+    </div>
+
+    <div id="suiviSpeed" class="suiviSpeedValue">
+      0
+    </div>
+
+    <div class="suiviSpeedUnit">
+      km/h
+    </div>
+
+  </section>
+
+  <div class="sessionStatsGrid">
+
+    <div class="sessionStatBox">
+      <div class="label">Temps de trajet</div>
+      <div class="val" id="suiviTime">00:00</div>
+    </div>
+
+    <div class="sessionStatBox">
+      <div class="label">Distance</div>
+      <div class="val" id="suiviDistance">0.00 km</div>
+    </div>
+
+    <div class="sessionStatBox">
+      <div class="label">Vitesse max</div>
+      <div class="val" id="suiviMaxSpeed">0 km/h</div>
+    </div>
+
+    <div class="sessionStatBox">
+      <div class="label">Points enregistrés</div>
+      <div class="val" id="suiviPoints">0</div>
+    </div>
+
+  </div>
+
+  <section class="card">
+
+    <div class="label">
+      ACCÉLÉRATIONS
+    </div>
+
+    <div class="suiviGGrid">
+
+      <div class="suiviGBox">
+        <div class="suiviGLabel">Accélération</div>
+        <div class="suiviGValue" id="suiviGAccel">0.00</div>
+        <div class="suiviGMax">max <span id="suiviGAccelMax">0.00</span> g</div>
+      </div>
+
+      <div class="suiviGBox">
+        <div class="suiviGLabel">Freinage</div>
+        <div class="suiviGValue" id="suiviGBrake">0.00</div>
+        <div class="suiviGMax">max <span id="suiviGBrakeMax">0.00</span> g</div>
+      </div>
+
+      <div class="suiviGBox">
+        <div class="suiviGLabel">Latéral</div>
+        <div class="suiviGValue" id="suiviGLat">0.00</div>
+        <div class="suiviGMax">G <span id="suiviGLatLeftMax">0.00</span> · D <span id="suiviGLatRightMax">0.00</span></div>
+      </div>
+
+      <div class="suiviGBox">
+        <div class="suiviGLabel">Vertical</div>
+        <div class="suiviGValue" id="suiviGVert">1.00</div>
+        <div class="suiviGMax">max <span id="suiviGVertMax">1.00</span> g</div>
+      </div>
+
+    </div>
+
+    <div id="suiviGHelp" class="suiviGHelp">
+      Fais le zéro véhicule à l'arrêt et à plat : les accélérations sont
+      ensuite mesurées dans les axes du véhicule. Latéral : droite +, gauche −.
+    </div>
+
+  </section>
+
+  <section class="card">
+
+    <div class="buttons">
+
+      <button id="suiviStart"
+              class="primary"
+              type="button">
+        DÉMARRER LES CAPTEURS
+      </button>
+
+      <button id="suiviSession"
+              class="blue"
+              type="button"
+              disabled>
+        ▶ DÉMARRER SESSION
+      </button>
+
+      <button id="suiviZero"
+              class="warn"
+              type="button">
+        FAIRE LE ZÉRO
+      </button>
+
+      <button id="suiviSave"
+              type="button"
+              disabled>
+        💾 ENREGISTRER
+      </button>
+
+    </div>
+
+    <div id="suiviVehicleChooser" class="vehicleChooser">
+
+      <span class="vehicleChooserLabel">Ce trajet :</span>
+
+      <button class="vehicleBtn"
+              type="button"
+              data-vehicle="moto">🏍️ Moto</button>
+
+      <button class="vehicleBtn"
+              type="button"
+              data-vehicle="car">🚗 Voiture</button>
+
+    </div>
+
+    <div id="suiviSaveStatus" class="small hidden"></div>
+
+    <div id="suiviWakeLock" class="wakeLockBar hidden"></div>
+
+    <div id="suiviSegmentPanel" class="segmentResultCard hidden"></div>
+
+  </section>
+
+  <div class="note">
+
+⚠️ Prototype expérimental basé sur les capteurs du téléphone et le GPS.
+
+La vitesse GPS peut avoir un délai et une précision variable selon les
+conditions de réception.
+
+Ne manipule pas le téléphone en conduisant.
+
+  </div>
+
+</div>
+
+
+<!-- =====================================================
+     VUE COMPTES (administrateur uniquement)
+===================================================== -->
+
+<div id="accountsView" class="hidden">
+
+  <div class="viewHeader">
+
+    <button class="backBtn"
+            data-back
+            type="button">
+      ← Menu
+    </button>
+
+    <div class="viewTitle">
+      Comptes
+    </div>
+
+  </div>
+
+  <div class="segmentsIntro">
+    Les comptes créés avec ton code d'accès et leur activité. Chaque appli tient
+    sa propre fiche à jour : les compteurs d'un pilote se remplissent à sa
+    prochaine connexion.
+  </div>
+
+  <div id="accountsStatus" class="placeholderCard turnsMapStatusCard">
+    Chargement des comptes...
+  </div>
+
+  <div id="accountsSummary" class="accountsSummary"></div>
+
+  <div class="tableWrap">
+
+    <table class="turnTable accountsTable">
+
+      <thead>
+        <tr>
+          <th>Pilote</th>
+          <th>Trajets</th>
+          <th>Distance</th>
+          <th>Dernière activité</th>
+        </tr>
+      </thead>
+
+      <tbody id="accountsListBody"></tbody>
+
+    </table>
+
+  </div>
+
+  <div id="accountDetailPanel" class="turnDetailCard hidden">
+
+    <div class="turnDetailHeader">
+
+      <div class="turnDetailHeading">
+        <div class="turnDetailTitle" id="accountDetailTitle"></div>
+        <div class="turnDetailMeta" id="accountDetailMeta"></div>
+      </div>
+
+      <button id="closeAccountDetail"
+              class="turnDetailClose"
+              type="button">
+        ✕
+      </button>
+
+    </div>
+
+    <div class="sessionStatsGrid" id="accountDetailStats"></div>
+
+  </div>
+
+  <button id="accountsRefreshBtn"
+          class="sensorBarBtn accountsRefreshBtn"
+          type="button">
+    ↻ Actualiser
+  </button>
 
 </div>
 
@@ -7196,11 +7797,31 @@ signupForm.addEventListener('submit', async event => {
 
         email:email,
 
+        vehicle:signupVehicle,
+
         createdAt:serverTimestamp()
 
-      }
+      },
+
+      /*
+         Fusion : la fiche de compte a pu etre initialisee une
+         fraction de seconde plus tot par touchAccountProfile
+         (derniere visite, version de l'appli). Sans merge, cette
+         ecriture-ci effacerait ces champs.
+      */
+
+      { merge:true }
 
     );
+
+    /*
+       C'est l'inscription qui fait foi pour le vehicule : la
+       fiche de compte n'existait pas encore quand la connexion
+       a ete detectee, donc l'interface est encore sur la valeur
+       par defaut a cet instant.
+    */
+
+    applyAccountVehicle(signupVehicle, true);
 
   }
   catch(error){
@@ -7404,6 +8025,13 @@ async function saveCurrentSessionToFirestore(){
 
   }
 
+  /*
+     Un trajet voiture est enregistre sans inclinaison : les
+     angles sont remis a zero et aucun virage n'est conserve.
+  */
+
+  applyVehicleToSnapshot(snapshot);
+
   showSaveStatus('Enregistrement de la session...', false);
 
   try{
@@ -7494,6 +8122,8 @@ async function saveCurrentSessionToFirestore(){
 
           pointCount:snapshot.track.length,
 
+          vehicle:snapshot.vehicle || 'moto',
+
           track:compressTrack(snapshot.track),
 
           turns:turnsForDoc
@@ -7506,6 +8136,8 @@ async function saveCurrentSessionToFirestore(){
 
     saveSessionBtn.disabled = true;
 
+    bumpAccountAfterSession(snapshot.distanceKm, snapshot.vehicle);
+
     /*
        Synchronisation de la carte partagee des virages.
        Non bloquant : si ca echoue (reseau, regles pas encore
@@ -7513,9 +8145,9 @@ async function saveCurrentSessionToFirestore(){
        classement partage est reporte au prochain enregistrement.
     */
 
-    runSegmentsAfterSave(snapshot.track, sessionRef.id);
+    runSegmentsAfterSave(snapshot.track, sessionRef.id, snapshot.vehicle);
 
-    syncTurnsToSharedMap(snapshot, sessionRef.id)
+    syncTurnsIfMoto(snapshot, sessionRef.id)
       .then(result => {
 
         if(result.recorded > 0){
@@ -10953,8 +11585,11 @@ function openSessionDetail(data){
     statBoxHtml('Durée', formatHistoryDuration(data.durationSec || 0)) +
     statBoxHtml('Distance', (data.distanceKm || 0).toFixed(2) + ' km') +
     statBoxHtml('Vitesse max', (data.maxSpeedKmh || 0) + ' km/h') +
-    statBoxHtml('Angle max gauche', (data.maxLeftDeg || 0) + '°') +
-    statBoxHtml('Angle max droite', (data.maxRightDeg || 0) + '°');
+    (normalizeVehicle(data.vehicle) === VEHICLE_CAR
+      ? statBoxHtml('Véhicule', '🚗 Voiture') +
+        statBoxHtml('Points enregistrés', String(data.pointCount || 0))
+      : statBoxHtml('Angle max gauche', (data.maxLeftDeg || 0) + '°') +
+        statBoxHtml('Angle max droite', (data.maxRightDeg || 0) + '°'));
 
   const track =
     decompressTrack(data.track || []);
@@ -10977,6 +11612,8 @@ function openSessionDetail(data){
   prepareSegmentPicker(track);
 
   renderHistoryTurns(data.turns || []);
+
+  applyVehicleToSessionDetail(data);
 
 }
 
@@ -12077,6 +12714,207 @@ function drawHistoryMapTurns(track, turns){
 
 }
 
+
+
+/* =====================================================
+   ECRAN ALLUME PENDANT UNE SESSION
+
+   Une page web ne peut pas enregistrer en arriere-plan : des
+   que l'ecran se verrouille, les capteurs de mouvement et le
+   GPS s'arretent. On ne peut donc pas rendre l'enregistrement
+   invisible, mais on peut empecher la mise en veille AUTOMATIQUE
+   tant que les capteurs tournent (Screen Wake Lock).
+
+   Ce que cela ne fait pas : empecher un appui volontaire sur le
+   bouton de verrouillage. Et le mode economie d'energie peut
+   refuser le verrou : dans ce cas on le dit, plutot que de
+   laisser croire que c'est bon.
+===================================================== */
+
+const wakeLockBar =
+  document.getElementById('wakeLockBar');
+
+let wakeLockSentinel = null;
+
+let wakeLockWanted = false;
+
+const wakeLockSupported =
+  typeof navigator !== 'undefined' &&
+  'wakeLock' in navigator &&
+  navigator.wakeLock &&
+  typeof navigator.wakeLock.request === 'function';
+
+
+function showWakeLockState(text, tone){
+
+  if(!wakeLockBar){
+    return;
+  }
+
+  if(!text){
+
+    wakeLockBar.classList.add('hidden');
+
+    wakeLockBar.textContent = '';
+
+    return;
+
+  }
+
+  wakeLockBar.textContent = text;
+
+  wakeLockBar.classList.remove('hidden');
+
+  wakeLockBar.classList.toggle('wakeLockWarn', tone === 'warn');
+
+}
+
+
+async function acquireWakeLock(){
+
+  if(!wakeLockSupported){
+
+    showWakeLockState(
+      'Ton navigateur ne sait pas garder l\'écran allumé : ' +
+      'règle la mise en veille sur "Jamais" le temps de rouler.',
+      'warn'
+    );
+
+    return;
+
+  }
+
+  if(wakeLockSentinel){
+    return;
+  }
+
+  try{
+
+    wakeLockSentinel =
+      await navigator.wakeLock.request('screen');
+
+    showWakeLockState(
+      '🔆 Écran maintenu allumé tant que les capteurs tournent.',
+      'ok'
+    );
+
+    wakeLockSentinel.addEventListener('release', () => {
+
+      wakeLockSentinel = null;
+
+      /*
+         Relache par le systeme (onglet masque, batterie faible).
+         Si on en a toujours besoin, on le redemandera au retour
+         au premier plan.
+      */
+
+      if(wakeLockWanted && document.visibilityState === 'visible'){
+
+        showWakeLockState(
+          'Verrou d\'écran relâché par le téléphone, nouvelle tentative...',
+          'warn'
+        );
+
+      }
+
+    });
+
+  }
+  catch(error){
+
+    wakeLockSentinel = null;
+
+    /*
+       Cas le plus frequent : mode economie d'energie actif.
+    */
+
+    showWakeLockState(
+      'Impossible de garder l\'écran allumé (mode économie ' +
+      'd\'énergie ?). Désactive-le ou règle la mise en veille ' +
+      'sur "Jamais".',
+      'warn'
+    );
+
+  }
+
+}
+
+
+function releaseWakeLock(){
+
+  wakeLockWanted = false;
+
+  const sentinel = wakeLockSentinel;
+
+  wakeLockSentinel = null;
+
+  if(sentinel && typeof sentinel.release === 'function'){
+
+    sentinel.release().catch(() => {});
+
+  }
+
+  showWakeLockState('', 'ok');
+
+}
+
+
+/*
+   Le verrou suit l'etat du moteur : demande au clic sur
+   "DEMARRER LES CAPTEURS" (un geste de l'utilisateur, ce que
+   certains navigateurs exigent), puis maintenu tant que
+   "running" est vrai.
+*/
+
+document.getElementById('start').addEventListener('click', () => {
+
+  wakeLockWanted = true;
+
+  acquireWakeLock();
+
+});
+
+
+document.addEventListener('visibilitychange', () => {
+
+  if(
+    wakeLockWanted &&
+    !wakeLockSentinel &&
+    document.visibilityState === 'visible'
+  ){
+
+    acquireWakeLock();
+
+  }
+
+});
+
+
+setInterval(() => {
+
+  const sensorsOn =
+    typeof running !== 'undefined' && running === true;
+
+  if(!sensorsOn && wakeLockWanted){
+
+    releaseWakeLock();
+
+    return;
+
+  }
+
+  if(
+    sensorsOn &&
+    wakeLockWanted &&
+    !wakeLockSentinel &&
+    document.visibilityState === 'visible'
+  ){
+
+    acquireWakeLock();
+
+  }
+
+}, 2000);
 
 
 /* =====================================================
@@ -13480,7 +14318,7 @@ function segmentMyRank(segment, uid){
    l'ordre impose par Firestore.
 */
 
-async function recordSegmentPasses(matches, sessionId, dateMs, countAttempt){
+async function recordSegmentPasses(matches, sessionId, dateMs, countAttempt, vehicle){
 
   const user =
     window.FirebaseBridge.currentUser;
@@ -13570,6 +14408,7 @@ async function recordSegmentPasses(matches, sessionId, dateMs, countAttempt){
             maxKmh:pass.maxKmh,
             dateMs:dateMs,
             sessionId:sessionId || null,
+            vehicle:normalizeVehicle(vehicle),
             attempts:attempts
           }
         : Object.assign({}, mine, { pseudo:pseudo, attempts:attempts });
@@ -13606,7 +14445,7 @@ async function recordSegmentPasses(matches, sessionId, dateMs, countAttempt){
    enregistrement. Renvoie de quoi afficher un resume.
 */
 
-async function processSegmentsForTrack(track, sessionId, dateMs, countAttempt){
+async function processSegmentsForTrack(track, sessionId, dateMs, countAttempt, vehicle){
 
   const segments =
     await loadAllSegments();
@@ -13621,7 +14460,7 @@ async function processSegmentsForTrack(track, sessionId, dateMs, countAttempt){
   }
 
   const recorded =
-    await recordSegmentPasses(matches, sessionId, dateMs, countAttempt);
+    await recordSegmentPasses(matches, sessionId, dateMs, countAttempt, vehicle);
 
   return recorded.map(item => {
 
@@ -13671,7 +14510,7 @@ const segmentCreateToggle =
 const segmentCreateBody =
   document.getElementById('segmentCreateBody');
 
-const segmentPickCanvas =
+const segmentPickMapEl =
   document.getElementById('segmentPickMap');
 
 const segmentStartRange =
@@ -13753,6 +14592,13 @@ function prepareSegmentPicker(track){
 
   segmentNameInput.value = '';
 
+  /*
+     Nouveau trajet : on recadre une fois, puis on laisse le
+     pilote maitre du zoom.
+  */
+
+  segmentPickFitted = false;
+
   const lastIndex =
     segmentPickIndexes.length - 1;
 
@@ -13795,118 +14641,95 @@ function segmentPickBounds(){
 }
 
 
+/*
+   Carte de decoupe d'un segment.
+
+   Vraie carte OpenStreetMap plutot qu'un dessin : on se repere
+   sur la route, et on peut zoomer au doigt pour placer le depart
+   et l'arrivee au point pres. Le cadrage n'est fait qu'a
+   l'ouverture : ensuite le zoom choisi par le pilote est
+   respecte, les curseurs ne le remettent jamais a zero.
+*/
+
+let segmentPickMapInstance = null;
+
+let segmentPickLayer = null;
+
+let segmentPickFitted = false;
+
+
+function ensureSegmentPickMap(){
+
+  if(segmentPickMapInstance){
+    return segmentPickMapInstance;
+  }
+
+  if(typeof L === 'undefined' || !segmentPickMapEl){
+    return null;
+  }
+
+  segmentPickMapInstance =
+    L.map(segmentPickMapEl, {
+      center:[46.6, 2.4],
+      zoom:5,
+      zoomControl:true,
+      attributionControl:true
+    });
+
+  L.tileLayer(
+    'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+    {
+      maxZoom:19,
+      attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    }
+  ).addTo(segmentPickMapInstance);
+
+  segmentPickLayer =
+    L.layerGroup().addTo(segmentPickMapInstance);
+
+  if(typeof ResizeObserver === 'function'){
+
+    const observer =
+      new ResizeObserver(entries => {
+
+        const box =
+          entries[0] && entries[0].contentRect;
+
+        if(!box || box.width < 2 || box.height < 2){
+          return;
+        }
+
+        segmentPickMapInstance.invalidateSize(false);
+
+      });
+
+    observer.observe(segmentPickMapEl);
+
+  }
+
+  return segmentPickMapInstance;
+
+}
+
+
 function drawSegmentPicker(){
 
-  if(!segmentPickCanvas || segmentPickIndexes.length < 2){
+  const map =
+    ensureSegmentPickMap();
+
+  if(!map || !segmentPickLayer || segmentPickIndexes.length < 2){
     return;
   }
 
-  const rect =
-    segmentPickCanvas.getBoundingClientRect();
+  map.invalidateSize(false);
 
-  if(rect.width < 2 || rect.height < 2){
-    return;
-  }
-
-  const dpr =
-    window.devicePixelRatio || 1;
-
-  segmentPickCanvas.width = rect.width * dpr;
-
-  segmentPickCanvas.height = rect.height * dpr;
-
-  const ctx =
-    segmentPickCanvas.getContext('2d');
-
-  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-
-  const W = rect.width;
-
-  const H = rect.height;
-
-  ctx.clearRect(0, 0, W, H);
+  segmentPickLayer.clearLayers();
 
   const points =
-    segmentPickIndexes.map(i => segmentPickTrack[i]);
-
-  let minLat = Infinity;
-
-  let maxLat = -Infinity;
-
-  let minLon = Infinity;
-
-  let maxLon = -Infinity;
-
-  points.forEach(p => {
-
-    minLat = Math.min(minLat, p.lat);
-
-    maxLat = Math.max(maxLat, p.lat);
-
-    minLon = Math.min(minLon, p.lon);
-
-    maxLon = Math.max(maxLon, p.lon);
-
-  });
-
-  if(maxLat - minLat < 0.000001){
-
-    maxLat += 0.00001;
-
-    minLat -= 0.00001;
-
-  }
-
-  if(maxLon - minLon < 0.000001){
-
-    maxLon += 0.00001;
-
-    minLon -= 0.00001;
-
-  }
-
-  const padding = 18;
-
-  const midLat = (minLat + maxLat) / 2;
-
-  const lonScale =
-    Math.cos(midLat * Math.PI / 180);
-
-  const scale =
-    Math.min(
-      (W - padding * 2) / ((maxLon - minLon) * lonScale),
-      (H - padding * 2) / (maxLat - minLat)
-    );
-
-  const project = p => ({
-    x:W / 2 + (p.lon - (minLon + maxLon) / 2) * lonScale * scale,
-    y:H / 2 - (p.lat - (minLat + maxLat) / 2) * scale
-  });
-
-  ctx.lineCap = 'round';
-
-  ctx.lineJoin = 'round';
-
-  ctx.strokeStyle = '#3a4757';
-
-  ctx.lineWidth = 3;
-
-  ctx.beginPath();
-
-  points.forEach((p, i) => {
-
-    const xy = project(p);
-
-    if(i === 0){
-      ctx.moveTo(xy.x, xy.y);
-    }
-    else{
-      ctx.lineTo(xy.x, xy.y);
-    }
-
-  });
-
-  ctx.stroke();
+    segmentPickIndexes.map(i => [
+      segmentPickTrack[i].lat,
+      segmentPickTrack[i].lon
+    ]);
 
   let a = parseInt(segmentStartRange.value, 10) || 0;
 
@@ -13922,54 +14745,53 @@ function drawSegmentPicker(){
 
   }
 
-  ctx.strokeStyle = '#4ade80';
+  /*
+     Trajet complet en sourdine, portion retenue par-dessus.
+  */
 
-  ctx.lineWidth = 5;
+  L.polyline(points, {
+    color:'#64748b',
+    weight:4,
+    opacity:0.75
+  }).addTo(segmentPickLayer);
 
-  ctx.beginPath();
+  L.polyline(points.slice(a, b + 1), {
+    color:'#4ade80',
+    weight:7,
+    opacity:1
+  }).addTo(segmentPickLayer);
 
-  for(let i = a; i <= b; i++){
+  L.circleMarker(points[a], {
+    radius:9,
+    color:'#0d1219',
+    weight:3,
+    fillColor:'#4ade80',
+    fillOpacity:1
+  })
+    .bindTooltip('Départ', { permanent:false })
+    .addTo(segmentPickLayer);
 
-    const xy = project(points[i]);
+  L.circleMarker(points[b], {
+    radius:9,
+    color:'#0d1219',
+    weight:3,
+    fillColor:'#f87171',
+    fillOpacity:1
+  })
+    .bindTooltip('Arrivée', { permanent:false })
+    .addTo(segmentPickLayer);
 
-    if(i === a){
-      ctx.moveTo(xy.x, xy.y);
-    }
-    else{
-      ctx.lineTo(xy.x, xy.y);
-    }
+  if(!segmentPickFitted){
+
+    map.fitBounds(L.latLngBounds(points), {
+      padding:[24, 24],
+      maxZoom:16,
+      animate:false
+    });
+
+    segmentPickFitted = true;
 
   }
-
-  ctx.stroke();
-
-  const drawDot = (index, color, label) => {
-
-    const xy = project(points[index]);
-
-    ctx.fillStyle = color;
-
-    ctx.beginPath();
-
-    ctx.arc(xy.x, xy.y, 7, 0, Math.PI * 2);
-
-    ctx.fill();
-
-    ctx.fillStyle = '#0d1219';
-
-    ctx.font = 'bold 10px system-ui';
-
-    ctx.textAlign = 'center';
-
-    ctx.textBaseline = 'middle';
-
-    ctx.fillText(label, xy.x, xy.y);
-
-  };
-
-  drawDot(a, '#4ade80', 'D');
-
-  drawDot(b, '#f87171', 'A');
 
 }
 
@@ -14103,7 +14925,8 @@ async function saveNewSegment(){
         segmentPickTrack,
         currentHistorySessionId,
         Date.now(),
-        true
+        true,
+        currentHistorySessionVehicle
       );
 
     const mine =
@@ -14119,6 +14942,8 @@ async function saveNewSegment(){
     segmentsLoadedOnce = false;
 
     segmentNameInput.value = '';
+
+    bumpAccountAfterSegment();
 
   }
   catch(error){
@@ -14437,7 +15262,9 @@ function renderSegmentsList(){
       '<td>' +
       (board.length
         ? formatSegmentTime(board[0].timeSec) +
-          '<span class="segmentRowSub">' + turnsHtml(board[0].pseudo || '') + '</span>'
+          '<span class="segmentRowSub">' +
+          vehicleIcon(board[0].vehicle) + ' ' +
+          turnsHtml(board[0].pseudo || '') + '</span>'
         : '--') +
       '</td>' +
 
@@ -14521,7 +15348,10 @@ function openSegmentDetail(segmentId){
 
         '<td>' + (index + 1) + '</td>' +
 
-        '<td>' + turnsHtml(entry.pseudo || 'Pilote') + '</td>' +
+        '<td>' +
+        vehicleIcon(entry.vehicle) + ' ' +
+        turnsHtml(entry.pseudo || 'Pilote') +
+        '</td>' +
 
         '<td>' + formatSegmentTime(entry.timeSec) + '</td>' +
 
@@ -14683,7 +15513,7 @@ async function rescanMySegments(){
         : Date.now();
 
       const summary =
-        await processSegmentsForTrack(track, docSnap.id, dateMs, false);
+        await processSegmentsForTrack(track, docSnap.id, dateMs, false, data.vehicle);
 
       summary.forEach(item => {
 
@@ -14920,7 +15750,7 @@ function renderSegmentResults(summary){
    rien : si l'analyse echoue, la session est deja sauvegardee.
 */
 
-function runSegmentsAfterSave(track, sessionId){
+function runSegmentsAfterSave(track, sessionId, vehicle){
 
   if(segmentResultPanel){
 
@@ -14930,7 +15760,7 @@ function runSegmentsAfterSave(track, sessionId){
 
   }
 
-  processSegmentsForTrack(track, sessionId, Date.now(), true)
+  processSegmentsForTrack(track, sessionId, Date.now(), true, vehicle)
     .then(summary => {
 
       segmentsLoadedOnce = false;
@@ -14998,6 +15828,1334 @@ async function removeSegmentTimesForSession(sessionId){
   return removed;
 
 }
+
+
+/* =====================================================
+   TYPE DE VEHICULE
+
+   L'appli sert aux motards et aux automobilistes. Deux niveaux :
+
+   - le vehicule du COMPTE (choisi a l'inscription, modifiable
+     depuis le menu) decide de ce qui est affiche : un compte
+     voiture n'a ni inclinometre ni carte des virages ;
+
+   - le vehicule du TRAJET, confirme au moment d'enregistrer,
+     decide de ce qui est stocke. Un trajet voiture est
+     enregistre sans inclinaison (angles remis a zero, aucun
+     virage) et n'alimente jamais la carte des virages. Il
+     compte en revanche normalement pour les segments, ou il
+     apparait avec son icone.
+===================================================== */
+
+const VEHICLE_MOTO = 'moto';
+
+const VEHICLE_CAR = 'car';
+
+const VEHICLE_STORAGE_KEY = 'incli.vehicle';
+
+const VEHICLE_ICONS = {
+  moto:'🏍️',
+  car:'🚗'
+};
+
+const VEHICLE_LABELS = {
+  moto:'Moto',
+  car:'Voiture'
+};
+
+
+function normalizeVehicle(value){
+
+  return value === VEHICLE_CAR ? VEHICLE_CAR : VEHICLE_MOTO;
+
+}
+
+
+function vehicleIcon(value){
+
+  return VEHICLE_ICONS[normalizeVehicle(value)];
+
+}
+
+
+/*
+   Vehicule du compte. Lu depuis le stockage local au demarrage
+   (pour ne pas attendre le reseau), puis confirme par la fiche
+   Firestore du pilote.
+*/
+
+let accountVehicle = VEHICLE_MOTO;
+
+/*
+   Vehicule du prochain enregistrement : part du vehicule du
+   compte, modifiable a chaque trajet.
+*/
+
+let sessionVehicle = VEHICLE_MOTO;
+
+
+function vehicleStorageKey(){
+
+  const user =
+    window.FirebaseBridge.currentUser;
+
+  return VEHICLE_STORAGE_KEY + (user ? '.' + user.uid : '');
+
+}
+
+
+function readStoredVehicle(){
+
+  try{
+
+    return normalizeVehicle(
+      localStorage.getItem(vehicleStorageKey())
+    );
+
+  }
+  catch(err){
+
+    return VEHICLE_MOTO;
+
+  }
+
+}
+
+
+function storeVehicle(value){
+
+  try{
+
+    localStorage.setItem(vehicleStorageKey(), normalizeVehicle(value));
+
+  }
+  catch(err){
+
+    /* navigation privee : sans importance, Firestore fait foi */
+
+  }
+
+}
+
+
+/*
+   Boutons moto / voiture : il y en a plusieurs paires (menu,
+   inclinometre, suivi). Tous portent la classe "vehicleBtn" et
+   un attribut data-vehicle, et sont mis a jour ensemble.
+*/
+
+function paintVehicleButtons(){
+
+  document.querySelectorAll('[data-vehicle]').forEach(btn => {
+
+    const scope =
+      btn.closest('#menuVehicleChooser')
+      ? accountVehicle
+      : sessionVehicle;
+
+    btn.classList.toggle(
+      'vehicleBtnActive',
+      btn.dataset.vehicle === scope
+    );
+
+  });
+
+}
+
+
+function setSessionVehicle(value){
+
+  sessionVehicle = normalizeVehicle(value);
+
+  paintVehicleButtons();
+
+}
+
+
+function applyAccountVehicle(value, persist){
+
+  accountVehicle = normalizeVehicle(value);
+
+  setSessionVehicle(accountVehicle);
+
+  if(persist){
+
+    storeVehicle(accountVehicle);
+
+  }
+
+  applyVehicleToInterface();
+
+  paintVehicleButtons();
+
+}
+
+
+/*
+   Un compte voiture ne voit ni l'inclinometre ni la carte des
+   virages : ces fonctions ne le concernent pas et n'ont aucun
+   sens avec un telephone pose dans un vide-poche.
+*/
+
+function applyVehicleToInterface(){
+
+  const isCar =
+    accountVehicle === VEHICLE_CAR;
+
+  const navInclino =
+    document.getElementById('navInclinometre');
+
+  const subTabTurns =
+    document.getElementById('subTabTurnsMap');
+
+  if(navInclino){
+
+    navInclino.classList.toggle('hidden', isCar);
+
+  }
+
+  if(subTabTurns){
+
+    subTabTurns.classList.toggle('hidden', isCar);
+
+    /*
+       Si le pilote etait sur la carte des virages avant de
+       passer en voiture, on le ramene sur ses trajets.
+     */
+
+    if(isCar && subTabTurns.classList.contains('active')){
+
+      document.getElementById('subTabSessions').click();
+
+    }
+
+  }
+
+}
+
+
+/*
+   Applique le vehicule choisi a l'instantane de session, juste
+   avant l'enregistrement.
+*/
+
+function applyVehicleToSnapshot(snapshot){
+
+  snapshot.vehicle = sessionVehicle;
+
+  if(sessionVehicle !== VEHICLE_CAR){
+
+    return snapshot;
+
+  }
+
+  snapshot.track =
+    snapshot.track.map(point =>
+      Object.assign({}, point, { angle:0 })
+    );
+
+  snapshot.turns = [];
+
+  snapshot.maxLeftDeg = 0;
+
+  snapshot.maxRightDeg = 0;
+
+  snapshot.speedAtMaxLeft = 0;
+
+  snapshot.speedAtMaxRight = 0;
+
+  return snapshot;
+
+}
+
+
+/*
+   Un trajet voiture n'alimente pas la carte des virages, mais
+   l'appelant garde la meme forme de reponse.
+*/
+
+function syncTurnsIfMoto(snapshot, sessionId){
+
+  if(snapshot.vehicle === VEHICLE_CAR){
+
+    return Promise.resolve({
+      recorded:0,
+      eligible:0,
+      withoutGps:0,
+      loadFailed:false
+    });
+
+  }
+
+  return syncTurnsToSharedMap(snapshot, sessionId);
+
+}
+
+
+document.addEventListener('click', event => {
+
+  const btn =
+    event.target.closest('[data-vehicle]');
+
+  if(!btn){
+    return;
+  }
+
+  if(btn.closest('#menuVehicleChooser')){
+
+    applyAccountVehicle(btn.dataset.vehicle, true);
+
+    saveAccountVehicle(btn.dataset.vehicle);
+
+    return;
+
+  }
+
+  setSessionVehicle(btn.dataset.vehicle);
+
+});
+
+/* =====================================================
+   FICHE DE COMPTE
+
+   Chaque appli tient a jour SA propre fiche (document
+   users/<uid>) : pseudo, vehicule, derniere activite, nombre de
+   trajets, kilometres, segments crees. C'est ce qui alimente la
+   vue Comptes de l'administrateur.
+
+   Choix volontaire : personne ne lit les trajets de personne.
+   L'administrateur ne lit que ces fiches, ce qui evite d'ouvrir
+   l'historique de tout le monde dans les regles Firestore.
+===================================================== */
+
+const PROFILE_STATS_VERSION = 1;
+
+
+function profileRef(uid){
+
+  return doc(db, 'users', uid);
+
+}
+
+
+/*
+   Connexion : on rafraichit ce qui ne coute rien, et on
+   recupere le vehicule du compte.
+*/
+
+async function touchAccountProfile(user){
+
+  if(!user){
+    return;
+  }
+
+  applyAccountVehicle(readStoredVehicle(), false);
+
+  let data = null;
+
+  try{
+
+    const snap =
+      await getDoc(profileRef(user.uid));
+
+    data = snap.exists() ? snap.data() : null;
+
+  }
+  catch(error){
+
+    console.warn('[Compte] Fiche illisible :', error);
+
+    return;
+
+  }
+
+  if(data && data.vehicle){
+
+    applyAccountVehicle(data.vehicle, true);
+
+  }
+
+  const update = {
+
+    displayName:user.displayName || (data && data.displayName) || user.email,
+
+    email:user.email,
+
+    lastSeenAt:serverTimestamp(),
+
+    appBuild:
+      document.querySelector('meta[name="build-id"]')
+        ? document.querySelector('meta[name="build-id"]').content
+        : ''
+
+  };
+
+  if(!data || !data.createdAt){
+
+    update.createdAt = serverTimestamp();
+
+  }
+
+  /*
+     Fiche existante sans vehicule (compte cree avant cette
+     version) : on complete. Fiche inexistante : c'est une
+     inscription en cours, qui ecrit elle-meme le vehicule
+     choisi - on ne le devine pas ici, sinon les deux ecritures
+     se courent apres.
+  */
+
+  if(data && !data.vehicle){
+
+    update.vehicle = accountVehicle;
+
+  }
+
+  try{
+
+    await setDoc(profileRef(user.uid), update, { merge:true });
+
+  }
+  catch(error){
+
+    console.warn('[Compte] Mise a jour impossible :', error);
+
+  }
+
+  /*
+     Comptes crees avant cette version : on remplit une fois les
+     compteurs a partir de leurs propres trajets, qu'ils sont
+     seuls a pouvoir lire.
+  */
+
+  if(!data || data.statsVersion !== PROFILE_STATS_VERSION){
+
+    backfillAccountStats(user).catch(error => {
+
+      console.warn('[Compte] Recalcul des compteurs reporte :', error);
+
+    });
+
+  }
+
+}
+
+
+async function backfillAccountStats(user){
+
+  const snap =
+    await getDocs(collection(db, 'users', user.uid, 'sessions'));
+
+  let sessionCount = 0;
+
+  let totalKm = 0;
+
+  let lastSessionMs = 0;
+
+  snap.forEach(docSnap => {
+
+    const data =
+      docSnap.data() || {};
+
+    sessionCount++;
+
+    totalKm += Number.isFinite(data.distanceKm) ? data.distanceKm : 0;
+
+    const ms =
+      data.createdAt && data.createdAt.toDate
+      ? data.createdAt.toDate().getTime()
+      : 0;
+
+    if(ms > lastSessionMs){
+      lastSessionMs = ms;
+    }
+
+  });
+
+  await setDoc(
+    profileRef(user.uid),
+    {
+      sessionCount:sessionCount,
+      totalKm:Math.round(totalKm * 100) / 100,
+      lastSessionMs:lastSessionMs || null,
+      statsVersion:PROFILE_STATS_VERSION
+    },
+    { merge:true }
+  );
+
+}
+
+
+/*
+   Apres l'enregistrement d'un trajet. Transaction sur sa propre
+   fiche : deux telephones du meme pilote ne se marchent pas
+   dessus.
+*/
+
+async function bumpAccountAfterSession(distanceKm, vehicle){
+
+  const user =
+    window.FirebaseBridge.currentUser;
+
+  if(!user){
+    return;
+  }
+
+  try{
+
+    await runTransaction(db, async tx => {
+
+      const ref = profileRef(user.uid);
+
+      const snap = await tx.get(ref);
+
+      const data = snap.exists() ? snap.data() : {};
+
+      tx.set(
+        ref,
+        {
+          sessionCount:(Number.isFinite(data.sessionCount) ? data.sessionCount : 0) + 1,
+          totalKm:
+            Math.round(
+              ((Number.isFinite(data.totalKm) ? data.totalKm : 0) +
+               (Number.isFinite(distanceKm) ? distanceKm : 0)) * 100
+            ) / 100,
+          lastSessionMs:Date.now(),
+          lastVehicle:normalizeVehicle(vehicle),
+          lastSeenAt:serverTimestamp(),
+          statsVersion:PROFILE_STATS_VERSION
+        },
+        { merge:true }
+      );
+
+    });
+
+  }
+  catch(error){
+
+    console.warn('[Compte] Compteurs non mis a jour :', error);
+
+  }
+
+}
+
+
+async function bumpAccountAfterSegment(){
+
+  const user =
+    window.FirebaseBridge.currentUser;
+
+  if(!user){
+    return;
+  }
+
+  try{
+
+    await runTransaction(db, async tx => {
+
+      const ref = profileRef(user.uid);
+
+      const snap = await tx.get(ref);
+
+      const data = snap.exists() ? snap.data() : {};
+
+      tx.set(
+        ref,
+        {
+          segmentsCreated:
+            (Number.isFinite(data.segmentsCreated) ? data.segmentsCreated : 0) + 1,
+          lastSeenAt:serverTimestamp()
+        },
+        { merge:true }
+      );
+
+    });
+
+  }
+  catch(error){
+
+    console.warn('[Compte] Compteur de segments non mis a jour :', error);
+
+  }
+
+}
+
+
+async function saveAccountVehicle(vehicle){
+
+  const user =
+    window.FirebaseBridge.currentUser;
+
+  if(!user){
+    return;
+  }
+
+  try{
+
+    await setDoc(
+      profileRef(user.uid),
+      { vehicle:normalizeVehicle(vehicle), lastSeenAt:serverTimestamp() },
+      { merge:true }
+    );
+
+  }
+  catch(error){
+
+    console.warn('[Compte] Vehicule non enregistre :', error);
+
+  }
+
+}
+
+/*
+   Detail d'un trajet : ce qui depend du vehicule.
+
+   Un trajet voiture n'a pas d'inclinaison mesuree. Plutot que
+   d'afficher une courbe plate et un tableau de virages vide, on
+   masque ces blocs et on explique pourquoi en une phrase.
+*/
+
+let currentHistorySessionVehicle = VEHICLE_MOTO;
+
+
+function applyVehicleToSessionDetail(data){
+
+  currentHistorySessionVehicle =
+    normalizeVehicle(data && data.vehicle);
+
+  const isCar =
+    currentHistorySessionVehicle === VEHICLE_CAR;
+
+  const note =
+    document.getElementById('historyCarNote');
+
+  const angleBlock =
+    document.getElementById('historyAngleBlock');
+
+  const turnsBlock =
+    document.getElementById('historyTurnsBlock');
+
+  if(note){
+    note.classList.toggle('hidden', !isCar);
+  }
+
+  if(angleBlock){
+    angleBlock.classList.toggle('hidden', isCar);
+  }
+
+  if(turnsBlock){
+    turnsBlock.classList.toggle('hidden', isCar);
+  }
+
+}
+
+
+/*
+   Choix du vehicule a l'inscription : boutons a part, car le
+   compte n'existe pas encore au moment du clic.
+*/
+
+let signupVehicle = VEHICLE_MOTO;
+
+document.querySelectorAll('[data-signup-vehicle]').forEach(btn => {
+
+  btn.addEventListener('click', () => {
+
+    signupVehicle = normalizeVehicle(btn.dataset.signupVehicle);
+
+    document.querySelectorAll('[data-signup-vehicle]').forEach(other => {
+
+      other.classList.toggle(
+        'vehicleBtnActive',
+        other.dataset.signupVehicle === signupVehicle
+      );
+
+    });
+
+  });
+
+});
+
+/* =====================================================
+   VUE SUIVI
+
+   Meme moteur, autre tableau de bord : vitesse en grand, temps
+   de trajet, distance et accelerations. Aucune inclinaison.
+
+   Les boutons ne dupliquent pas la logique du moteur : ils
+   declenchent les boutons existants de l'inclinometre, meme
+   quand cette vue est masquee. Il n'y a donc qu'un seul chemin
+   de demarrage, de calibration, de session et d'enregistrement
+   dans toute l'appli.
+
+   Les accelerations sont calculees a partir du vecteur
+   accelerometre complet (raw.total*, deja en g) projete sur les
+   axes issus de la calibration :
+
+     vertical      ~ 1.00 g a l'arret, augmente sur une bosse
+     longitudinal  positif en acceleration, negatif au freinage
+     lateral       signe inverse pour suivre la convention de
+                   l'appli : droite +, gauche -
+
+   L'axe lateral du moteur mesure l'inclinaison de la pesanteur
+   apparente ; dans un virage a droite celle-ci bascule vers la
+   gauche, d'ou le signe inverse pour afficher "droite +".
+===================================================== */
+
+const suiviView =
+  document.getElementById('suiviView');
+
+const suiviSpeedEl = document.getElementById('suiviSpeed');
+const suiviTimeEl = document.getElementById('suiviTime');
+const suiviDistanceEl = document.getElementById('suiviDistance');
+const suiviMaxSpeedEl = document.getElementById('suiviMaxSpeed');
+const suiviPointsEl = document.getElementById('suiviPoints');
+
+const suiviGAccelEl = document.getElementById('suiviGAccel');
+const suiviGAccelMaxEl = document.getElementById('suiviGAccelMax');
+const suiviGBrakeEl = document.getElementById('suiviGBrake');
+const suiviGBrakeMaxEl = document.getElementById('suiviGBrakeMax');
+const suiviGLatEl = document.getElementById('suiviGLat');
+const suiviGLatLeftMaxEl = document.getElementById('suiviGLatLeftMax');
+const suiviGLatRightMaxEl = document.getElementById('suiviGLatRightMax');
+const suiviGVertEl = document.getElementById('suiviGVert');
+const suiviGVertMaxEl = document.getElementById('suiviGVertMax');
+
+const suiviStartBtn = document.getElementById('suiviStart');
+const suiviSessionBtn = document.getElementById('suiviSession');
+const suiviZeroBtn = document.getElementById('suiviZero');
+const suiviSaveBtn = document.getElementById('suiviSave');
+
+let suiviLoopHandle = null;
+
+let suiviMax = {
+  accel:0,
+  brake:0,
+  latLeft:0,
+  latRight:0,
+  vert:1
+};
+
+let suiviLastSessionActive = false;
+
+
+function resetSuiviMax(){
+
+  suiviMax = {
+    accel:0,
+    brake:0,
+    latLeft:0,
+    latRight:0,
+    vert:1
+  };
+
+}
+
+
+function suiviGForces(){
+
+  if(
+    typeof verticalAxis === 'undefined' ||
+    norm(verticalAxis) < 0.5
+  ){
+
+    return null;
+
+  }
+
+  const total = {
+    x:raw.totalX,
+    y:raw.totalY,
+    z:raw.totalZ
+  };
+
+  return {
+    vert:dot(total, verticalAxis),
+    long:dot(total, longitudinalAxis),
+    lat:-dot(total, lateralAxis)
+  };
+
+}
+
+
+function formatG(value){
+
+  const safe =
+    Number.isFinite(value) ? value : 0;
+
+  return (safe >= 0 ? '+' : '−') + Math.abs(safe).toFixed(2);
+
+}
+
+
+function renderSuivi(){
+
+  const sensorsOn =
+    typeof running !== 'undefined' && running === true;
+
+  const inSession =
+    typeof sessionActive !== 'undefined' && sessionActive === true;
+
+  /*
+     Les maxima repartent a chaque nouvelle session, comme les
+     angles max du moteur.
+  */
+
+  if(inSession && !suiviLastSessionActive){
+
+    resetSuiviMax();
+
+  }
+
+  suiviLastSessionActive = inSession;
+
+  suiviSpeedEl.textContent =
+    String(Math.round(typeof gpsSpeed === 'number' ? gpsSpeed : 0));
+
+  suiviMaxSpeedEl.textContent =
+    Math.round(typeof sessionMaxSpeed === 'number' ? sessionMaxSpeed : 0) + ' km/h';
+
+  suiviDistanceEl.textContent =
+    ((typeof sessionDistance === 'number' ? sessionDistance : 0) / 1000).toFixed(2) + ' km';
+
+  suiviPointsEl.textContent =
+    String(typeof sessionData !== 'undefined' ? sessionData.length : 0);
+
+  const elapsed =
+    inSession && typeof sessionStart === 'number' && sessionStart > 0
+    ? (performance.now() - sessionStart) / 1000
+    : (typeof sessionData !== 'undefined' && sessionData.length
+        ? sessionData[sessionData.length - 1].time
+        : 0);
+
+  suiviTimeEl.textContent =
+    formatHistoryDuration(Math.max(0, elapsed));
+
+  const g =
+    sensorsOn ? suiviGForces() : null;
+
+  if(!g){
+
+    suiviGAccelEl.textContent = '--';
+    suiviGBrakeEl.textContent = '--';
+    suiviGLatEl.textContent = '--';
+    suiviGVertEl.textContent = '--';
+
+  }
+  else{
+
+    const accel = Math.max(0, g.long);
+
+    const brake = Math.max(0, -g.long);
+
+    suiviGAccelEl.textContent = accel.toFixed(2);
+
+    suiviGBrakeEl.textContent = brake.toFixed(2);
+
+    suiviGLatEl.textContent = formatG(g.lat);
+
+    suiviGVertEl.textContent = g.vert.toFixed(2);
+
+    if(inSession){
+
+      suiviMax.accel = Math.max(suiviMax.accel, accel);
+
+      suiviMax.brake = Math.max(suiviMax.brake, brake);
+
+      suiviMax.latRight = Math.max(suiviMax.latRight, Math.max(0, g.lat));
+
+      suiviMax.latLeft = Math.max(suiviMax.latLeft, Math.max(0, -g.lat));
+
+      suiviMax.vert = Math.max(suiviMax.vert, g.vert);
+
+    }
+
+  }
+
+  suiviGAccelMaxEl.textContent = suiviMax.accel.toFixed(2);
+
+  suiviGBrakeMaxEl.textContent = suiviMax.brake.toFixed(2);
+
+  suiviGLatLeftMaxEl.textContent = suiviMax.latLeft.toFixed(2);
+
+  suiviGLatRightMaxEl.textContent = suiviMax.latRight.toFixed(2);
+
+  suiviGVertMaxEl.textContent = suiviMax.vert.toFixed(2);
+
+  suiviStartBtn.textContent =
+    sensorsOn ? 'CAPTEURS ACTIFS' : 'DÉMARRER LES CAPTEURS';
+
+  suiviStartBtn.disabled = sensorsOn;
+
+  suiviSessionBtn.textContent =
+    inSession ? '⏹ ARRÊTER SESSION' : '▶ DÉMARRER SESSION';
+
+  suiviSessionBtn.disabled = !sensorsOn;
+
+  suiviZeroBtn.disabled = !sensorsOn;
+
+  suiviSaveBtn.disabled = saveSessionBtn.disabled;
+
+}
+
+
+function startSuiviLoop(){
+
+  if(suiviLoopHandle !== null){
+    return;
+  }
+
+  const tick = () => {
+
+    if(suiviView.classList.contains('hidden')){
+
+      suiviLoopHandle = null;
+
+      return;
+
+    }
+
+    renderSuivi();
+
+    suiviLoopHandle = requestAnimationFrame(tick);
+
+  };
+
+  suiviLoopHandle = requestAnimationFrame(tick);
+
+}
+
+
+/*
+   Les boutons de la vue Suivi declenchent ceux du moteur. Un
+   clic programme fonctionne meme sur un bouton dans une vue
+   masquee : c'est ce qui permet de n'avoir qu'une seule logique
+   de session dans l'appli.
+*/
+
+suiviStartBtn.addEventListener('click', () => {
+
+  document.getElementById('start').click();
+
+});
+
+suiviSessionBtn.addEventListener('click', () => {
+
+  document.getElementById('session').click();
+
+});
+
+suiviZeroBtn.addEventListener('click', () => {
+
+  document.getElementById('zero').click();
+
+});
+
+suiviSaveBtn.addEventListener('click', () => {
+
+  saveSessionBtn.click();
+
+});
+
+
+/*
+   Les messages d'etat (enregistrement, verrou d'ecran, segments
+   parcourus) sont produits une seule fois, dans la vue
+   inclinometre. On les recopie ici plutot que de dupliquer la
+   logique qui les fabrique.
+*/
+
+function mirrorElement(sourceId, targetId){
+
+  const source = document.getElementById(sourceId);
+
+  const target = document.getElementById(targetId);
+
+  if(!source || !target || typeof MutationObserver !== 'function'){
+    return;
+  }
+
+  const copy = () => {
+
+    target.innerHTML = source.innerHTML;
+
+    target.className = source.className;
+
+    target.style.color = source.style.color;
+
+  };
+
+  copy();
+
+  new MutationObserver(copy).observe(source, {
+    childList:true,
+    subtree:true,
+    characterData:true,
+    attributes:true,
+    attributeFilter:['class', 'style']
+  });
+
+}
+
+mirrorElement('cloudSaveStatus', 'suiviSaveStatus');
+
+mirrorElement('wakeLockBar', 'suiviWakeLock');
+
+mirrorElement('segmentResultPanel', 'suiviSegmentPanel');
+
+/* =====================================================
+   VUE COMPTES (administrateur)
+
+   Liste les fiches users/<uid> tenues par chaque appli. Seul le
+   compte administrateur peut les lire : c'est la regle Firestore
+   qui le garantit, l'interface masquee ne protege rien toute
+   seule.
+===================================================== */
+
+const accountsView =
+  document.getElementById('accountsView');
+
+const accountsStatus =
+  document.getElementById('accountsStatus');
+
+const accountsSummary =
+  document.getElementById('accountsSummary');
+
+const accountsListBody =
+  document.getElementById('accountsListBody');
+
+const accountDetailPanel =
+  document.getElementById('accountDetailPanel');
+
+const accountDetailTitle =
+  document.getElementById('accountDetailTitle');
+
+const accountDetailMeta =
+  document.getElementById('accountDetailMeta');
+
+const accountDetailStats =
+  document.getElementById('accountDetailStats');
+
+const accountsRefreshBtn =
+  document.getElementById('accountsRefreshBtn');
+
+
+let accountsCache = [];
+
+
+function accountMillis(value){
+
+  if(!value){
+    return 0;
+  }
+
+  if(typeof value === 'number'){
+    return value;
+  }
+
+  if(typeof value.toDate === 'function'){
+    return value.toDate().getTime();
+  }
+
+  return 0;
+
+}
+
+
+function accountLastActivityMs(account){
+
+  return Math.max(
+    accountMillis(account.lastSeenAt),
+    accountMillis(account.lastSessionMs),
+    accountMillis(account.createdAt)
+  );
+
+}
+
+
+function formatAccountDate(ms){
+
+  if(!ms){
+    return '--';
+  }
+
+  return new Date(ms).toLocaleDateString('fr-FR');
+
+}
+
+
+function formatAccountAge(ms){
+
+  if(!ms){
+    return 'jamais';
+  }
+
+  const days =
+    Math.floor((Date.now() - ms) / 86400000);
+
+  if(days <= 0){
+    return "aujourd'hui";
+  }
+
+  if(days === 1){
+    return 'hier';
+  }
+
+  if(days < 30){
+    return 'il y a ' + days + ' jours';
+  }
+
+  const months = Math.floor(days / 30);
+
+  return 'il y a ' + months + ' mois';
+
+}
+
+
+async function loadAccounts(){
+
+  const user =
+    window.FirebaseBridge.currentUser;
+
+  if(!user || !isFeedbackAdmin(user)){
+    return;
+  }
+
+  accountsStatus.textContent = 'Chargement des comptes...';
+
+  accountsStatus.classList.remove('hidden');
+
+  try{
+
+    const snap =
+      await getDocs(collection(db, 'users'));
+
+    const list = [];
+
+    snap.forEach(docSnap => {
+
+      list.push(
+        Object.assign({ uid:docSnap.id }, docSnap.data() || {})
+      );
+
+    });
+
+    list.sort((a, b) =>
+      accountLastActivityMs(b) - accountLastActivityMs(a)
+    );
+
+    accountsCache = list;
+
+    accountsStatus.classList.add('hidden');
+
+    renderAccounts();
+
+  }
+  catch(error){
+
+    console.error('[Comptes] Chargement impossible :', error);
+
+    accountsStatus.textContent =
+      'Impossible de lire les comptes. Vérifie que les règles ' +
+      'Firestore autorisent bien ton adresse à lire la collection ' +
+      '« users ».';
+
+  }
+
+}
+
+
+function renderAccounts(){
+
+  accountsListBody.innerHTML = '';
+
+  if(accountsCache.length === 0){
+
+    const row = document.createElement('tr');
+
+    row.innerHTML =
+      '<td colspan="4" class="segmentsEmptyCell">Aucun compte à afficher.</td>';
+
+    accountsListBody.appendChild(row);
+
+    accountsSummary.textContent = '';
+
+    return;
+
+  }
+
+  const totals =
+    accountsCache.reduce((acc, account) => {
+
+      acc.sessions += Number.isFinite(account.sessionCount) ? account.sessionCount : 0;
+
+      acc.km += Number.isFinite(account.totalKm) ? account.totalKm : 0;
+
+      acc.segments += Number.isFinite(account.segmentsCreated) ? account.segmentsCreated : 0;
+
+      if(normalizeVehicle(account.vehicle) === VEHICLE_CAR){
+        acc.cars++;
+      }
+      else{
+        acc.motos++;
+      }
+
+      const activity = accountLastActivityMs(account);
+
+      if(activity && Date.now() - activity < 30 * 86400000){
+        acc.active++;
+      }
+
+      return acc;
+
+    }, { sessions:0, km:0, segments:0, cars:0, motos:0, active:0 });
+
+  accountsSummary.innerHTML =
+
+    '<strong>' + accountsCache.length + '</strong> compte(s) · ' +
+    totals.motos + ' 🏍️ · ' + totals.cars + ' 🚗 · ' +
+    '<strong>' + totals.active + '</strong> actif(s) sur 30 jours<br>' +
+    totals.sessions + ' trajet(s) · ' +
+    Math.round(totals.km) + ' km cumulés · ' +
+    totals.segments + ' segment(s) créé(s)';
+
+  accountsCache.forEach(account => {
+
+    const row = document.createElement('tr');
+
+    row.className = 'segmentRow';
+
+    const activity =
+      accountLastActivityMs(account);
+
+    row.innerHTML =
+
+      '<td class="segmentRowName">' +
+      vehicleIcon(account.vehicle) + ' ' +
+      turnsHtml(account.displayName || 'Sans pseudo') +
+      '<span class="segmentRowSub">' +
+      turnsHtml(account.email || '') +
+      '</span></td>' +
+
+      '<td>' +
+      (Number.isFinite(account.sessionCount) ? account.sessionCount : 0) +
+      '</td>' +
+
+      '<td>' +
+      Math.round(Number.isFinite(account.totalKm) ? account.totalKm : 0) +
+      ' km</td>' +
+
+      '<td>' +
+      formatAccountAge(activity) +
+      '<span class="segmentRowSub">' +
+      formatAccountDate(activity) +
+      '</span></td>';
+
+    row.addEventListener('click', () => {
+      openAccountDetail(account.uid);
+    });
+
+    accountsListBody.appendChild(row);
+
+  });
+
+}
+
+
+function openAccountDetail(uid){
+
+  const account =
+    accountsCache.find(a => a.uid === uid);
+
+  if(!account){
+    return;
+  }
+
+  accountDetailTitle.textContent =
+    (account.displayName || 'Sans pseudo');
+
+  accountDetailMeta.textContent =
+    (account.email || 'e-mail inconnu') + ' · ' +
+    vehicleIcon(account.vehicle) + ' ' +
+    VEHICLE_LABELS[normalizeVehicle(account.vehicle)];
+
+  accountDetailStats.innerHTML =
+
+    statBoxHtml('Compte créé', formatAccountDate(accountMillis(account.createdAt))) +
+    statBoxHtml('Dernière visite', formatAccountDate(accountMillis(account.lastSeenAt))) +
+    statBoxHtml('Trajets', String(Number.isFinite(account.sessionCount) ? account.sessionCount : 0)) +
+    statBoxHtml('Distance', Math.round(Number.isFinite(account.totalKm) ? account.totalKm : 0) + ' km') +
+    statBoxHtml('Dernier trajet', formatAccountDate(accountMillis(account.lastSessionMs))) +
+    statBoxHtml('Segments créés', String(Number.isFinite(account.segmentsCreated) ? account.segmentsCreated : 0));
+
+  accountDetailPanel.classList.remove('hidden');
+
+  accountDetailPanel.scrollIntoView({ behavior:'smooth', block:'nearest' });
+
+}
+
+
+document.getElementById('closeAccountDetail').addEventListener('click', () => {
+
+  accountDetailPanel.classList.add('hidden');
+
+});
+
+
+accountsRefreshBtn.addEventListener('click', loadAccounts);
+
+/* =====================================================
+   NAVIGATION - SUIVI ET COMPTES
+
+   Comme pour les segments : le script classique qui gere le
+   menu n'est pas modifie, on ajoute seulement les nouvelles
+   vues a sa liste et on branche les boutons.
+===================================================== */
+
+allNavViews.push(
+  suiviView,
+  accountsView
+);
+
+
+document.getElementById('navSuivi').addEventListener('click', () => {
+
+  showNavView(suiviView);
+
+  startSuiviLoop();
+
+});
+
+
+document.getElementById('navComptes').addEventListener('click', () => {
+
+  showNavView(accountsView);
+
+  loadAccounts();
+
+});
+
+
+/*
+   A la connexion : fiche de compte, vehicule, et menu Comptes
+   reserve a l'administrateur. La vue elle-meme n'est qu'un
+   confort : c'est la regle Firestore qui protege les donnees.
+*/
+
+window.addEventListener('firebase-user-ready', event => {
+
+  const user =
+    event.detail && event.detail.user;
+
+  if(!user){
+    return;
+  }
+
+  document.getElementById('navComptes')
+    .classList.toggle('hidden', !isFeedbackAdmin(user));
+
+  touchAccountProfile(user);
+
+});
 
 
 /* =====================================================
