@@ -1,0 +1,1624 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+
+<meta charset="utf-8">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover">
+
+<title>Diagnostic capteurs - Inclinomètre Moto</title>
+
+<style>
+
+:root{
+  --bg:#080b10;
+  --card:#111720;
+  --text:#f3f6fa;
+  --muted:#9ba8b7;
+  --accent:#43d17a;
+  --yellow:#ffcc33;
+  --red:#ff4d4d;
+  --blue:#5aa9ff;
+  --line:#25303c;
+}
+
+*{
+  box-sizing:border-box;
+}
+
+html,body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+}
+
+body{
+  padding:
+    env(safe-area-inset-top)
+    14px
+    env(safe-area-inset-bottom);
+}
+
+.wrap{
+  max-width:620px;
+  margin:auto;
+  padding-bottom:40px;
+}
+
+h1{
+  font-size:19px;
+  margin:16px 0 4px;
+}
+
+.sub{
+  font-size:12px;
+  color:var(--muted);
+  line-height:1.55;
+  margin:0 0 14px;
+}
+
+.card{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:14px;
+  margin-bottom:12px;
+}
+
+.card h2{
+  font-size:14px;
+  margin:0 0 8px;
+}
+
+.card p{
+  font-size:13px;
+  line-height:1.55;
+  color:var(--muted);
+  margin:0 0 8px;
+}
+
+.card p:last-child{
+  margin-bottom:0;
+}
+
+.card ol{
+  font-size:13px;
+  line-height:1.6;
+  color:var(--muted);
+  margin:0;
+  padding-left:20px;
+}
+
+.card ol li{
+  margin-bottom:6px;
+}
+
+.card ol li:last-child{
+  margin-bottom:0;
+}
+
+.card ol b{
+  color:var(--text);
+}
+
+button{
+  width:100%;
+  border:0;
+  border-radius:13px;
+  padding:14px 10px;
+  font-size:16px;
+  font-weight:700;
+  background:#202a35;
+  color:var(--text);
+  margin-bottom:8px;
+}
+
+button.primary{
+  background:var(--accent);
+  color:#07100b;
+}
+
+button.blue{
+  background:#1d3855;
+  color:#bcdcff;
+}
+
+button.danger{
+  background:#4a1d1d;
+  color:#ffc4c4;
+}
+
+button:disabled{
+  opacity:0.4;
+}
+
+.state{
+  font-size:12px;
+  color:var(--muted);
+  text-align:center;
+  min-height:16px;
+  line-height:1.5;
+}
+
+.state.ok{
+  color:var(--accent);
+}
+
+.state.warn{
+  color:var(--yellow);
+}
+
+.state.bad{
+  color:var(--red);
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+}
+
+.tile{
+  background:#0c1218;
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:9px 10px;
+}
+
+.tile .lab{
+  font-size:10px;
+  letter-spacing:0.04em;
+  text-transform:uppercase;
+  color:var(--muted);
+  display:block;
+  margin-bottom:3px;
+}
+
+.tile .val{
+  font-size:20px;
+  font-weight:700;
+  font-variant-numeric:tabular-nums;
+  display:block;
+}
+
+.tile .val.alert{
+  color:var(--red);
+}
+
+.tile .hint{
+  font-size:10px;
+  color:var(--muted);
+  display:block;
+  margin-top:2px;
+}
+
+table.rows{
+  width:100%;
+  border-collapse:collapse;
+  font-size:13px;
+}
+
+table.rows td{
+  padding:6px 0;
+  border-bottom:1px solid var(--line);
+  color:var(--muted);
+}
+
+table.rows tr:last-child td{
+  border-bottom:0;
+}
+
+table.rows td.n{
+  text-align:right;
+  color:var(--text);
+  font-weight:700;
+  font-variant-numeric:tabular-nums;
+  white-space:nowrap;
+}
+
+table.rows td.n.alert{
+  color:var(--red);
+}
+
+.verdict{
+  font-size:13px;
+  line-height:1.6;
+}
+
+.verdict .big{
+  font-size:14px;
+  font-weight:700;
+  color:var(--text);
+  display:block;
+  margin-bottom:6px;
+}
+
+.verdict ul{
+  margin:8px 0 0;
+  padding-left:18px;
+  color:var(--muted);
+}
+
+.verdict li{
+  margin-bottom:4px;
+}
+
+.cap{
+  border:1px solid var(--line);
+  border-radius:12px;
+  margin-bottom:8px;
+  overflow:hidden;
+}
+
+.cap summary{
+  padding:10px 12px;
+  font-size:13px;
+  font-weight:700;
+  cursor:pointer;
+  background:#0c1218;
+  list-style:none;
+}
+
+.cap summary::-webkit-details-marker{
+  display:none;
+}
+
+.cap summary .tag{
+  display:block;
+  font-size:11px;
+  font-weight:400;
+  color:var(--muted);
+  margin-top:3px;
+}
+
+.cap pre{
+  margin:0;
+  padding:10px 12px;
+  font-size:10px;
+  line-height:1.45;
+  overflow-x:auto;
+  color:var(--muted);
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+
+.cap pre b{
+  color:var(--red);
+}
+
+.empty{
+  font-size:13px;
+  color:var(--muted);
+  text-align:center;
+  padding:10px 0;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="wrap">
+
+<h1>Diagnostic capteurs</h1>
+
+<p class="sub">
+  Cette page ne remplace pas l'application : elle enregistre, pendant un
+  trajet, <b>ce que le téléphone fournit vraiment</b> au moment où le calcul
+  d'inclinaison part en vrille. Rien n'est envoyé nulle part, tout reste dans
+  le téléphone jusqu'à ce que tu appuies sur « rapport ».
+</p>
+
+
+<div class="card">
+
+  <h2>Mode d'emploi</h2>
+
+  <ol>
+    <li>Téléphone <b>dans son support</b>, moto droite, à l'arrêt.</li>
+    <li><b>Démarrer les capteurs</b>, puis <b>faire le zéro</b> sans bouger la
+        moto pendant 2 secondes.</li>
+    <li>Rouler normalement, <b>au moins 15 minutes</b>, en laissant cette page
+        affichée à l'écran.</li>
+    <li>À l'arrêt : <b>Arrêter</b>, puis <b>Envoyer le rapport</b>.</li>
+  </ol>
+
+</div>
+
+
+<div class="card">
+
+  <button id="start" class="primary">▶ DÉMARRER LES CAPTEURS</button>
+
+  <button id="zero" class="blue" disabled>◎ FAIRE LE ZÉRO</button>
+
+  <button id="stop" class="danger" disabled>■ ARRÊTER</button>
+
+  <div class="state" id="status">Capteurs arrêtés</div>
+
+  <div class="state" id="wake"></div>
+
+</div>
+
+
+<div class="card">
+
+  <h2>En direct</h2>
+
+  <div class="grid">
+
+    <div class="tile">
+      <span class="lab">Inclinaison</span>
+      <span class="val" id="vAngle">--</span>
+      <span class="hint">doit rester sous 60°</span>
+    </div>
+
+    <div class="tile">
+      <span class="lab">Gravité résiduelle</span>
+      <span class="val" id="vRes">--</span>
+      <span class="hint">doit rester proche de 1,00 g</span>
+    </div>
+
+    <div class="tile">
+      <span class="lab">Mesure brute</span>
+      <span class="val" id="vTot">--</span>
+      <span class="hint">accéléromètre complet</span>
+    </div>
+
+    <div class="tile">
+      <span class="lab">Accél. linéaire</span>
+      <span class="val" id="vAcc">--</span>
+      <span class="hint">ce que l'OS retranche</span>
+    </div>
+
+    <div class="tile">
+      <span class="lab">Composante verticale</span>
+      <span class="val" id="vVert">--</span>
+      <span class="hint">négative = repère basculé</span>
+    </div>
+
+    <div class="tile">
+      <span class="lab">Cadence</span>
+      <span class="val" id="vHz">--</span>
+      <span class="hint">mesures par seconde</span>
+    </div>
+
+  </div>
+
+</div>
+
+
+<div class="card">
+
+  <h2>Compteurs</h2>
+
+  <table class="rows">
+    <tbody>
+      <tr><td>Temps écoulé</td><td class="n" id="cDur">--</td></tr>
+      <tr><td>Mesures analysées</td><td class="n" id="cN">0</td></tr>
+      <tr><td>Inclinaisons impossibles (&gt; 90°)</td><td class="n" id="cFlip">0</td></tr>
+      <tr><td>Gravité résiduelle aberrante</td><td class="n" id="cRes">0</td></tr>
+      <tr><td>Accélération linéaire absente</td><td class="n" id="cNull">0</td></tr>
+      <tr><td>Trous entre deux mesures</td><td class="n" id="cGap">0</td></tr>
+      <tr><td>Captures enregistrées</td><td class="n" id="cCap">0</td></tr>
+    </tbody>
+  </table>
+
+</div>
+
+
+<div class="card">
+
+  <h2>Diagnostic automatique</h2>
+
+  <div class="verdict" id="verdict">
+    <span class="big">En attente d'un enregistrement.</span>
+    Le verdict s'affiche dès qu'une anomalie a été capturée.
+  </div>
+
+</div>
+
+
+<div class="card">
+
+  <h2>Captures</h2>
+
+  <p>
+    Chaque capture contient les mesures brutes juste avant, pendant et juste
+    après l'anomalie.
+  </p>
+
+  <div id="captures">
+    <div class="empty">Aucune anomalie capturée pour l'instant.</div>
+  </div>
+
+</div>
+
+
+<div class="card">
+
+  <h2>Rapport</h2>
+
+  <button id="share" class="primary">📤 ENVOYER LE RAPPORT</button>
+
+  <button id="copy" class="blue">COPIER LE RAPPORT</button>
+
+  <div class="state" id="reportState"></div>
+
+</div>
+
+</div>
+
+
+<script>
+
+/* =====================================================
+   CONSTANTES
+   Les mêmes que le moteur de l'application, pour que ce
+   qui est mesuré ici soit exactement ce qu'il calcule.
+===================================================== */
+
+const G = 9.80665;
+
+const LEAN_SIGN = 1;
+
+const CALIB_MS = 2000;
+
+/* Nombre de mesures gardées avant et après une anomalie. */
+const BEFORE = 25;
+const AFTER = 15;
+
+/* Au-delà, on arrête de capturer : le diagnostic est fait. */
+const MAX_CAPTURES = 40;
+
+/* Bornes de la gravité résiduelle, en g. */
+const RES_LOW = 0.6;
+const RES_HIGH = 1.4;
+
+/* Une seule capture par seconde, sinon une rafale sature tout. */
+const CAPTURE_GAP_MS = 1000;
+
+
+/* =====================================================
+   ÉTAT
+===================================================== */
+
+let running = false;
+let calibrating = false;
+
+let calibStart = 0;
+let calibCount = 0;
+const calibSum = { x:0, y:0, z:0 };
+
+let calibrated = false;
+
+let verticalAxis = { x:0, y:1, z:0 };
+let lateralAxis = { x:1, y:0, z:0 };
+let longitudinalAxis = { x:0, y:0, z:1 };
+
+const ring = [];
+
+const captures = [];
+let pending = null;
+let lastCaptureAt = -Infinity;
+
+let startedAt = 0;
+let lastSampleAt = 0;
+
+let nSamples = 0;
+let nFlip = 0;
+let nResOut = 0;
+let nNullAccel = 0;
+let nGap = 0;
+
+const dtSamples = [];
+
+/*
+   Cadence de reference, figee apres les premieres mesures : elle sert a
+   reperer une mesure sautee, ce qu'un seuil fixe ne saurait pas faire
+   (60 Hz et 10 Hz n'ont pas le meme "trou").
+*/
+let refDt = 0;
+
+/* Histogrammes : ils disent si le défaut est ponctuel ou permanent. */
+const resHist = new Array(11).fill(0);
+const angleHist = new Array(18).fill(0);
+
+let hzCount = 0;
+let hzTimer = 0;
+let hz = 0;
+
+let lastPaint = 0;
+
+let wakeLock = null;
+
+let last = null;
+
+
+/* =====================================================
+   OUTILS
+===================================================== */
+
+function $(id){
+  return document.getElementById(id);
+}
+
+function dot(a,b){
+  return a.x*b.x + a.y*b.y + a.z*b.z;
+}
+
+function norm(v){
+  return Math.sqrt(v.x*v.x + v.y*v.y + v.z*v.z);
+}
+
+function normalize(v){
+
+  const n = norm(v);
+
+  if(n < 0.000001){
+    return { x:0, y:0, z:0 };
+  }
+
+  return { x:v.x/n, y:v.y/n, z:v.z/n };
+
+}
+
+function cross(a,b){
+
+  return {
+    x: a.y*b.z - a.z*b.y,
+    y: a.z*b.x - a.x*b.z,
+    z: a.x*b.y - a.y*b.x
+  };
+
+}
+
+function setStatus(text, cls){
+
+  const el = $('status');
+
+  el.textContent = text;
+  el.className = 'state' + (cls ? ' ' + cls : '');
+
+}
+
+function fix(v, d){
+
+  return (v === null || v === undefined || !isFinite(v))
+    ? '--'
+    : v.toFixed(d);
+
+}
+
+
+/* =====================================================
+   VERROU D'ÉCRAN
+   Le téléphone qui se verrouille coupe l'enregistrement,
+   donc autant demander à le garder allumé.
+===================================================== */
+
+async function requestWake(){
+
+  if(!('wakeLock' in navigator)){
+
+    $('wake').textContent =
+      'Ce navigateur ne sait pas garder l’écran allumé : règle la mise en veille sur « jamais ».';
+
+    $('wake').className = 'state warn';
+
+    return;
+
+  }
+
+  try{
+
+    wakeLock = await navigator.wakeLock.request('screen');
+
+    $('wake').textContent = '🔆 Écran maintenu allumé';
+    $('wake').className = 'state ok';
+
+    wakeLock.addEventListener('release', () => {
+
+      wakeLock = null;
+
+      if(running){
+        $('wake').textContent = '⚠︎ Écran non maintenu (économie d’énergie ?)';
+        $('wake').className = 'state warn';
+      }
+
+    });
+
+  }
+  catch(err){
+
+    $('wake').textContent =
+      '⚠︎ Écran non maintenu : ' + (err && err.name ? err.name : 'refusé');
+
+    $('wake').className = 'state warn';
+
+  }
+
+}
+
+document.addEventListener('visibilitychange', () => {
+
+  if(document.visibilityState === 'visible' && running && !wakeLock){
+    requestWake();
+  }
+
+});
+
+
+/* =====================================================
+   CALIBRATION
+   Identique au moteur : moyenne de la mesure brute, qui
+   devient l'axe vertical.
+===================================================== */
+
+function startCalibration(){
+
+  if(!running){
+    return;
+  }
+
+  calibrating = true;
+  calibStart = performance.now();
+  calibCount = 0;
+
+  calibSum.x = 0;
+  calibSum.y = 0;
+  calibSum.z = 0;
+
+  setStatus('Calibration… ne bouge pas', 'warn');
+
+}
+
+function finishCalibration(){
+
+  calibrating = false;
+
+  if(calibCount < 5){
+
+    setStatus('Calibration ratée : trop peu de mesures', 'bad');
+    return;
+
+  }
+
+  const mean = {
+    x: calibSum.x / calibCount,
+    y: calibSum.y / calibCount,
+    z: calibSum.z / calibCount
+  };
+
+  verticalAxis = normalize(mean);
+
+  lateralAxis = { x:1, y:0, z:0 };
+
+  const lon = normalize(cross(verticalAxis, lateralAxis));
+
+  if(norm(lon) > 0.5){
+    longitudinalAxis = lon;
+  }
+
+  calibrated = true;
+
+  setStatus('Zéro fait · enregistrement en cours', 'ok');
+
+}
+
+
+/* =====================================================
+   CAPTEUR
+===================================================== */
+
+function handleMotion(event){
+
+  if(!running){
+    return;
+  }
+
+  const total = event.accelerationIncludingGravity;
+
+  if(!total || total.x === null || total.y === null || total.z === null){
+    return;
+  }
+
+  const now = performance.now();
+
+  const totalVector = {
+    x: total.x / G,
+    y: total.y / G,
+    z: total.z / G
+  };
+
+  /* --- Calibration : on accumule et on sort. --- */
+
+  if(calibrating){
+
+    calibSum.x += totalVector.x;
+    calibSum.y += totalVector.y;
+    calibSum.z += totalVector.z;
+
+    calibCount++;
+
+    if(now - calibStart >= CALIB_MS){
+      finishCalibration();
+    }
+
+    return;
+
+  }
+
+  /* --- Accélération linéaire fournie par l'OS. --- */
+
+  const dyn = event.acceleration;
+
+  const hasDyn = !!(
+    dyn &&
+    dyn.x !== null && dyn.x !== undefined &&
+    dyn.y !== null && dyn.y !== undefined &&
+    dyn.z !== null && dyn.z !== undefined
+  );
+
+  const dynVector = hasDyn
+    ? { x: dyn.x / G, y: dyn.y / G, z: dyn.z / G }
+    : { x:0, y:0, z:0 };
+
+  if(!hasDyn){
+    nNullAccel++;
+  }
+
+  /* --- Le résidu : c'est lui qui sert d'estimation de la gravité. --- */
+
+  const residual = {
+    x: totalVector.x - dynVector.x,
+    y: totalVector.y - dynVector.y,
+    z: totalVector.z - dynVector.z
+  };
+
+  const unit = normalize(residual);
+
+  const vert = dot(unit, verticalAxis);
+  const lat = dot(unit, lateralAxis);
+
+  const angle = Math.atan2(lat, vert) * 180 / Math.PI * LEAN_SIGN;
+
+  const nt = norm(totalVector);
+  const na = hasDyn ? norm(dynVector) : null;
+  const ng = norm(residual);
+
+  const dt = lastSampleAt ? (now - lastSampleAt) : 0;
+
+  lastSampleAt = now;
+
+  nSamples++;
+
+  if(dtSamples.length < 4000){
+    dtSamples.push(dt);
+  }
+
+  if(!refDt && dtSamples.length >= 200){
+    refDt = medianDt();
+  }
+
+  /* --- Histogrammes. --- */
+
+  const rb = Math.min(10, Math.max(0, Math.floor(ng / 0.2)));
+  resHist[rb]++;
+
+  const ab = Math.min(17, Math.floor(Math.abs(angle) / 10));
+  angleHist[ab]++;
+
+  /* --- Compteurs d'anomalie. --- */
+
+  const flip = Math.abs(angle) > 90;
+  const resOut = (ng < RES_LOW || ng > RES_HIGH);
+
+  if(flip){
+    nFlip++;
+  }
+
+  if(resOut){
+    nResOut++;
+  }
+
+  const gapLimit = refDt ? Math.max(40, 3 * refDt) : 120;
+
+  const gap = (dt > gapLimit);
+
+  if(gap){
+    nGap++;
+  }
+
+  /* --- La mesure, sous forme compacte. --- */
+
+  const sample = {
+    t: +((now - startedAt) / 1000).toFixed(3),
+    dt: +dt.toFixed(1),
+    itv: (typeof event.interval === 'number') ? +event.interval.toFixed(1) : null,
+    tx: +totalVector.x.toFixed(4),
+    ty: +totalVector.y.toFixed(4),
+    tz: +totalVector.z.toFixed(4),
+    ax: hasDyn ? +dynVector.x.toFixed(4) : null,
+    ay: hasDyn ? +dynVector.y.toFixed(4) : null,
+    az: hasDyn ? +dynVector.z.toFixed(4) : null,
+    gx: +residual.x.toFixed(4),
+    gy: +residual.y.toFixed(4),
+    gz: +residual.z.toFixed(4),
+    nt: +nt.toFixed(4),
+    na: (na === null) ? null : +na.toFixed(4),
+    ng: +ng.toFixed(4),
+    vert: +vert.toFixed(4),
+    lat: +lat.toFixed(4),
+    ang: +angle.toFixed(2),
+    bad: flip || resOut
+  };
+
+  ring.push(sample);
+
+  if(ring.length > BEFORE + 5){
+    ring.shift();
+  }
+
+  /* --- Capture en cours : on complète l'après. --- */
+
+  if(pending){
+
+    pending.after.push(sample);
+
+    if(pending.after.length >= AFTER){
+      finishCapture();
+    }
+
+  }
+  else if(
+    (flip || resOut) &&
+    captures.length < MAX_CAPTURES &&
+    (now - lastCaptureAt) > CAPTURE_GAP_MS
+  ){
+
+    lastCaptureAt = now;
+
+    pending = {
+      before: ring.slice(0, ring.length - 1).slice(-BEFORE),
+      at: sample,
+      after: []
+    };
+
+  }
+
+  /* --- Cadence. --- */
+
+  hzCount++;
+
+  if(now - hzTimer >= 1000){
+
+    hz = Math.round(hzCount * 1000 / (now - hzTimer));
+    hzCount = 0;
+    hzTimer = now;
+
+  }
+
+  last = sample;
+
+  /* --- Affichage limité à 10 images par seconde. --- */
+
+  if(now - lastPaint > 100){
+    lastPaint = now;
+    paint();
+  }
+
+}
+
+
+function medianDt(){
+
+  if(!dtSamples.length){
+    return 0;
+  }
+
+  const s = dtSamples.slice().sort((a,b) => a - b);
+
+  return s[Math.floor(s.length / 2)];
+
+}
+
+
+/* =====================================================
+   CLASSEMENT D'UNE CAPTURE
+   C'est ici qu'on sépare les hypothèses.
+===================================================== */
+
+const CLASSES = {
+
+  'accel-absente': {
+    label: 'Accélération linéaire absente',
+    why: 'L’OS n’a fourni aucune accélération linéaire sur cette mesure.'
+  },
+
+  'accel-contient-gravite': {
+    label: 'L’accélération linéaire contient la gravité',
+    why: 'Le champ « accélération » est presque identique à la mesure brute : la soustraction annule tout et le résidu ne vaut plus rien.'
+  },
+
+  'residu-effondre': {
+    label: 'Le résidu de gravité s’effondre',
+    why: 'La soustraction laisse un vecteur trop petit pour être la gravité : les deux champs ne viennent pas du même instant.'
+  },
+
+  'residu-retourne': {
+    label: 'Le résidu de gravité est retourné',
+    why: 'Le résidu a la bonne longueur mais pointe vers le haut : l’accélération retranchée valait à peu près deux fois la gravité. C’est exactement ce qui fait sauter l’angle à 180°.'
+  },
+
+  'mesure-brute-aberrante': {
+    label: 'La mesure brute elle-même est fausse',
+    why: 'L’accéléromètre a renvoyé une valeur impossible : le problème est en amont de tout calcul.'
+  },
+
+  'echantillon-saute': {
+    label: 'Mesure précédente manquante',
+    why: 'Un trou dans le flux juste avant l’anomalie : l’OS a sauté des mesures.'
+  },
+
+  'accel-lineaire-enorme': {
+    label: 'Accélération linéaire démesurée',
+    why: 'L’accélération annoncée dépasse ce qu’une moto peut produire.'
+  },
+
+  'inclassable': {
+    label: 'Non classé',
+    why: 'Aucune des signatures connues : à regarder à la main.'
+  }
+
+};
+
+function classify(c){
+
+  const s = c.at;
+
+  if(s.na === null){
+    return 'accel-absente';
+  }
+
+  const d = (s.nt * s.na) || 1;
+
+  const cos = (s.tx*s.ax + s.ty*s.ay + s.tz*s.az) / d;
+
+  if(s.na > 0.6 && cos > 0.85 && Math.abs(s.na - s.nt) < 0.35){
+    return 'accel-contient-gravite';
+  }
+
+  if(s.nt < 0.5 || s.nt > 2.5){
+    return 'mesure-brute-aberrante';
+  }
+
+  if(s.ng < RES_LOW){
+    return 'residu-effondre';
+  }
+
+  if(s.vert < 0){
+    return 'residu-retourne';
+  }
+
+  if(refDt > 0 && s.dt > Math.max(40, 3 * refDt)){
+    return 'echantillon-saute';
+  }
+
+  if(s.na > 1.5){
+    return 'accel-lineaire-enorme';
+  }
+
+  return 'inclassable';
+
+}
+
+function finishCapture(){
+
+  if(!pending){
+    return;
+  }
+
+  pending.cls = classify(pending);
+
+  captures.push(pending);
+
+  pending = null;
+
+  renderCaptures();
+  renderVerdict();
+
+}
+
+
+/* =====================================================
+   AFFICHAGE
+===================================================== */
+
+function paint(){
+
+  if(last){
+
+    const a = $('vAngle');
+    a.textContent = fix(last.ang, 1) + '°';
+    a.className = 'val' + (Math.abs(last.ang) > 90 ? ' alert' : '');
+
+    const r = $('vRes');
+    r.textContent = fix(last.ng, 3);
+    r.className = 'val' + ((last.ng < RES_LOW || last.ng > RES_HIGH) ? ' alert' : '');
+
+    $('vTot').textContent = fix(last.nt, 3);
+
+    $('vAcc').textContent = (last.na === null) ? 'absente' : fix(last.na, 3);
+
+    const v = $('vVert');
+    v.textContent = fix(last.vert, 3);
+    v.className = 'val' + (last.vert < 0 ? ' alert' : '');
+
+    $('vHz').textContent = hz ? String(hz) : '--';
+
+  }
+
+  $('cN').textContent = nSamples.toLocaleString('fr-FR');
+
+  $('cDur').textContent = startedAt
+    ? Math.round((performance.now() - startedAt) / 1000) + ' s'
+    : '--';
+
+  const put = (id, n) => {
+    const el = $(id);
+    el.textContent = n.toLocaleString('fr-FR');
+    el.className = 'n' + (n > 0 ? ' alert' : '');
+  };
+
+  put('cFlip', nFlip);
+  put('cRes', nResOut);
+  put('cNull', nNullAccel);
+  put('cGap', nGap);
+
+  $('cCap').textContent = String(captures.length);
+  $('cCap').className = 'n';
+
+}
+
+
+/*
+   Format volontairement etroit : sur un telephone, la colonne qui
+   compte (|res|) doit etre visible sans faire defiler de cote.
+*/
+
+const CAP_HEADER =
+  '   t     ang   |tot| |acc| |res|  vert';
+
+function line(s, mark){
+
+  const pad = (v, w, d) => {
+
+    const t = (v === null || v === undefined) ? '--' : v.toFixed(d);
+
+    return (' '.repeat(w) + t).slice(-w);
+
+  };
+
+  const txt =
+    pad(s.t, 6, 2) +
+    pad(s.ang, 8, 1) +
+    pad(s.nt, 7, 2) +
+    pad(s.na, 6, 2) +
+    pad(s.ng, 6, 2) +
+    pad(s.vert, 7, 2);
+
+  return mark ? '<b>' + txt + '  &lt;==</b>' : txt;
+
+}
+
+function renderCaptures(){
+
+  const box = $('captures');
+
+  if(!captures.length){
+
+    box.innerHTML =
+      '<div class="empty">Aucune anomalie capturée pour l’instant.</div>';
+
+    return;
+
+  }
+
+  const parts = [];
+
+  captures.slice().reverse().forEach((c, i) => {
+
+    const n = captures.length - i;
+
+    const cls = CLASSES[c.cls] || CLASSES['inclassable'];
+
+    const rows = [ CAP_HEADER ]
+      .concat(c.before.map(s => line(s, false)))
+      .concat([ line(c.at, true) ])
+      .concat(c.after.map(s => line(s, false)));
+
+    parts.push(
+      '<details class="cap"><summary>' +
+      'Capture ' + n + ' · ' + c.at.t.toFixed(1) + 's · ' +
+      c.at.ang.toFixed(0) + '°' +
+      '<span class="tag">' + cls.label + '</span>' +
+      '</summary><pre>' + rows.join('\n') + '</pre></details>'
+    );
+
+  });
+
+  box.innerHTML = parts.join('');
+
+}
+
+
+function renderVerdict(){
+
+  const box = $('verdict');
+
+  if(!captures.length){
+
+    box.innerHTML =
+      '<span class="big">Aucune anomalie pour l’instant.</span>' +
+      'Si le trajet dure plus de 15 minutes sans rien capturer, c’est déjà une ' +
+      'information : le défaut ne se produit pas dans ces conditions.';
+
+    return;
+
+  }
+
+  const tally = {};
+
+  captures.forEach(c => {
+    tally[c.cls] = (tally[c.cls] || 0) + 1;
+  });
+
+  const order = Object.keys(tally).sort((a,b) => tally[b] - tally[a]);
+
+  const top = order[0];
+
+  const items = order.map(k => {
+
+    const cls = CLASSES[k] || CLASSES['inclassable'];
+
+    return '<li><b>' + cls.label + '</b> — ' + tally[k] +
+           (tally[k] > 1 ? ' captures. ' : ' capture. ') + cls.why + '</li>';
+
+  });
+
+  let head;
+
+  if(
+    top === 'accel-contient-gravite' ||
+    top === 'residu-effondre' ||
+    top === 'residu-retourne' ||
+    top === 'accel-lineaire-enorme'
+  ){
+
+    head = 'Hypothèse confirmée : l’accélération linéaire fournie par Android ne correspond pas à la mesure brute du même instant.';
+
+  }
+  else if(top === 'mesure-brute-aberrante'){
+
+    head = 'Hypothèse infirmée : c’est l’accéléromètre brut qui renvoie n’importe quoi.';
+
+  }
+  else if(top === 'accel-absente'){
+
+    head = 'L’OS ne fournit pas d’accélération linéaire : le calcul travaille sans filet.';
+
+  }
+  else if(top === 'echantillon-saute'){
+
+    head = 'Les anomalies suivent des trous dans le flux de mesures.';
+
+  }
+  else{
+
+    head = 'Anomalies capturées, signature à examiner.';
+
+  }
+
+  box.innerHTML =
+    '<span class="big">' + head + '</span>' +
+    '<ul>' + items.join('') + '</ul>';
+
+}
+
+
+/* =====================================================
+   RAPPORT
+===================================================== */
+
+function buildReport(){
+
+  const dur = startedAt ? (performance.now() - startedAt) / 1000 : 0;
+
+  const L = [];
+
+  L.push('RAPPORT DIAGNOSTIC CAPTEURS - Inclinometre Moto');
+  L.push('date          : ' + new Date().toISOString());
+  L.push('navigateur    : ' + navigator.userAgent);
+  L.push('plateforme    : ' + (navigator.platform || '?'));
+  L.push('ecran         : ' + window.screen.width + 'x' + window.screen.height);
+  L.push('');
+  L.push('duree         : ' + dur.toFixed(0) + ' s');
+  L.push('mesures       : ' + nSamples);
+  L.push('cadence       : ' + hz + ' Hz (dt median ' + medianDt().toFixed(1) + ' ms)');
+  L.push('calibration   : ' + (calibrated ? 'faite' : 'JAMAIS FAITE'));
+  L.push('axe vertical  : ' +
+         verticalAxis.x.toFixed(4) + ' / ' +
+         verticalAxis.y.toFixed(4) + ' / ' +
+         verticalAxis.z.toFixed(4));
+  L.push('');
+  L.push('inclinaisons > 90 deg      : ' + nFlip);
+  L.push('residus hors [0.6 ; 1.4] g : ' + nResOut);
+  L.push('acceleration absente       : ' + nNullAccel);
+  L.push('mesures sautees (dt > ' +
+         (refDt ? Math.max(40, 3 * refDt).toFixed(0) : '120') +
+         ' ms) : ' + nGap);
+  L.push('captures                   : ' + captures.length +
+         (captures.length >= MAX_CAPTURES ? ' (plafond atteint)' : ''));
+  L.push('');
+
+  L.push('--- distribution de la gravite residuelle (g) ---');
+
+  resHist.forEach((c, i) => {
+
+    const lo = (i * 0.2).toFixed(1);
+    const hi = (i === 10) ? 'inf' : ((i + 1) * 0.2).toFixed(1);
+
+    L.push('  ' + lo + ' - ' + hi + ' : ' + c);
+
+  });
+
+  L.push('');
+  L.push('--- distribution des inclinaisons (deg, valeur absolue) ---');
+
+  angleHist.forEach((c, i) => {
+
+    if(c === 0 && i > 6){
+      return;
+    }
+
+    L.push('  ' + (i * 10) + ' - ' + ((i + 1) * 10) + ' : ' + c);
+
+  });
+
+  L.push('');
+  L.push('--- captures ---');
+
+  if(!captures.length){
+
+    L.push('  aucune');
+
+  }
+
+  captures.forEach((c, i) => {
+
+    const cls = CLASSES[c.cls] || CLASSES['inclassable'];
+
+    L.push('');
+    L.push('# capture ' + (i + 1) +
+           ' a t=' + c.at.t.toFixed(2) + 's' +
+           ' angle=' + c.at.ang.toFixed(1) + 'deg' +
+           ' [' + c.cls + '] ' + cls.label);
+
+    const all = [].concat(c.before, [c.at], c.after);
+
+    all.forEach(s => {
+
+      L.push(
+        (s === c.at ? '>>' : '  ') +
+        ' t=' + s.t.toFixed(3) +
+        ' dt=' + s.dt.toFixed(1) +
+        ' itv=' + (s.itv === null ? '--' : s.itv) +
+        ' tot=' + s.tx + ',' + s.ty + ',' + s.tz +
+        ' acc=' + (s.ax === null ? 'null' : (s.ax + ',' + s.ay + ',' + s.az)) +
+        ' res=' + s.gx + ',' + s.gy + ',' + s.gz +
+        ' |tot|=' + s.nt +
+        ' |acc|=' + (s.na === null ? 'null' : s.na) +
+        ' |res|=' + s.ng +
+        ' vert=' + s.vert +
+        ' lat=' + s.lat +
+        ' ang=' + s.ang
+      );
+
+    });
+
+  });
+
+  L.push('');
+  L.push('--- json ---');
+
+  L.push(JSON.stringify({
+    ua: navigator.userAgent,
+    dur: +dur.toFixed(1),
+    n: nSamples,
+    hz: hz,
+    medianDt: +medianDt().toFixed(2),
+    calibrated: calibrated,
+    verticalAxis: verticalAxis,
+    nFlip: nFlip,
+    nResOut: nResOut,
+    nNullAccel: nNullAccel,
+    nGap: nGap,
+    resHist: resHist,
+    angleHist: angleHist,
+    captures: captures
+  }));
+
+  return L.join('\n');
+
+}
+
+
+function reportName(){
+
+  const d = new Date();
+
+  const p = n => String(n).padStart(2, '0');
+
+  return 'diagnostic-capteurs-' +
+         d.getFullYear() + p(d.getMonth() + 1) + p(d.getDate()) + '-' +
+         p(d.getHours()) + p(d.getMinutes()) + '.txt';
+
+}
+
+
+async function shareReport(){
+
+  const text = buildReport();
+  const name = reportName();
+
+  const state = $('reportState');
+
+  try{
+
+    const file = new File([text], name, { type:'text/plain' });
+
+    if(navigator.canShare && navigator.canShare({ files:[file] })){
+
+      await navigator.share({
+        files: [file],
+        title: 'Diagnostic capteurs'
+      });
+
+      state.textContent = 'Rapport envoyé.';
+      state.className = 'state ok';
+
+      return;
+
+    }
+
+  }
+  catch(err){
+
+    if(err && err.name === 'AbortError'){
+
+      state.textContent = 'Envoi annulé.';
+      state.className = 'state';
+
+      return;
+
+    }
+
+  }
+
+  /* Pas de partage possible : téléchargement. */
+
+  try{
+
+    const url = URL.createObjectURL(new Blob([text], { type:'text/plain' }));
+
+    const a = document.createElement('a');
+
+    a.href = url;
+    a.download = name;
+
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+
+    setTimeout(() => URL.revokeObjectURL(url), 4000);
+
+    state.textContent = 'Rapport téléchargé : ' + name;
+    state.className = 'state ok';
+
+  }
+  catch(err){
+
+    state.textContent = 'Impossible d’enregistrer le rapport : utilise « Copier ».';
+    state.className = 'state bad';
+
+  }
+
+}
+
+
+async function copyReport(){
+
+  const text = buildReport();
+  const state = $('reportState');
+
+  try{
+
+    await navigator.clipboard.writeText(text);
+
+    state.textContent = 'Rapport copié (' + text.length + ' caractères).';
+    state.className = 'state ok';
+
+  }
+  catch(err){
+
+    state.textContent = 'Copie refusée par le navigateur : utilise « Envoyer ».';
+    state.className = 'state bad';
+
+  }
+
+}
+
+
+/* =====================================================
+   DÉMARRAGE
+===================================================== */
+
+async function start(){
+
+  if(running){
+    return;
+  }
+
+  if(typeof DeviceMotionEvent === 'undefined'){
+
+    setStatus('Ce navigateur n’expose pas les capteurs de mouvement.', 'bad');
+    return;
+
+  }
+
+  if(typeof DeviceMotionEvent.requestPermission === 'function'){
+
+    try{
+
+      const res = await DeviceMotionEvent.requestPermission();
+
+      if(res !== 'granted'){
+
+        setStatus('Accès aux capteurs refusé.', 'bad');
+        return;
+
+      }
+
+    }
+    catch(err){
+
+      setStatus('Accès aux capteurs refusé.', 'bad');
+      return;
+
+    }
+
+  }
+
+  /*
+     Reprise apres un arret : on garde la meme horloge et les memes
+     compteurs, sinon les captures deja faites porteraient des instants
+     incomparables. Un arret n'est donc qu'une pause.
+  */
+
+  const first = (startedAt === 0);
+
+  running = true;
+
+  if(first){
+    startedAt = performance.now();
+  }
+
+  lastSampleAt = 0;
+  hzTimer = performance.now();
+
+  window.addEventListener('devicemotion', handleMotion, true);
+
+  $('start').disabled = true;
+  $('zero').disabled = false;
+  $('stop').disabled = false;
+
+  requestWake();
+
+  if(first){
+
+    setStatus('Capteurs en route · fais le zéro', 'warn');
+
+    /* Le zéro s'enchaîne tout seul, on peut le refaire ensuite. */
+    setTimeout(startCalibration, 400);
+
+  }
+  else{
+
+    /*
+       Reprise : surtout pas de zéro automatique, la moto n'est
+       peut-être plus droite.
+    */
+
+    setStatus(
+      calibrated
+        ? 'Enregistrement repris'
+        : 'Enregistrement repris · le zéro n’a jamais été fait',
+      calibrated ? 'ok' : 'warn'
+    );
+
+  }
+
+}
+
+
+function stop(){
+
+  if(!running){
+    return;
+  }
+
+  running = false;
+  calibrating = false;
+
+  window.removeEventListener('devicemotion', handleMotion, true);
+
+  if(pending){
+    finishCapture();
+  }
+
+  if(wakeLock){
+
+    try{ wakeLock.release(); }catch(err){}
+
+    wakeLock = null;
+
+  }
+
+  $('start').disabled = false;
+  $('zero').disabled = true;
+  $('stop').disabled = true;
+
+  $('wake').textContent = '';
+  $('wake').className = 'state';
+
+  setStatus(
+    'Arrêté · ' + nSamples.toLocaleString('fr-FR') + ' mesures, ' +
+    captures.length + ' capture' + (captures.length > 1 ? 's' : ''),
+    captures.length ? 'bad' : 'ok'
+  );
+
+  paint();
+  renderVerdict();
+
+}
+
+
+$('start').addEventListener('click', start);
+
+$('zero').addEventListener('click', startCalibration);
+
+$('stop').addEventListener('click', stop);
+
+$('share').addEventListener('click', shareReport);
+
+$('copy').addEventListener('click', copyReport);
+
+
+/* Rafraîchit les compteurs même quand rien ne bouge. */
+setInterval(() => {
+
+  if(running){
+    paint();
+  }
+
+}, 1000);
+
+</script>
+
+</body>
+
+</html>
